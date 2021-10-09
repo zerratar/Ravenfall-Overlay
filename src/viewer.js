@@ -253,7 +253,12 @@ function onStateUpdated(newState) {
         characterSelectButton.classList.add('btn');
         characterSelectButton.classList.add('btn-character-select');
         characterSelectButton.character = x;
-        characterSelectButton.innerHTML = '<span class="character-name">' + x.name + '</span> (<span class="character-alias">' + x.identifier + '</span>) <span class="combat-level">Lv.' + x.combatLevel + '</span>';
+        if(x.identifier != null)
+        {
+          characterSelectButton.innerHTML = '<span class="character-name">' + x.name + '</span> (<span class="character-alias">' + x.identifier + '</span>) <span class="combat-level">Lv.' + x.combatLevel + '</span>';
+        } else {
+          characterSelectButton.innerHTML = '<span class="character-name">' + x.name + '</span> <span class="combat-level">Lv.' + x.combatLevel + '</span>';
+        }
         characterSelectButton.addEventListener('click', elm => {
           writeDebugText(x.name + ' ' + x.identifier, true);
           ravenfall.joinSessionAsync(x);
