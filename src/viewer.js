@@ -1,11 +1,24 @@
 var krakenUsersApi = 'https://api.twitch.tv/kraken/users/';
-var ravenfallApiUrl = 'https://localhost:5001/api/';
-// var ravenfallApiUrl = 'https://www.ravenfall.stream/api/';
+// var ravenfallApiUrl = 'https://localhost:5001/api/';
+var ravenfallApiUrl = 'https://www.ravenfall.stream/api/';
 var authApi = ravenfallApiUrl + 'auth';
 var twitchApi = ravenfallApiUrl + 'twitch';
 var extensionApi = twitchApi + '/extension';
 var playersApi = ravenfallApiUrl + 'players';
 var gamestatePollTimer = undefined;
+
+// SET __NO_DEVELOPER_RIG__ = true; if NOT using the developer rig
+var __NO_DEVELOPER_RIG__ = true;
+
+var __streamer_twitch_username = 'abbycottontail';
+var __streamer_twitch_id = '39575045';
+var __your_twitch_username = 'abbycottontail';
+var __your_twitch_id = '39575045';
+
+// var __streamer_twitch_username = 'zerratar';
+// var __streamer_twitch_id = '72424639';
+// var __your_twitch_username = 'zerratar';
+// var __your_twitch_id = '72424639';
 
 var states = {
   NONE: 'NONE',
@@ -276,13 +289,19 @@ twitch.onContext(function (context) {
   twitch.rig.log(context);
 });
 
-twitch.onAuthorized(function (auth) {
-  onStateUpdated(states.TWITCH_AUTH_OK);
+if (__NO_DEVELOPER_RIG__) {
+	  onStateUpdated(states.TWITCH_AUTH_OK);
+	  ravenfall.setAuthInfo(__streamer_twitch_id, __your_twitch_id, null);
+	  ravenfall.getStreamerSessionAsync().then(() => onStreamerInfoUpdated());	
+}
+else {
+	twitch.onAuthorized(function (auth) {
+	  onStateUpdated(states.TWITCH_AUTH_OK);
 
-  ravenfall.setAuthInfo(auth.channelId, auth.userId, auth.token);
-  ravenfall.getStreamerSessionAsync().then(() => onStreamerInfoUpdated());
-});
-
+	  ravenfall.setAuthInfo(auth.channelId, auth.userId, auth.token);
+	  ravenfall.getStreamerSessionAsync().then(() => onStreamerInfoUpdated());
+	});
+}
 const pollGameState = () => {
   if (gamestatePollTimer && typeof gamestatePollTimer != undefined) {
     clearTimeout(gamestatePollTimer);
