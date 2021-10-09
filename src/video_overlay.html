@@ -1,34 +1,446 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Viewer Page</title>
     <style>
-        .twitch-user-id {
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .hidden::-webkit-scrollbar {
+            width: 0;
+            display: none;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #030a3ce6;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #6d05bde6;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7d0cd3e6;
+        }
+
+        .extension {
+            text-shadow: 1px 1px 2px rgb(0 0 0 / 25%);
+            width: 300px;
+            height: 80%;
+            max-width: 100%;
+            margin: 0;
+            margin-left: 40px;
+            margin-top: 40px;
             color: white;
-            width: 500px;
+            background: rgba(0, 3, 25, 0.65);
+            background: linear-gradient(180deg, rgb(0 64 130 / 10%) 0%, rgb(94 46 0 / 25%) 100%);
+
             overflow-wrap: break-word;
             white-space: pre-wrap;
+            transform: perspective(400px) rotateY(5deg);
+            box-shadow:
+                rgba(22, 31, 39, 0.42) 0px 60px 123px -25px,
+                rgba(19, 26, 32, 0.08) 0px 35px 75px -35px;
+            display: flex;
+            flex-flow: column;
+
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
         }
+
+        .extension.dark-theme {
+            color: white;
+            background: rgba(0, 3, 25, 0.65);
+            background: linear-gradient(180deg, rgb(0 24 49 / 90%) 0%, rgb(24 12 0/ 90%) 100%);
+        }
+
+        .extension img {
+            padding: 0;
+            height: 100%;
+            margin: 0;
+            line-height: 55px;
+            margin-left: 55px;
+            margin-top: 20px;
+
+            -webkit-filter: drop-shadow(3px 4px 25px rgba(0, 0, 0, 0.25));
+            filter: url(#drop-shadow);
+            -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=3, OffY=4, Color='#444')";
+            filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=3, OffY=4, Color='#444')";
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        div#app {
+            display: flex;
+            flex-flow: column;
+            height: 100%;
+        }
+
+        .top-bar {
+            height: 80px;
+            box-sizing: border-box;
+            display: flex;
+            flex-flow: row;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .btn {
+            position: relative;
+            text-align: center;
+            border: 1px solid white;
+            cursor: pointer;
+            border-radius: 8px;
+            user-select: none;
+        }
+
+        .btn:hover {
+            top: -1px;
+            right: -1px;
+            border-width: 2px;
+        }
+
+        .btn.btn-character-select {
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        .btn.btn-character-select:hover {
+            top: -1px;
+            right: 0;
+            margin-bottom: -2px;
+        }
+
+        .btn-close-panel {
+            width: 42px;
+            height: 100%;
+            line-height: 9px;
+            border: 0;
+            border-radius: 0;
+        }
+
+        .views {
+            box-sizing: border-box;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-flow: column;
+            padding: 25px;
+
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view h2 {
+            margin: 0;
+            padding: 0;
+            font-size: 14pt;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .view.active {
+            display: flex;
+            flex-flow: column;
+        }
+
+        .extension-toggle {
+            position: absolute;
+            /* border: 2px solid #e4e4e4; */
+            cursor: pointer;
+            border-radius: 34px;
+            width: 49px;
+            height: 49px;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+        }
+
+        .extension-toggle h1 {
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            font-size: 14pt;
+        }
+
+        .extension-toggle img {
+            padding: 0;
+            margin: 0;
+            top: -1px;
+            left: -1px;
+            height: 42px;
+            position: relative;
+        }
+
+        .extension-toggle:hover {
+            /* border: 2px solid #555555; */
+            /* background-color: rgba(22, 0, 39, 0.9); */
+        }
+
+
+        .hidden {
+            display: none;
+        }
+
+        .character-list {
+            display: flex;
+            flex-flow: column;
+            margin-top: 25px;
+        }
+
+        .btn.btn-toggle-dark-mode {
+            position: absolute;
+            border-radius: 0;
+            text-align: left;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            width: 12px;
+            height: 22px;
+            top: initial;
+            right: initial;
+            bottom: 5px;
+            left: 7px;
+
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .btn.btn-toggle-dark-mode:hover {
+            top: initial;
+            right: initial;
+            bottom: 5px;
+            left: 7px;
+
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        img.no-connection {
+            margin-left: 40px;
+            width: 170px;
+            margin-top: 50px;
+        }
+
+        .extension.dark-theme img.no-connection {
+            filter: invert(100%);
+            -webkit-filter: invert(100%);
+        }
+
+        .view[data-name='BAD_SERVER_CONNECTION'] h2 {
+            margin-top: 10px;
+        }
+
+
+        /*
+            Character Skills
+        */
+        .character-stat {
+            display: flex;
+            flex-flow: column;
+            width: 90px;
+            margin-bottom: 5px;
+            border: 1px solid #ffffff08;
+            background-color: transparent;
+            padding: 5px 15px 5px 15px;
+            border-radius: 20px;
+            margin-right: 10px;
+            user-select: none;
+            cursor: default;
+            box-shadow: 0 3px 3px #0016311a;
+        }
+        
+        .character-stat.can-train {
+            background-color: #ffffff08;
+            box-shadow: 0 3px 3px #00163126;
+        }
+        .character-stat.can-train:hover {
+            background-color: #ffffff2e;
+            box-shadow: 0 3px 3px #001631c4;
+            cursor: pointer;
+        }
+
+        .character-stats {
+            display: flex;
+            flex-flow: column;
+            flex-wrap: wrap;
+            height: 290px;
+        }
+
+        .stats-identifier {
+            display: flex;
+            flex-flow: row;
+            padding-right: 6px;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+        }
+        .character-stat .stats-level {
+            flex-grow: 1;
+            text-align: right;
+            font-size: 9pt;
+        }
+
+        .character-stat .stats-name {
+            text-transform: capitalize;
+            font-size: 8pt;
+            font-weight: 300;
+        }
+
+        .stats-progress {
+            position: relative;
+            display: flex;
+            height: 3px;
+        }
+
+        .stats-progress-background {
+            position: relative;
+            background-color: #00000085;
+            width: 100%;
+        }
+
+        .stats-progress-value {
+            position: absolute;
+            background-color: white;
+            width: 95%;
+            height: 100%;
+        }
+
     </style>
 </head>
+
 <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-    <div id="app" class="full-height"></div>
-    <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>    
+    <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
     <script src="jquery-3.3.1.min.js"></script>
-    <script src="viewer.js" type="text/javascript"></script>
-    <h2>Hello, World!</h2>
-    <p>Would you care to cycle a color?</p>
-    <div>
-        <input type="button" id="cycle" disabled="disabled" value="Yes, I would" />
-    </div>
-    <div style="float: left; position: relative; left: 50%">
-        <div id="color" style="border-radius: 50px; transition: background-color 0.5s ease; margin-top: 30px; width: 100px; height: 100px; background-color: #6441A4; float: left; position: relative; left: -50%">
+
+
+    <div id="app" class="full-height">
+
+        <div class="extension-toggle" id="extension-toggle">
+            <img src="imgs/ravenfall_logo_tiny.png" />
+        </div>
+
+        <div class="extension hidden">
+            <div class="extension-bg"></div>
+            <div class="top-bar">
+                <div class="btn btn-toggle-dark-mode">
+                    &blk34;
+                </div>
+                <img class="header" src="imgs/ravenfall_logo2.png"></img>
+                <div class="btn btn-close-panel">
+                    &times;
+                </div>
+            </div>
+
+            <div class="views">
+
+                <div class="view active" data-name="NONE">
+                    <h1>NONE</h1>
+                </div>
+
+                <div class="view active" data-name="BAD_SERVER_CONNECTION">
+                    <img src="imgs/sad-raven.png" class="no-connection" />
+                    <h2>Unable to connect to the game server.</h2>
+
+                </div>
+
+                <div class="view" data-name="AUTHENTICATING">
+                    <h2>Checking your ravenfall account...</h2>
+                </div>
+
+                <div class="view" data-name="TWITCH_AUTH_OK">
+                    <h2>Twitch Auth OK</h2>
+                </div>
+
+                <div class="view" data-name="WAIT_FOR_GAME">
+                    <h2>Please wait, we don't know if the game is running yet.</h2>
+                </div>
+
+                <div class="view active" data-name="GAME_NOT_RUNNING">
+                    <h2>The streamer is not playing Ravenfall</h2>
+                </div>
+
+                <div class="view" data-name="ANONYMOUS_USER">
+                    <h2>Give this extension permissions to continue.</h2>
+                </div>
+
+                <div class="view" data-name="NO_USER_ACCOUNT">
+                    <h2>You don't have any characters. Wanna play?</h2>
+                </div>
+
+                <div class="view" data-name="ALL_AUTH_OK">
+                    <h2>Thumbsup</h2>
+                </div>
+
+                <div class="view" data-name="LOADING_CHARACTERS">
+                    <h2>Loading your characters</h2>
+                </div>
+
+                <div class="view" data-name="CHARACTERS_LOADED">
+                    <h2>Select character you want to play with</h2>
+                    <div class="character-list">
+
+                    </div>
+                </div>
+
+                <div class="view" data-name="JOINING_GAME">
+                    <h2>Joining game...</h2>
+                </div>
+
+                <div class="view" data-name="GAME_JOINED">
+
+                    <div class="character-stats">
+
+                        <div class="character-stat btn-{SkillName} {trainable}" title="Click to train {SkillName}">
+                            <div class="stats-identifier">
+                                <div class="stats-name">{SkillName}</div>
+                                <div class="stats-level">{SkillLevel}</div>
+                            </div>
+                            <div class="stats-progress">
+                                <div class="stats-progress-background"></div>
+                                <div class="stats-progress-value" data-exp="{SkillExperience}"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="btn btn-leave-game">Leave</div>
+                </div>
+
+                <div class="debug-info">
+                </div>
+
+                <div class="footer"></div>
+            </div>
         </div>
     </div>
-    <div class="twitch-user-id">
 
-    </div>
-    <div id="list">
-    </div>
+    <svg height="0" xmlns="http://www.w3.org/2000/svg">
+        <filter id="drop-shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+            <feOffset dx="3" dy="4" result="offsetblur" />
+            <feFlood flood-color="rgba(0,0,0,0.25)" />
+            <feComposite in2="offsetblur" operator="in" />
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </svg>
+
+    <script src="viewer.js" type="text/javascript"></script>
 </body>
+
 </html>
