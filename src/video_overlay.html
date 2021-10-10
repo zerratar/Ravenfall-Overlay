@@ -97,16 +97,14 @@
         .btn {
             position: relative;
             text-align: center;
-            border: 1px solid white;
+            outline: 1px solid white;
             cursor: pointer;
             border-radius: 8px;
             user-select: none;
         }
 
         .btn:hover {
-            top: -1px;
-            right: -1px;
-            border-width: 2px;
+            outline-width: 2px;
         }
 
         .btn.btn-character-select {
@@ -115,9 +113,7 @@
         }
 
         .btn.btn-character-select:hover {
-            top: -1px;
             right: 0;
-            margin-bottom: -2px;
         }
 
         .btn-close-panel {
@@ -125,6 +121,7 @@
             height: 100%;
             line-height: 9px;
             border: 0;
+            outline: none;
             border-radius: 0;
         }
 
@@ -209,6 +206,7 @@
             padding: 0;
             margin: 0;
             border: 0;
+            outline:none;
             width: 12px;
             height: 22px;
             top: initial;
@@ -346,29 +344,20 @@
 
             <div class="views">
 
-                <div class="view active" data-name="NONE">
+                <div class="view" data-name="NONE">
                     <h1>NONE</h1>
                 </div>
 
-                <div class="view active" data-name="BAD_SERVER_CONNECTION">
+                <div class="view" data-name="BAD_SERVER_CONNECTION">
                     <img src="imgs/sad-raven.png" class="no-connection" />
                     <h2>Unable to connect to the game server.</h2>
-
                 </div>
 
                 <div class="view" data-name="AUTHENTICATING">
                     <h2>Checking your ravenfall account...</h2>
                 </div>
 
-                <div class="view" data-name="TWITCH_AUTH_OK">
-                    <h2>Twitch Auth OK</h2>
-                </div>
-
-                <div class="view" data-name="WAIT_FOR_GAME">
-                    <h2>Please wait, we don't know if the game is running yet.</h2>
-                </div>
-
-                <div class="view active" data-name="GAME_NOT_RUNNING">
+                <div class="view" data-name="GAME_NOT_RUNNING">
                     <h2>The streamer is not playing Ravenfall</h2>
                 </div>
 
@@ -384,11 +373,7 @@
                     <h2>Thumbsup</h2>
                 </div>
 
-                <div class="view" data-name="LOADING_CHARACTERS">
-                    <h2>Loading your characters</h2>
-                </div>
-
-                <div class="view" data-name="CHARACTERS_LOADED">
+                <div class="view" data-name="CHARACTER_SELECTION">
                     <h2>Select character you want to play with</h2>
                     <div class="character-list">
 
@@ -399,7 +384,7 @@
                     <h2>Joining game...</h2>
                 </div>
 
-                <div class="view" data-name="GAME_JOINED">
+                <div class="view" data-name="PLAYING">
 
                     <div class="character-stats">
 

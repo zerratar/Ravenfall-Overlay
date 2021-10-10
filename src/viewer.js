@@ -1,6 +1,8 @@
 import TwitchService from "./modules/twitch-service.js";
 import Requests from "./modules/requests.js";
 import { RavenfallService, ViewStates } from "./modules/ravenfall-service.js";
+import { UserState, PlayerState, StreamerState, AppState } from "./modules/states.js";
+
 
 var gamestatePollTimer = undefined;
 
@@ -47,8 +49,10 @@ const toggleDarkTheme = () => {
 toggleDarkTheme();
 toggleDarkTheme();
 
-const twitch = window.Twitch.ext;
-window.console.log = twitch.rig.log;
+if (__NO_DEVELOPER_RIG__ == false) {
+  const twitch = window.Twitch.ext;
+  window.console.log = twitch.rig.log;
+}
 
 var currentState = ViewStates.NONE;
 
@@ -56,51 +60,19 @@ var currentState = ViewStates.NONE;
 
 const req = new Requests();
 const twitchService = new TwitchService(req);
-const ravenfall = new RavenfallService(req, s => onStateUpdated(s), c => onCharacterSkillsUpdated(c));
+const ravenfall = new RavenfallService(req, s => onStateUpdated(s), c => onCharacterChanged(c));
 
 const writeDebugText = (text, clear) => {
   const before = clear === true ? '' : $('.debug-info').html();
   $('.debug-info').html(before + ' ' + text);
 };
 
-const scheduleStreamerSessionInfo = function () {
-  const timeout = (!!ravenfall.streamerInfo || ravenfall.requests.serverError == true) ? 5000 : 1500;
-  setTimeout(() => ravenfall.getStreamerSessionAsync().then(() => onStreamerInfoUpdated()), timeout);
-}
-
-const onStreamerInfoUpdated = () => {
-
-  if (ravenfall.streamerInfo == null && ravenfall.requests.serverError == true) {
-    onStateUpdated(ViewStates.BAD_SERVER_CONNECTION);
-    scheduleStreamerSessionInfo();
-    return;
-  }
-
-  // const streamerInfo = JSON.stringify(ravenfall.streamerInfo);
-  // writeDebugText(streamerInfo);
-  // $('.debug-info').html(streamerInfo);
-  if (!ravenfall.isRavenfallAvailable) {
-    onStateUpdated(ViewStates.GAME_NOT_RUNNING);
-    scheduleStreamerSessionInfo();
-  }
-
-  if (ravenfall.isRavenfallAvailable &&
-    ravenfall.isAuthenticated &&
-    ((ravenfall.activeCharacter == null &&
-        (ravenfall.characters == null || ravenfall.characters.length == 0)) ||
-      currentState == ViewStates.BAD_SERVER_CONNECTION)) {
-    onStateUpdated(ViewStates.ALL_AUTH_OK);
-  } else if (!ravenfall.isAuthenticated) {
-    ravenfall.authenticateAsync().then(() => onRavenfallAuth());
-  }
-};
-
-const onRavenfallAuth = () => {
+const onRavenfallAuth = async () => {
   if (ravenfall.sessionInfo == null) {
     // failed to authenticate    
     // user probably does not exist.
     // so we will try and get the twitch user info
-    twitch.rig.log('Failed to authenticate with ravenfall. Most likely has no user.');
+    console.log('Failed to authenticate with ravenfall. Most likely has no user.');
     if (!ravenfall.twitchUserId.toLowerCase().startsWith('u')) {
       onStateUpdated(ViewStates.ANONYMOUS_USER);
     } else {
@@ -110,12 +82,12 @@ const onRavenfallAuth = () => {
   }
 
   const sessionInfo = JSON.stringify(ravenfall.sessionInfo);
-  twitch.rig.log('Authenticated with ravennest: ' + sessionInfo);
+  console.log('Authenticated with ravennest: ' + sessionInfo);
 
   // writeDebugText(sessionInfo);
 
   if (ravenfall.isRavenfallAvailable) {
-    onStateUpdated(ViewStates.ALL_AUTH_OK);
+    UserState.ravenfall.characters = await ravenfall.getCharactersAsync();
   }
 };
 
@@ -135,40 +107,43 @@ const createNewUserAccount = () => {
   });
 };
 
-twitch.onContext(function (context) {
-  twitch.rig.log(context);
-});
 
 if (__NO_DEVELOPER_RIG__ === true) {
-	  onStateUpdated(ViewStates.TWITCH_AUTH_OK);
 	  ravenfall.setAuthInfo(__streamer_twitch_id, __your_twitch_id, null);
-	  ravenfall.getStreamerSessionAsync().then(() => onStreamerInfoUpdated());	
 }
 else {
-	twitch.onAuthorized(function (auth) {
-	  onStateUpdated(ViewStates.TWITCH_AUTH_OK);
+  twitch.onContext(function (context) {
+    twitch.rig.log(context);
+  });
 
+	twitch.onAuthorized(function (auth) {
 	  ravenfall.setAuthInfo(auth.channelId, auth.userId, auth.token);
-	  ravenfall.getStreamerSessionAsync().then(() => onStreamerInfoUpdated());
 	});
 }
-const pollGameState = () => {
+
+const pollGameState = async () => {
   if (gamestatePollTimer && typeof gamestatePollTimer != undefined) {
     clearTimeout(gamestatePollTimer);
     gamestatePollTimer = undefined;
   }
 
-  scheduleStreamerSessionInfo();
-  gamestatePollTimer = setTimeout(() => pollGameState(), 5000);
-};
+  const timeout = (!!ravenfall.streamerInfo || ravenfall.requests.serverError == true) ? 5000 : 1500;
+  const streamerInfo = await ravenfall.getStreamerSessionAsync();
 
-function onTaskUpdated() {
-  if (ravenfall.activeCharacter == null || typeof ravenfall.activeCharacter == undefined) {
-    return;
+  if (streamerInfo == null && ravenfall.requests.serverError == true) {
+    onStateUpdated(ViewStates.BAD_SERVER_CONNECTION);
   }
 
-  console.log('New Task: ' + ravenfall.activeCharacter.state.task + ', ' + ravenfall.activecharacter.state.taskArgument);
-}
+  if (!ravenfall.isRavenfallAvailable) {
+    onStateUpdated(ViewStates.GAME_NOT_RUNNING);
+  }
+
+  if (ravenfall.isRavenfallAvailable && !ravenfall.isAuthenticated) {
+    ravenfall.authenticateAsync().then(() => onRavenfallAuth());
+  }
+  
+  gamestatePollTimer = setTimeout(() => pollGameState(), timeout);
+};
 
 function getTaskBySkill(skill) {
   if (isCombatSkill(skill)) {
@@ -191,10 +166,13 @@ function isCombatSkill(skill) {
     skill == 'healing';
 }
 
-function onCharacterSkillsUpdated(character) {
+function onCharacterChanged(character) {  
   if (character == null || typeof character == undefined) {
+    onStateUpdated(ViewStates.CHARACTER_SELECTION);
     return;
   }
+
+  PlayerState.character = character;
 
   characterStats.innerHTML = '';
   const props = Object.keys(character.skills);
@@ -206,7 +184,7 @@ function onCharacterSkillsUpdated(character) {
       const skillButton = document.createElement("div");
       characterStats.appendChild(skillButton);
 
-      const trainable = skill != 'slayer' && skill != 'sailing' ? 'can-train' : '';
+      const trainable = skill != 'health' && skill != 'slayer' && skill != 'sailing' ? 'can-train' : '';
 
       skillButton.outerHTML = characterStatsTemplate
         .replace('{trainable}', trainable)
@@ -225,6 +203,8 @@ function onCharacterSkillsUpdated(character) {
       }
     }
   }
+
+  onStateUpdated(ViewStates.PLAYING);
 }
 
 function onStateUpdated(newState) {
@@ -246,7 +226,7 @@ function onStateUpdated(newState) {
       characterList.innerHTML = '';
       break;
 
-    case ViewStates.CHARACTERS_LOADED:
+    case ViewStates.CHARACTER_SELECTION:
       characterList.innerHTML = '';
       ravenfall.characters.forEach(x => {
         const characterSelectButton = document.createElement('div');
@@ -260,25 +240,12 @@ function onStateUpdated(newState) {
         });
         characterList.appendChild(characterSelectButton);
       });
-
-      pollGameState();
       break;
     case ViewStates.GAME_JOIN_FAILED:
       writeDebugText('Joined failed. ' + ravenfall.joinError, true);
       break;
-    case ViewStates.ALL_AUTH_OK:
-      ravenfall.getCharactersAsync();
-      // everything is OK!
-      // this is when the actual extension should be completely initialized.
-      break;
-    case ViewStates.TWITCH_AUTH_OK:
-      // after recieving an OK from twitch.
-      break;
     case ViewStates.AUTHENTICATING:
       // when authenticating with ravenfall website
-      break;
-    case ViewStates.WAIT_FOR_GAME:
-
       break;
     case ViewStates.GAME_NOT_RUNNING:
       // streamer does not have an active game session
@@ -289,7 +256,7 @@ function onStateUpdated(newState) {
     case ViewStates.NO_USER_ACCOUNT:
       // User has no account. Ask them if they want to create one
       break;
-    case ViewStates.GAME_JOINED:
+    case ViewStates.PLAYING:
       // we are in game with a character.
 
       break;
@@ -389,3 +356,5 @@ function dragElement(elmnt) {
     document.onmousemove = null;
   }
 }
+
+pollGameState();
