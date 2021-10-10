@@ -2,15 +2,19 @@ export default class Requests {
     constructor() {
       this.sessionId = '';
       this.serverError = false;
+      this.headers = {};
+    }
+
+    setSessionId(sessionId) {
+        this.sessionId = sessionId;
+        this.headers = {'__ravenSession':sessionId};
     }
   
     async getAsync(uri) {
       try {
         const data = await fetch(uri, {
           method: 'GET',
-          headers: new Headers({
-            '__ravenSession': this.sessionId
-          })
+          headers: new Headers(this.headers)
         });
         const json = data.json();
         this.serverError = false;

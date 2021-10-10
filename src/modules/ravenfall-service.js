@@ -1,3 +1,5 @@
+import Requests from "./requests.js";
+
 // var ravenfallApiUrl = 'https://localhost:5001/api/';
 var ravenfallApiUrl = 'https://www.ravenfall.stream/api/';
 var authApi = ravenfallApiUrl + 'auth';
@@ -21,8 +23,8 @@ export var ViewStates = {
 };
 
 export class RavenfallService {
-  constructor(req, onStateChanged, onCharacterChanged) {
-    this.requests = req;
+  constructor(onStateChanged, onCharacterChanged) {
+    this.requests = new Requests();
     this.onCharacterChanged = onCharacterChanged;
     this.onStateChanged = onStateChanged;
     this.isAuthenticated = false;
@@ -55,7 +57,7 @@ export class RavenfallService {
       let inThisSession = [...playSessions.filter(x => x.sessionTwitchUserId == this.broadcasterId)];
       if (inThisSession.length > 0) {
         const character = this.characters.find(x => x.id == inThisSession[0].characterId);
-        if (character != null && typeof character != undefined) {
+        if (character != null && typeof character != 'undefined') {
           this.activeCharacter = character;
           this.onCharacterChanged(character);
           return true;
@@ -71,9 +73,9 @@ export class RavenfallService {
     }
 
     this.sessionInfo = await this.requests.getAsync(extensionApi + '/' + this.broadcasterId + '/' + this.twitchUserId);
-    this.isAuthenticated = !!this.sessionInfo;
+    this.isAuthenticated = !!this.sessionInfo && this.sessionInfo.authenticated == true;
     if (this.isAuthenticated) {
-      this.requests.sessionId = this.sessionInfo.sessionId;
+      this.requests.setSessionId(this.sessionInfo.sessionId);
       this.trySetActiveCharacter();      
     }
   }
@@ -85,6 +87,11 @@ export class RavenfallService {
 
   async createUserAsync(userName, displayName) {
     this.sessionInfo = await this.requests.getAsync(extensionApi + '/new/' + this.broadcasterId + '/' + this.twitchUserId + '/' + userName + '/' + encodeURIComponent(displayName));
+    this.isAuthenticated = !!this.sessionInfo && this.sessionInfo.authenticated == true;
+    if (this.isAuthenticated) {
+      this.requests.setSessionId(this.sessionInfo.sessionId);
+      this.trySetActiveCharacter();      
+    }
     return this.sessionInfo;
   }
 
@@ -104,7 +111,7 @@ export class RavenfallService {
   }
 
   async setTaskAsync(task, taskArgument) {
-    if (this.activeCharacter == null || typeof this.activeCharacter == undefined) {
+    if (this.activeCharacter == null || typeof this.activeCharacter == 'undefined') {
       return;
     }
 
@@ -129,8 +136,15 @@ export class RavenfallService {
   async joinSessionAsync(character) {
     this.onStateChanged(ViewStates.JOINING_GAME);
     this.joinError = '';
-    const characterJoinResult = await this.requests.getAsync(extensionApi + '/join/' + this.broadcasterId + '/' + character.id);
-    if (characterJoinResult.success) {
+
+    let characterJoinResult = null;
+    if (character == null || typeof character == 'undefined') {
+      characterJoinResult = await this.requests.getAsync(extensionApi + '/create-join/' + this.broadcasterId);
+    } else {
+      characterJoinResult = await this.requests.getAsync(extensionApi + '/join/' + this.broadcasterId + '/' + character.id);
+    }
+    
+    if (characterJoinResult && characterJoinResult.success) {
       this.activeCharacter = characterJoinResult.player;
       this.onCharacterChanged(this.activeCharacter);
       return this.activeCharacter;

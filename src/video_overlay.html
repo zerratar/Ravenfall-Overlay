@@ -112,6 +112,11 @@
             margin-top: 5px;
         }
 
+        .btn.btn-create-account{
+            padding: 5px;
+            margin-top: 25px;
+        }
+
         .btn.btn-character-select:hover {
             right: 0;
         }
@@ -363,11 +368,12 @@
                 </div>
 
                 <div class="view" data-name="ANONYMOUS_USER">
-                    <h2>Give this extension permissions to continue.</h2>
+                    <h2>This extension requires your permissions to identify who you are. If no, it is impossible for Ravenfall to know which characters are yours.</h2>
                 </div>
 
                 <div class="view" data-name="NO_USER_ACCOUNT">
-                    <h2>You don't have any characters. Wanna play?</h2>
+                    <h2>You don't seem to have any characters.<br/>First time playing?</h2>                    
+                    <a class="btn btn-create-account">Click here or type !join in chat</a>
                 </div>
 
                 <div class="view" data-name="ALL_AUTH_OK">

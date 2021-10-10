@@ -1,7 +1,15 @@
 import TwitchService from "./modules/twitch-service.js";
 import Requests from "./modules/requests.js";
-import { RavenfallService, ViewStates } from "./modules/ravenfall-service.js";
-import { UserState, PlayerState, StreamerState, AppState } from "./modules/states.js";
+import {
+  RavenfallService,
+  ViewStates
+} from "./modules/ravenfall-service.js";
+import {
+  UserState,
+  PlayerState,
+  StreamerState,
+  AppState
+} from "./modules/states.js";
 
 
 var gamestatePollTimer = undefined;
@@ -31,6 +39,8 @@ const characterStats = document.querySelector('.character-stats');
 const characterStatsTemplate = document.querySelector('.character-stat').outerHTML;
 characterStats.innerHTML = '';
 
+const createAccountBtn = document.querySelector('.btn-create-account');
+
 
 const characterList = document.querySelector('.character-list');
 
@@ -58,9 +68,8 @@ var currentState = ViewStates.NONE;
 
 // onCharacterSkillsUpdated()
 
-const req = new Requests();
-const twitchService = new TwitchService(req);
-const ravenfall = new RavenfallService(req, s => onStateUpdated(s), c => onCharacterChanged(c));
+const twitchService = new TwitchService();
+const ravenfall = new RavenfallService(s => onStateUpdated(s), c => onCharacterChanged(c));
 
 const writeDebugText = (text, clear) => {
   const before = clear === true ? '' : $('.debug-info').html();
@@ -68,7 +77,7 @@ const writeDebugText = (text, clear) => {
 };
 
 const onRavenfallAuth = async () => {
-  if (ravenfall.sessionInfo == null) {
+  if (!ravenfall.isAuthenticated) {
     // failed to authenticate    
     // user probably does not exist.
     // so we will try and get the twitch user info
@@ -100,8 +109,10 @@ const createNewUserAccount = () => {
     return;
   }
 
-  twitchService.getTwitchUser(ravenfall.twitchUserId).then(user => {
-    if (user && typeof user.name != undefined) {
+  const id = ravenfall.twitchUserId.substring(1);
+  // id='72424639';
+  twitchService.getTwitchUser(id).then(user => {
+    if (user && typeof user.name != 'undefined') {
       ravenfall.createUserAsync(user.name, user.display_name).then(() => onRavenfallAuth());
     }
   });
@@ -109,20 +120,19 @@ const createNewUserAccount = () => {
 
 
 if (__NO_DEVELOPER_RIG__ === true) {
-	  ravenfall.setAuthInfo(__streamer_twitch_id, __your_twitch_id, null);
-}
-else {
+  ravenfall.setAuthInfo(__streamer_twitch_id, __your_twitch_id, null);
+} else {
   twitch.onContext(function (context) {
     twitch.rig.log(context);
   });
 
-	twitch.onAuthorized(function (auth) {
-	  ravenfall.setAuthInfo(auth.channelId, auth.userId, auth.token);
-	});
+  twitch.onAuthorized(function (auth) {
+    ravenfall.setAuthInfo(auth.channelId, auth.userId, auth.token);
+  });
 }
 
 const pollGameState = async () => {
-  if (gamestatePollTimer && typeof gamestatePollTimer != undefined) {
+  if (gamestatePollTimer && typeof gamestatePollTimer != 'undefined') {
     clearTimeout(gamestatePollTimer);
     gamestatePollTimer = undefined;
   }
@@ -141,7 +151,7 @@ const pollGameState = async () => {
   if (ravenfall.isRavenfallAvailable && !ravenfall.isAuthenticated) {
     ravenfall.authenticateAsync().then(() => onRavenfallAuth());
   }
-  
+
   gamestatePollTimer = setTimeout(() => pollGameState(), timeout);
 };
 
@@ -166,8 +176,8 @@ function isCombatSkill(skill) {
     skill == 'healing';
 }
 
-function onCharacterChanged(character) {  
-  if (character == null || typeof character == undefined) {
+function onCharacterChanged(character) {
+  if (character == null || typeof character == 'undefined') {
     onStateUpdated(ViewStates.CHARACTER_SELECTION);
     return;
   }
@@ -207,6 +217,24 @@ function onCharacterChanged(character) {
   onStateUpdated(ViewStates.PLAYING);
 }
 
+function addCharacterSelectButton(character) {
+  const characterSelectButton = document.createElement('div');
+  characterSelectButton.classList.add('btn');
+  characterSelectButton.classList.add('btn-character-select');
+  characterSelectButton.character = character;
+  if (character != null && typeof character != 'undefined'){
+    const identifierString = character.identifier != null ? ('(<span class="character-alias">' + character.identifier + '</span>) ') : '';
+    characterSelectButton.innerHTML = '<span class="character-name">' + character.name + '</span> ' + identifierString + '<span class="combat-level">Lv.' + character.combatLevel + '</span>';
+  } else {
+    characterSelectButton.innerHTML = 'Create new character';
+  }
+  characterSelectButton.addEventListener('click', elm => {
+    ravenfall.joinSessionAsync(character);
+  });
+  characterList.appendChild(characterSelectButton);
+}
+
+
 function onStateUpdated(newState) {
   currentState = newState;
 
@@ -229,22 +257,11 @@ function onStateUpdated(newState) {
     case ViewStates.CHARACTER_SELECTION:
       characterList.innerHTML = '';
       ravenfall.characters.forEach(x => {
-        const characterSelectButton = document.createElement('div');
-        characterSelectButton.classList.add('btn');
-        characterSelectButton.classList.add('btn-character-select');
-        characterSelectButton.character = x;
-        if(x.identifier != null)
-        {
-          characterSelectButton.innerHTML = '<span class="character-name">' + x.name + '</span> (<span class="character-alias">' + x.identifier + '</span>) <span class="combat-level">Lv.' + x.combatLevel + '</span>';
-        } else {
-          characterSelectButton.innerHTML = '<span class="character-name">' + x.name + '</span> <span class="combat-level">Lv.' + x.combatLevel + '</span>';
-        }
-        characterSelectButton.addEventListener('click', elm => {
-          writeDebugText(x.name + ' ' + x.identifier, true);
-          ravenfall.joinSessionAsync(x);
-        });
-        characterList.appendChild(characterSelectButton);
+        addCharacterSelectButton(x);
       });
+      if (3-ravenfall.characters.length > 0) {
+        addCharacterSelectButton(null);
+      }
       break;
     case ViewStates.GAME_JOIN_FAILED:
       writeDebugText('Joined failed. ' + ravenfall.joinError, true);
@@ -260,6 +277,7 @@ function onStateUpdated(newState) {
       break;
     case ViewStates.NO_USER_ACCOUNT:
       // User has no account. Ask them if they want to create one
+      // createNewUserAccount
       break;
     case ViewStates.PLAYING:
       // we are in game with a character.
@@ -361,5 +379,9 @@ function dragElement(elmnt) {
     document.onmousemove = null;
   }
 }
+
+createAccountBtn.addEventListener('click', () => {
+  createNewUserAccount();
+});
 
 pollGameState();
