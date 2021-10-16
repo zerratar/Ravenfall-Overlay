@@ -1,31 +1,19 @@
-export var UserState = {
+var Ravenfall = {
     twitch: {
         id: null,
         username: null,
         displayName: null
     },
-    ravenfall: {
-        id: null,
-        characters: null,
-    }
-};
-
-export var PlayerState = {
+    id: null,
+    characterId: null,
     character: null,
-    is: {
-        playing: false,
-        training: false,
-    },
-    in: {
-        onsen: false,
-        dungeon: false,
-        arena: false,
-        raid: false,
-        duel: false
-    }
+    characters: null,
+    token: null,
+    isAuthenticated: false,
+    updated: null
 };
 
-export var StreamerState = {
+var Streamer = {
     twitch: {
         id: null,
         username: null,
@@ -33,12 +21,13 @@ export var StreamerState = {
     },
     ravenfall: {
         id: null,
+        clientVersion: null,
         session: {
             id: null,
             playerCount: 0,
-            running: false
+            isActive: false,
+            startedDateTime: null,
         }
-    }
+    },
+    updated: null,
 };
-
-export var AppState = {};

@@ -17,7 +17,7 @@ export default class TwitchService {
     }
     
     user = await this.requests.getAsync(krakenUsersApi + '/' + userId);
-    
+
     return (this.users[userId] = user);
   }
 }

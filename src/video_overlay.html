@@ -291,6 +291,15 @@
             align-items: center;
             align-content: center;
         }
+        .character-stat{
+            cursor:pointer;
+        }
+        .character-stat.active,
+        .character-stat.active:hover,
+        .character-stat.active:active{
+            background-color: rgb(0, 81, 255);
+        }
+
         .character-stat .stats-level {
             flex-grow: 1;
             text-align: right;
@@ -318,7 +327,7 @@
         .stats-progress-value {
             position: absolute;
             background-color: white;
-            width: 95%;
+            /* width: 95%; */
             height: 100%;
         }
 
@@ -359,10 +368,6 @@
                     <h2>Unable to connect to the game server.</h2>
                 </div>
 
-                <div class="view" data-name="AUTHENTICATING">
-                    <h2>Checking your ravenfall account...</h2>
-                </div>
-
                 <div class="view" data-name="GAME_NOT_RUNNING">
                     <h2>The streamer is not playing Ravenfall</h2>
                 </div>
@@ -395,7 +400,7 @@
 
                     <div class="character-stats">
 
-                        <div class="character-stat btn-{SkillName} {trainable}" title="Click to train {SkillName}">
+                        <div class="character-stat btn-{SkillName} {trainable}" title="">
                             <div class="stats-identifier">
                                 <div class="stats-name">{SkillName}</div>
                                 <div class="stats-level">{SkillLevel}</div>
@@ -431,7 +436,7 @@
             </feMerge>
         </filter>
     </svg>
-
+    <script src="modules/states.js"></script>
     <script src="viewer.js" type="module"></script>
 </body>
 
