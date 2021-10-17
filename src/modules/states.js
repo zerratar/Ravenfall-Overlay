@@ -1,3 +1,6 @@
+var maximum_allowed_characters = 3; // change this if we want to introduce a 4th or 5th character
+// changing maximum: see PlayerManager.cs:27, RavenNest.BusinessLogic Kappa
+
 // var ravenfallApiUrl = 'https://localhost:5001/api/';
 var ravenfallApiUrl = 'https://www.ravenfall.stream/api/';
 

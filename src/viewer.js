@@ -19,6 +19,7 @@ const createAccountBtn = document.querySelector('.btn-create-account');
 const characterList = document.querySelector('.character-list');
 const leaveGameBtn = document.querySelector('.btn-leave-game');
 
+const twitch = window.Twitch.ext;
 const storage = window.localStorage;
 const toggleDarkTheme = () => {
   if (extension.classList.contains('dark-theme')) {
@@ -49,7 +50,6 @@ if (loadedTheme != null) {
 
 // update __NO_DEVELOPER_RIG__ from modules/states.js
 if (__NO_DEVELOPER_RIG__ === false) {
-  const twitch = window.Twitch.ext;
   window.console.log = twitch.rig.log;
 }
 
@@ -57,17 +57,13 @@ if (__NO_DEVELOPER_RIG__ === false) {
 // server goes down or user leaves the game, etc.
 // however, we will need a sub state to keep track
 // on things like what tab the player is on; 
-// training, crafting, market, overview, inventory, etc
+// training, crafting, market, overview, inventory, etc.
+// this will allow for a much smoother recovery if page is reloaded or what not.
 
 var currentState = ViewStates.NONE;
 
 const twitchService = new TwitchService();
 const ravenfallService = new RavenfallService(x => onCharacterUpdated(x));
-
-function writeDebugText(text, clear) {
-  const before = clear === true ? '' : $('.debug-info').html();
-  $('.debug-info').html(before + ' ' + text);
-};
 
 async function requestCharacterUpdateAsync() {
   if (!Ravenfall.isAuthenticated || Ravenfall.character == null) {
@@ -123,20 +119,6 @@ async function createNewUserAccount() {
     await loadCharactersAsync();
   }
 };
-
-// update __NO_DEVELOPER_RIG__ from modules/states.js
-if (__NO_DEVELOPER_RIG__ === true) {
-  // note(zerratar): auth token must be set in production
-  ravenfallService.setAuthInfo(__streamer_twitch_id, __your_twitch_id, null);
-} else {
-  twitch.onContext(function (context) {
-    twitch.rig.log(context);
-  });
-
-  twitch.onAuthorized(function (auth) {
-    ravenfallService.setAuthInfo(auth.channelId, auth.userId, auth.token);
-  });
-}
 
 function clearGameStatePollTimeout() {
   if (gamestatePollTimer && typeof gamestatePollTimer != 'undefined') {
@@ -380,11 +362,15 @@ function onStateUpdated(newState) {
       if (Ravenfall.characters == null) {
         characterList.innerHTML = 'Loading...';
       } else {
-        characterList.innerHTML = '';
+        characterList.innerHTML = '';        
         Ravenfall.characters.forEach(x => {
           addCharacterSelectButton(x);
         });
-        if (3 - Ravenfall.characters.length > 0) {
+        // when added as "null", we will just add
+        // a button that says "create character".
+        // If we have 1 or more character slots remaining
+        // we can create a new character.
+        if (maximum_allowed_characters - Ravenfall.characters.length > 0) {
           addCharacterSelectButton(null);
         }
       }
@@ -417,6 +403,22 @@ function onStateUpdated(newState) {
 /* 
   All events 
 */
+
+if (typeof twitch != 'undefined') {
+  twitch.onContext(function (context) {
+    twitch.rig.log(context);
+  });
+
+  twitch.onAuthorized(function (auth) {
+    ravenfallService.setAuthInfo(auth.channelId, auth.userId, auth.token);
+  });
+}
+
+// update __NO_DEVELOPER_RIG__ from modules/states.js
+if (__NO_DEVELOPER_RIG__ === true) {
+  // note(zerratar): auth token must be set in production
+  ravenfallService.setAuthInfo(__streamer_twitch_id, __your_twitch_id, null);
+}
 
 extensionDarkMode.addEventListener('click', () => {
   toggleDarkTheme();
