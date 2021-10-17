@@ -1,7 +1,5 @@
 import Requests from "./requests.js";
 
-// var ravenfallApiUrl = 'https://localhost:5001/api/';
-var ravenfallApiUrl = 'https://www.ravenfall.stream/api/';
 var authApi = ravenfallApiUrl + 'auth';
 var twitchApi = ravenfallApiUrl + 'twitch';
 var extensionApi = twitchApi + '/extension';

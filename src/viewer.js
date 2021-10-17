@@ -3,19 +3,6 @@ import RavenfallService from "./modules/ravenfall-service.js";
 
 var gamestatePollTimer = undefined;
 
-// SET __NO_DEVELOPER_RIG__ = true; if NOT using the developer rig
-var __NO_DEVELOPER_RIG__ = true;
-
-var __streamer_twitch_username = 'abbycottontail';
-var __streamer_twitch_id = '39575045';
-var __your_twitch_username = 'abbycottontail';
-var __your_twitch_id = '39575045';
-
-// var __streamer_twitch_username = 'zerratar';
-// var __streamer_twitch_id = '72424639';
-// var __your_twitch_username = 'zerratar';
-// var __your_twitch_id = '72424639';
-
 let activeTaskBtn = null;
 const extension = document.querySelector('.extension');
 const extensionDarkMode = document.querySelector('.btn-toggle-dark-mode');
@@ -60,6 +47,7 @@ if (loadedTheme != null) {
   toggleDarkTheme();
 }
 
+// update __NO_DEVELOPER_RIG__ from modules/states.js
 if (__NO_DEVELOPER_RIG__ === false) {
   const twitch = window.Twitch.ext;
   window.console.log = twitch.rig.log;
@@ -136,7 +124,7 @@ async function createNewUserAccount() {
   }
 };
 
-
+// update __NO_DEVELOPER_RIG__ from modules/states.js
 if (__NO_DEVELOPER_RIG__ === true) {
   // note(zerratar): auth token must be set in production
   ravenfallService.setAuthInfo(__streamer_twitch_id, __your_twitch_id, null);

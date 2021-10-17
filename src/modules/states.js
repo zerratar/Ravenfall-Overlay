@@ -1,3 +1,19 @@
+// var ravenfallApiUrl = 'https://localhost:5001/api/';
+var ravenfallApiUrl = 'https://www.ravenfall.stream/api/';
+
+// SET __NO_DEVELOPER_RIG__ = true; if NOT using the twitch developer rig
+var __NO_DEVELOPER_RIG__ = true;
+
+var __streamer_twitch_username = 'abbycottontail';
+var __streamer_twitch_id = '39575045';
+var __your_twitch_username = 'abbycottontail';
+var __your_twitch_id = '39575045';
+
+// var __streamer_twitch_username = 'zerratar';
+// var __streamer_twitch_id = '72424639';
+// var __your_twitch_username = 'zerratar';
+// var __your_twitch_id = '72424639';
+
 var Ravenfall = {
     twitch: {
         id: null,
@@ -40,11 +56,10 @@ var ViewStates = {
     NO_USER_ACCOUNT: 'NO_USER_ACCOUNT',
     ALL_AUTH_OK: 'ALL_AUTH_OK',
     CHARACTER_SELECTION: 'CHARACTER_SELECTION',
-  
+
     JOINING_GAME: 'JOINING_GAME',
     PLAYING: 'PLAYING',
     GAME_JOIN_FAILED: 'GAME_JOIN_FAILED',
-  
+
     BAD_SERVER_CONNECTION: 'BAD_SERVER_CONNECTION'
-  };
-  
+};
