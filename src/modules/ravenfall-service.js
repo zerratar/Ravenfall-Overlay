@@ -7,27 +7,10 @@ var twitchApi = ravenfallApiUrl + 'twitch';
 var extensionApi = twitchApi + '/extension';
 var playersApi = ravenfallApiUrl + 'players';
 
-export var ViewStates = {
-  NONE: 'NONE',
-  GAME_NOT_RUNNING: 'GAME_NOT_RUNNING',
-  ANONYMOUS_USER: 'ANONYMOUS_USER',
-  NO_USER_ACCOUNT: 'NO_USER_ACCOUNT',
-  ALL_AUTH_OK: 'ALL_AUTH_OK',
-  CHARACTER_SELECTION: 'CHARACTER_SELECTION',
-
-  JOINING_GAME: 'JOINING_GAME',
-  PLAYING: 'PLAYING',
-  GAME_JOIN_FAILED: 'GAME_JOIN_FAILED',
-
-  BAD_SERVER_CONNECTION: 'BAD_SERVER_CONNECTION'
-};
-
-export class RavenfallService {
-  constructor(onStateChanged, onCharacterChanged) {
+export default class RavenfallService {
+  constructor(onCharacterChanged) {
     this.requests = new Requests();
     this.onCharacterChanged = onCharacterChanged;
-    this.onStateChanged = onStateChanged;
-
     this.sessionInfo = undefined;
     this.joinError = ''
   }
@@ -47,6 +30,7 @@ export class RavenfallService {
     Ravenfall.token = token;
     Streamer.updated = new Date();
     Ravenfall.updated = new Date();
+    this.requests.setToken(token);
   }
 
   setCharacter(character) {
@@ -86,6 +70,9 @@ export class RavenfallService {
     return null;
   }
 
+  // note(zerratar): this function updates the Ravenfall.character value
+  // and therefor the onCharacterUpdate / onCharacterChanged / setCharacter must always
+  // be called after a call to this one.
   getActiveCharacter() {
     const characters = Ravenfall.characters;
     const characterId = Ravenfall.characterId;
@@ -104,14 +91,14 @@ export class RavenfallService {
   }
 
   async updateActiveCharacterAsync() {
-    try {
+    try {      
       let activeCharacter = this.getActiveCharacter();
       if (activeCharacter == null) {
+        this.setCharacter(null);
         return false;
       }
 
       // replace the existing character data with the one we get from the server
-
       activeCharacter = await this.requests.getAsync(extensionApi + '/player/' + Streamer.twitch.id);
       if (activeCharacter == null) {
         // if it isnt an error, then server is still up
@@ -236,16 +223,13 @@ export class RavenfallService {
   }
 
   async joinSessionAsync(character) {
-    this.onStateChanged(ViewStates.JOINING_GAME);
     this.joinError = '';
-
     let characterJoinResult = null;
     if (character == null || typeof character == 'undefined') {
       characterJoinResult = await this.requests.getAsync(extensionApi + '/create-join/' + Streamer.twitch.id);
     } else {
       characterJoinResult = await this.requests.getAsync(extensionApi + '/join/' + Streamer.twitch.id + '/' + character.id);
     }
-
     return characterJoinResult;
 
   }
