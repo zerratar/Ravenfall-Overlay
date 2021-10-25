@@ -1,4 +1,5 @@
 import Requests from "./requests.js";
+import WebSocketClient from "./websocket-client.js";
 
 var authApi = ravenfallApiUrl + 'auth';
 var twitchApi = ravenfallApiUrl + 'twitch';
@@ -8,9 +9,15 @@ var playersApi = ravenfallApiUrl + 'players';
 export default class RavenfallService {
   constructor(onCharacterChanged) {
     this.requests = new Requests();
+    this.websocket = new WebSocketClient(ravenfallWebsocketApiUrl);
     this.onCharacterChanged = onCharacterChanged;
     this.sessionInfo = undefined;
-    this.joinError = ''
+    this.joinError = '';
+
+    // this.websocket.subscribe('CharacterSkillUpdate', (data) => ...);
+    // when ready: this.websocket.connectAsync();
+    // the websocket connection will try to reconnect whenever disconnected.
+    // this may need to be changed later
   }
 
   get isRavenfallAvailable() {
@@ -20,7 +27,7 @@ export default class RavenfallService {
     }
 
     return !!Streamer.ravenfall && Streamer.ravenfall.session.isActive;
-  }
+  }  
 
   setAuthInfo(broadcasterId, twitchUserId, token) {
     Streamer.twitch.id = broadcasterId;
