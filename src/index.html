@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Viewer Page</title>
+    <link rel="stylesheet" href="video_overlay.css">
+</head>
+
+<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+    <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+    <script src="jquery-3.3.1.min.js"></script>
+
+
+    <div id="app" class="full-height">
+
+        <div class="extension-toggle" id="extension-toggle">
+            <img src="imgs/ravenfall_logo_tiny.png" />
+        </div>
+
+        <div class="extension hidden">
+            <div class="extension-bg"></div>
+            <div class="top-bar">
+                <div class="btn btn-toggle-dark-mode">
+                    &blk34;
+                </div>
+                <img class="header" src="imgs/ravenfall_logo2.png"></img>
+                <div class="btn btn-close-panel">
+                    &times;
+                </div>
+            </div>
+
+            <div class="views">
+
+                <div class="view" data-name="loading">
+                    <h2>Loading...</h2>
+                    <p style="text-align: center;">Our ravens are checking if Ravenfall is ready to be played.</p>
+                </div>
+
+                <div class="view" data-name="error">
+                    <div class="view sub-view" data-name="bad-server-connection">
+                        <img src="imgs/sad-raven.png" class="no-connection" />
+                        <h2>Unable to connect to the game server.</h2>
+                        <p style="text-align: center;">We are retrying every couple of seconds. The server should be
+                            back online soon!</p>
+                    </div>
+
+                    <div class="view sub-view" data-name="game-not-running">
+                        <h2>The streamer is not playing Ravenfall</h2>
+                    </div>
+
+                    <div class="view sub-view" data-name="anonymous-user">
+                        <h2>This extension requires your permissions to identify who you are. If no, it is impossible
+                            for
+                            Ravenfall to know which characters are yours.</h2>
+                    </div>
+                </div>
+
+                <div class="view" data-name="default">
+
+                    <div class="view sub-view" data-name="create-account">
+                        <h2>You don't seem to have any characters.<br />First time playing?</h2>
+                        <a class="btn btn-create-account">Click here or type !join in chat</a>
+                    </div>
+
+                    <div class="view sub-view" data-name="character-selection">
+                        <h2>Select character you want to play with</h2>
+                        <div class="character-list">
+                        </div>
+                    </div>
+                    
+                    <div class="view sub-view" data-name="character-overview">                        
+                        <h2 class="view-header">Overview</h2>
+                    </div>
+
+                    <div class="view sub-view" data-name="inventory">
+                        <h2 class="view-header">Inventory</h2>
+                    </div>
+
+                    <div class="view sub-view" data-name="training">
+                        <h2 class="view-header">Training</h2>
+                        <div class="character-stats">
+                            <div class="character-stat btn-{SkillName} {trainable}" title="">
+                                <div class="stats-identifier">
+                                    <div class="stats-name">{SkillName}</div>
+                                    <div class="stats-level">{SkillLevel}</div>
+                                </div>
+                                <div class="stats-progress">
+                                    <div class="stats-progress-background"></div>
+                                    <div class="stats-progress-value" data-exp="{SkillExperience}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="view sub-view" data-name="marketplace">
+                        <h2 class="view-header">Marketplace</h2>
+                    </div>
+                    <div class="view sub-view" data-name="crafting">
+                        <h2 class="view-header">Crafting</h2>
+                    </div>
+                    <div class="view sub-view" data-name="clan">
+                        <h2 class="view-header">Clan</h2>
+                    </div>
+
+                    <div class="view-tabs">
+                        <div class="btn btn-view-tab" data-navigation='character-overview'>Overview</div>
+                        <div class="btn btn-view-tab" data-navigation='training'>Training</div>
+                        <div class="btn btn-view-tab" data-navigation='inventory'>Inventory</div>
+                        <div class="btn btn-leave-game">leave</div>
+                    </div>
+                </div>
+
+                <div class="debug-info">
+                </div>
+
+                <div class="footer"></div>
+            </div>
+        </div>
+    </div>
+
+    <svg height="0" xmlns="http://www.w3.org/2000/svg">
+        <filter id="drop-shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+            <feOffset dx="3" dy="4" result="offsetblur" />
+            <feFlood flood-color="rgba(0,0,0,0.25)" />
+            <feComposite in2="offsetblur" operator="in" />
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </svg>
+    <script src="modules/states.js"></script>
+    <script src="modules/interactions.js"></script>
+    <script src="extension.js" type="module"></script>
+</body>
+
+</html>

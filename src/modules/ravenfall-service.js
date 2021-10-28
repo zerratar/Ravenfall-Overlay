@@ -8,16 +8,96 @@ var playersApi = ravenfallApiUrl + 'players';
 
 export default class RavenfallService {
   constructor(onCharacterChanged) {
+    Ravenfall.service = this;
+
     this.requests = new Requests();
     this.websocket = new WebSocketClient(ravenfallWebsocketApiUrl);
+
     this.onCharacterChanged = onCharacterChanged;
     this.sessionInfo = undefined;
     this.joinError = '';
 
-    // this.websocket.subscribe('CharacterSkillUpdate', (data) => ...);
-    // when ready: this.websocket.connectAsync();
-    // the websocket connection will try to reconnect whenever disconnected.
-    // this may need to be changed later
+
+    this.websocket.subscribe('StreamerInfo', data => this.onStreamerInfoUpdated(data));
+    this.websocket.subscribe('PlayerRestedUpdate', data => this.onRestedUpdated(data));
+    this.websocket.subscribe('CharacterExpUpdate', data => this.onExpUpdated(data));
+    this.websocket.subscribe('PlayerRemove', data => this.onCharacterLeft(data));
+    this.websocket.subscribe('PlayerAdd', data => this.onCharacterJoined(data));
+    // when ready: this.websocket.connectAsync(); but can only 
+    // be used after both setBroadcasterId and setSessionId has been called
+  }
+  onConnectionClosed(connectionClosedAction) {
+    this.websocket.subscribe('close', data => connectionClosedAction(data));
+  }
+
+  onCharacterJoined(data) {
+    Ravenfall.characterId = data.characterId;
+    if (Ravenfall.isCharactersLoaded()) {
+      console.log('We have joined the game!');
+      this.onCharacterChanged(Ravenfall.characters.find(x => x.id == data.characterId));      
+    } else {
+      console.warn('We have joined the game, but no characters have been loaded yet!!');
+    }    
+  }
+
+  onCharacterLeft(data) {
+    if (data.characterId === Ravenfall.characterId) {
+      this.onCharacterChanged(null);
+      console.log('We have left the game!');
+    } else {
+      console.warn('We have received a player remove but not for our player? :o');
+    }
+  }
+  onStreamerInfoUpdated(data) {
+    /*
+      the data looks like this:
+        'streamerUserId': number,
+        'streamerUserName: 'string|null',
+        'streamerSessionId': 'string|null',
+        'isRavenfallRunning': 'boolean',
+        'playerCount': number
+        'started': 'string|date|null',
+        'clientVersion': 'string|null',
+        'joinedCharacterId': 'guid|string|null'
+    */
+    // this.setStreamerSession(data);
+    //this.websocket.close();
+    console.log("Streamer Session Info updated via ws: " + data);
+  }
+
+  onExpUpdated(data) {
+    /*
+     the data looks like this:
+     { 
+       'characterId': 'guid', 
+       'skillIndex': 'which skill by index', 
+       'level': 'new skill level',
+       'experience': 'new skill experience'
+     }
+   */
+    // console.log(data);
+    console.log('Exp for active character updated.');
+  }
+
+  onRestedUpdated(data) {
+    /*
+      the data looks like this:
+      { 
+        'characterId': 'guid', 
+        'expBoost': 'either 0 or 2', 
+        'statsBoost': 'unused', 
+        'restedPercent': '0..1', 
+        'restedTime': 'seconds' 
+      }
+
+      and can be used by:
+
+      if (data.restedTime > 0) {
+        display('You still have ' + data.restedTime + ' seconds of being rested.');
+      }
+    */
+    // console.log(data);
+    console.log('Rested for active character updated.');
   }
 
   get isRavenfallAvailable() {
@@ -27,15 +107,16 @@ export default class RavenfallService {
     }
 
     return !!Streamer.ravenfall && Streamer.ravenfall.session.isActive;
-  }  
+  }
 
   setAuthInfo(broadcasterId, twitchUserId, token) {
     Streamer.twitch.id = broadcasterId;
-    Ravenfall.twitch.id = twitchUserId;
+    Twitch.id = twitchUserId;
     Ravenfall.token = token;
     Streamer.updated = new Date();
     Ravenfall.updated = new Date();
     this.requests.setToken(token);
+    this.websocket.setBroadcasterId(broadcasterId);
   }
 
   setCharacter(character) {
@@ -96,7 +177,7 @@ export default class RavenfallService {
   }
 
   async updateActiveCharacterAsync() {
-    try {      
+    try {
       let activeCharacter = this.getActiveCharacter();
       if (activeCharacter == null) {
         this.setCharacter(null);
@@ -131,7 +212,7 @@ export default class RavenfallService {
           Ravenfall.characters[currentCharacterIndex] = activeCharacter;
         }
       }
-      
+
       this.setCharacter(activeCharacter);
       return true;
     } catch (err) {
@@ -143,16 +224,28 @@ export default class RavenfallService {
   async authenticateAsync() {
 
     if (Ravenfall.isAuthenticated === true) {
-      return;
+      return true;
     }
 
-    this.sessionInfo = await this.requests.getAsync(extensionApi + '/' + Streamer.twitch.id + '/' + Ravenfall.twitch.id);
+    this.sessionInfo = await this.requests.getAsync(extensionApi + '/' + Streamer.twitch.id + '/' + Twitch.id);
     Ravenfall.isAuthenticated = !!this.sessionInfo && this.sessionInfo.authenticated == true;
     Ravenfall.updated = new Date();
 
     if (Ravenfall.isAuthenticated) {
       this.requests.setSessionId(this.sessionInfo.sessionId);
-      this.onCharacterChanged(this.getActiveCharacter());
+      this.websocket.setSessionId(this.sessionInfo.sessionId);
+      this.updateActiveCharacter();
+      return Ravenfall.isAuthenticated === true;
+    }
+
+    return Ravenfall.isAuthenticated === true&&this.requests.serverError == false;
+  }
+
+  updateActiveCharacter() {
+    const lastActiveCharacter = Ravenfall.character;
+    const activeCharacter = this.getActiveCharacter();
+    if (lastActiveCharacter != activeCharacter && lastActiveCharacter == null) {
+      this.onCharacterChanged(activeCharacter);
     }
   }
 
@@ -162,6 +255,10 @@ export default class RavenfallService {
       return null;
     }
 
+    return this.setStreamerSession(streamerInfo);
+  }
+
+  setStreamerSession(streamerInfo) {
     Ravenfall.characterId = streamerInfo.joinedCharacterId;
     Streamer.twitch.id = streamerInfo.streamerUserId;
     Streamer.twitch.username = streamerInfo.streamerUserName;
@@ -173,18 +270,22 @@ export default class RavenfallService {
     Streamer.ravenfall.session.isActive = streamerInfo.isRavenfallRunning;
     Streamer.updated = new Date();
 
-    this.onCharacterChanged(this.getActiveCharacter());
+    if (this.websocket.connected && !streamerInfo.isRavenfallRunning) {
+      this.websocket.close(true);
+    }
+
+    this.updateActiveCharacter();
 
     return Streamer;
   }
 
   async createUserAsync(userName, displayName) {
-    this.sessionInfo = await this.requests.getAsync(extensionApi + '/new/' + Streamer.twitch.id + '/' + Ravenfall.twitch.id + '/' + userName + '/' + encodeURIComponent(displayName));
+    this.sessionInfo = await this.requests.getAsync(extensionApi + '/new/' + Streamer.twitch.id + '/' + Twitch.id + '/' + userName + '/' + encodeURIComponent(displayName));
     Ravenfall.isAuthenticated = !!this.sessionInfo && this.sessionInfo.authenticated == true;
     if (Ravenfall.isAuthenticated) {
       this.requests.setSessionId(this.sessionInfo.sessionId);
-      // this.trySetActiveCharacter();
-      this.onCharacterChanged(this.getActiveCharacter());
+      // this.trySetActiveCharacter();      
+      this.updateActiveCharacter();
     }
     return this.sessionInfo;
   }
@@ -193,13 +294,13 @@ export default class RavenfallService {
     console.log("getCharactersAsync");
     if (!forceReload && (Ravenfall.characters != null && Ravenfall.length > 0)) {
       // this.trySetActiveCharacter();
-      this.onCharacterChanged(this.getActiveCharacter());
+      this.updateActiveCharacter();
       return Ravenfall.characters;
     }
 
     Ravenfall.characters = await this.requests.getAsync(playersApi + '/all');
     // this.trySetActiveCharacter();
-    this.onCharacterChanged(this.getActiveCharacter());
+    this.updateActiveCharacter();
     return Ravenfall.characters;
   }
 
@@ -235,6 +336,11 @@ export default class RavenfallService {
     } else {
       characterJoinResult = await this.requests.getAsync(extensionApi + '/join/' + Streamer.twitch.id + '/' + character.id);
     }
+
+    if (characterJoinResult && characterJoinResult.success) {
+      this.setCharacter(characterJoinResult.player);
+    }
+
     return characterJoinResult;
 
   }

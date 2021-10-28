@@ -36,7 +36,7 @@
     background: linear-gradient(180deg, rgb(0 64 130 / 10%) 0%, rgb(94 46 0 / 25%) 100%);
 
     overflow-wrap: break-word;
-    white-space: pre-wrap;
+    /* white-space: pre-wrap; */
     transform: perspective(400px) rotateY(5deg);
     box-shadow:
         rgba(22, 31, 39, 0.42) 0px 60px 123px -25px,
@@ -115,10 +115,19 @@ div#app {
     right: 0;
 }
 
-.btn-close-panel {
+/* .btn-close-panel {
     width: 42px;
     height: 100%;
     line-height: 9px;
+    border: 0;
+    outline: none;
+    border-radius: 0;
+} */
+
+.btn-close-panel {
+    width: 42px;
+    height: 100%;
+    line-height: 40px;
     border: 0;
     outline: none;
     border-radius: 0;
@@ -323,4 +332,40 @@ img.no-connection {
     background-color: white;
     /* width: 95%; */
     height: 100%;
+}
+
+
+.view-tabs {
+    display: flex;
+    flex-flow: row;    
+    gap: .33em;
+    margin-top: 10px;
+}
+
+.view-tabs .btn {
+    font-size: 7pt;
+    flex-grow: 1;    
+    padding: 5px 10px;    
+    outline-color: rgba(255,255,255,0.25);
+}
+
+.view-tabs .btn.active {
+    box-shadow: 0 3px 3px #00163126;
+    background-color:rgb(0, 81, 255);
+    color: white;
+    border: 0;
+    outline: 0;
+}
+
+.sub-view {
+    min-height: 330px;
+}
+
+.view h2.view-header {
+    margin-top: 0px;
+    margin-bottom: 15px;
+}
+
+.hidden {
+    display:none;
 }

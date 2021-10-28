@@ -31,6 +31,44 @@
 
             <div class="views">
 
+                <!-- <div class="view" data-name="loading">
+                    <h2>Loading...</h2>
+                    <p style="text-align: center;">Our ravens are checking if Ravenfall is ready to be played.</p>
+                </div>
+
+                <div class="view" data-name="error">
+                    <div class="view sub-view" data-name="bad-server-connection">
+                        <img src="imgs/sad-raven.png" class="no-connection" />
+                        <h2>Unable to connect to the game server.</h2>
+                        <p style="text-align: center;">We are retrying every couple of seconds. The server should be back online soon!</p>
+                    </div>
+
+                    <div class="view sub-view" data-name="game-not-running">
+                        <h2>The streamer is not playing Ravenfall</h2>
+                    </div>
+
+                    <div class="view sub-view" data-name="anonymous-user">
+                        <h2>This extension requires your permissions to identify who you are. If no, it is impossible for
+                            Ravenfall to know which characters are yours.</h2>
+                    </div>
+                </div>
+
+                <div class="view" data-name="default">
+                    
+                    <div class="view sub-view" data-name="create-account">
+                        <h2>You don't seem to have any characters.<br />First time playing?</h2>
+                        <a class="btn btn-create-account">Click here or type !join in chat</a>
+                    </div>    
+
+                    <div class="view sub-view" data-name="character-selection"></div>
+                    <div class="view sub-view" data-name="character-overview"></div>
+                    <div class="view sub-view" data-name="inventory"></div>
+                    <div class="view sub-view" data-name="training"></div>
+                    <div class="view sub-view" data-name="marketplace"></div>
+                    <div class="view sub-view" data-name="crafting"></div>
+                    <div class="view sub-view" data-name="clan"></div>
+                </div> -->
+
                 <div class="view active" data-name="NONE">
                     <h2>Loading...</h2>
                     <p style="text-align: center;">Our ravens are checking if Ravenfall is ready to be played.</p>
@@ -39,7 +77,8 @@
                 <div class="view" data-name="BAD_SERVER_CONNECTION">
                     <img src="imgs/sad-raven.png" class="no-connection" />
                     <h2>Unable to connect to the game server.</h2>
-                    <p style="text-align: center;">We are retrying every couple of seconds. The server should be back online soon!</p>
+                    <p style="text-align: center;">We are retrying every couple of seconds. The server should be back
+                        online soon!</p>
                 </div>
 
                 <div class="view" data-name="GAME_NOT_RUNNING">
@@ -47,11 +86,14 @@
                 </div>
 
                 <div class="view" data-name="ANONYMOUS_USER">
-                    <h2>This extension requires your permissions to identify who you are. If no, it is impossible for Ravenfall to know which characters are yours.</h2>
+                    <h2>
+                        This extension requires your permissions to identify who you are. If no, it is impossible for
+                        Ravenfall to know which characters are yours.
+                    </h2>
                 </div>
 
                 <div class="view" data-name="NO_USER_ACCOUNT">
-                    <h2>You don't seem to have any characters.<br/>First time playing?</h2>                    
+                    <h2>You don't seem to have any characters.<br />First time playing?</h2>
                     <a class="btn btn-create-account">Click here or type !join in chat</a>
                 </div>
 
@@ -72,7 +114,9 @@
 
                 <div class="view" data-name="GAME_JOIN_FAILED">
                     <h2>Oh no...</h2>
-                    <p style="text-align: center;">There seem to have been an issue when trying to join the game. Please try again later</p>
+                    <p style="text-align: center;">
+                        There seem to have been an issue when trying to join the game. Please try again later
+                    </p>
                 </div>
 
 
@@ -117,8 +161,8 @@
         </filter>
     </svg>
     <script src="modules/states.js"></script>
-    <script src="modules/drag-and-drop.js"></script>
-    <script src="viewer.js" type="module"></script>
+    <script src="modules/interactions.js"></script>
+    <script src="viewer.js" type="module"></script>    
 </body>
 
 </html>
