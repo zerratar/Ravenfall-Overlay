@@ -28,7 +28,7 @@ export default class RavenfallExtension {
             Ravenfall.service.websocket.setSessionId(null);
             Ravenfall.service.requests.setSessionId(null);
             Ravenfall.isAuthenticated = false;
-            this.onBadServerConnection();
+            this.onConnectionError();
             // 1006 = server died
             // 1011 = we fail to recover from server restart, server has no session matching ours.            
         }
@@ -66,9 +66,9 @@ export default class RavenfallExtension {
         this.activeView.onCharacterUpdated(character);
     }
 
-    onBadServerConnection() {
+    onConnectionError() {
         this.pollTimer = Ravenfall.pollInterval * 3;
-        this.views.error.onBadServerConnection();
+        this.views.error.onConnectionError();
         this.setView(this.views.error);
     }
 
@@ -153,13 +153,13 @@ export default class RavenfallExtension {
         }
 
         if (!Ravenfall.isAuthenticated && !await Ravenfall.service.authenticateAsync()) {
-            this.onBadServerConnection();
+            this.onConnectionError();
             return;
         }
 
         const streamerInfo = await Ravenfall.service.getStreamerSessionAsync();
         if (streamerInfo == null && Ravenfall.service.requests.serverError == true) {
-            this.onBadServerConnection();
+            this.onConnectionError();
             return;
         }
 

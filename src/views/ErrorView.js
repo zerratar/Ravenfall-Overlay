@@ -1,6 +1,6 @@
 import { MainView } from "./BaseViews.js";
 import { AnonymousUserView } from "./AnonymousUserView.js";
-import { BadServerConnectionView } from "./BadServerConnectionView.js";
+import { ConnectionErrorView } from "./ConnectionErrorView.js";
 import { GameNotRunningView } from "./GameNotRunningView.js";
 
 
@@ -9,7 +9,7 @@ export class ErrorView extends MainView {
         super('error');
 
         this.anonymousUser = new AnonymousUserView(this);
-        this.badServerConnection = new BadServerConnectionView(this);
+        this.badServerConnection = new ConnectionErrorView(this);
         this.gameNotRunning = new GameNotRunningView(this);
     }
 
@@ -17,7 +17,7 @@ export class ErrorView extends MainView {
         this.setView(this.anonymousUser);
     }
 
-    onBadServerConnection() {
+    onConnectionError() {
         this.setView(this.badServerConnection);
     }
 
