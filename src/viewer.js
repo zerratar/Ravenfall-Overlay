@@ -115,14 +115,14 @@ async function pollGameState() {
       await ravenfallService.authenticateAsync();
 
       if (ravenfallService.requests.serverError == true) {
-        onStateUpdated(ViewStates.BAD_SERVER_CONNECTION);
+        onStateUpdated(ViewStates.CONNECTION_ERROR);
         return;
       }
     }
 
     const streamerInfo = await ravenfallService.getStreamerSessionAsync();
     if (streamerInfo == null && ravenfallService.requests.serverError == true) {
-      onStateUpdated(ViewStates.BAD_SERVER_CONNECTION);
+      onStateUpdated(ViewStates.CONNECTION_ERROR);
       return;
     }
 
@@ -324,7 +324,7 @@ function onStateUpdated(newState) {
 
     // Whenever we do a request to RavenNest and the request gives us an error
     // unrelated to API usage, but things like server unreachable, etc.
-    case ViewStates.BAD_SERVER_CONNECTION:
+    case ViewStates.CONNECTION_ERROR:
       // note(zerratar): changing the RF state should not be
       //                 handeled here. it would be better to
       //                 have this in the RavenfallService

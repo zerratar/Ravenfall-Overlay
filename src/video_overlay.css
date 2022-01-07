@@ -246,7 +246,7 @@ img.no-connection {
     -webkit-filter: invert(100%);
 }
 
-.view[data-name='BAD_SERVER_CONNECTION'] h2 {
+.view[data-name='CONNECTION_ERROR'] h2 {
     margin-top: 10px;
 }
 

@@ -17,6 +17,7 @@ export default class Requests {
   }
 
   async getAsync(uri) {
+    console.debug("URI Sent:" + uri);
     try {
       const data = await fetch(uri, {
         method: 'GET',
@@ -24,8 +25,10 @@ export default class Requests {
       });
       const json = data.json();
       this.serverError = false;
+      console.debug("Data recieved: " + json);
       return json;
     } catch (err) {
+      console.error("Exception:" + err);
       this.serverError = true;
       return null;
     }
