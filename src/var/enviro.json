@@ -1,0 +1,23 @@
+{
+    "name": "testing",
+
+    "ravenfall": 
+    {
+        "apiurl":"https://www.ravenfall.stream/api/",
+        "weburl":"wss://www.ravenfall.stream/api/stream/extension"
+    },
+
+    "twitch": 
+    {
+        "streamer_username":"",
+        "streamer_id":"",
+        "your_username":"",
+        "your_id":""
+    },
+
+    "enviro": 
+    {
+        "developer_rig":true,
+        "logging":["debug", "information", "error", "warning"]
+    }
+}

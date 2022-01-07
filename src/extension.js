@@ -182,3 +182,9 @@ export default class RavenfallExtension {
 }
 
 Ravenfall.extension = new RavenfallExtension();
+
+import * as enviro from './var/envio.json';
+var {name} = enviro;
+console.log(name);
+console.log(enviro);
+
