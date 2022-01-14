@@ -1,9 +1,13 @@
-import RavenfallService from "./modules/ravenfall-service.js";
-import TwitchService from "./modules/twitch-service.js";
-import { LoadingView } from './views/LoadingView.js';
-import { ErrorView } from "./views/ErrorView.js";
-import { DefaultView } from "./views/DefaultView.js";
+import RavenfallService from "./ravenfall-service.js";
+import TwitchService from "./twitch-service.js";
+import { LoadingView } from '../views/LoadingView.js';
+import { ErrorView } from "../views/ErrorView.js";
+import { DefaultView } from "../views/DefaultView.js";
 
+
+/*
+* 
+*/
 export default class RavenfallExtension {
 
     constructor() {
@@ -25,9 +29,9 @@ export default class RavenfallExtension {
 
     onConnectionLost(data) {
         if (data.code == 1006 || data.code == 1011 || data.gameSessionEnded == false) {
-            Ravenfall.service.websocket.setSessionId(null);
-            Ravenfall.service.requests.setSessionId(null);
-            Ravenfall.isAuthenticated = false;
+            window.gRavenfall.service.websocket.setSessionId(null);
+            window.gRavenfall.service.requests.setSessionId(null);
+            window.gRavenfall.isAuthenticated = false;
             this.onConnectionError();
             // 1006 = server died
             // 1011 = we fail to recover from server restart, server has no session matching ours.            
@@ -57,7 +61,7 @@ export default class RavenfallExtension {
         this.setView(this.views.default);
 
         if (character == null || typeof character == 'undefined') {
-            if (Ravenfall.service.isRavenfallAvailable && Ravenfall.isCharactersLoaded()) {
+            if (window.gRavenfall.service.isRavenfallAvailable && Ravenfall.isCharactersLoaded()) {
                 this.activeView.onShowCharacterSelection();
             }
             return;
@@ -67,13 +71,13 @@ export default class RavenfallExtension {
     }
 
     onConnectionError() {
-        this.pollTimer = Ravenfall.pollInterval * 3;
+        this.pollTimer = window.gRavenfall.pollInterval * 3;
         this.views.error.onConnectionError();
         this.setView(this.views.error);
     }
 
     onGameNotRunning() {
-        this.pollTimer = Ravenfall.pollInterval;
+        this.pollTimer = window.gRavenfall.pollInterval;
         this.views.error.onGameNotRunning();
         this.setView(this.views.error);
     }
@@ -86,12 +90,13 @@ export default class RavenfallExtension {
     }
 
     async loadCharactersAsync() {
-        if (!Ravenfall.isAuthenticated) {
+
+        if (!window.gRavenfall.isAuthenticated) {            
             // failed to authenticate    
             // user probably does not exist.
             // so we will try and get the twitch user info
             console.error('Failed to authenticate with ravenfall. Most likely has no user.');
-            if (!Ravenfall.service.twitchUserId.toLowerCase().startsWith('u')) {
+            if (!window.gRavenfall.service.twitchUserId.toLowerCase().startsWith('u')) {
                 this.views.error.onAnonymousUser();
                 this.setView(this.views.error);
 
@@ -104,7 +109,7 @@ export default class RavenfallExtension {
 
 
         { // DEBUG
-            const sessionInfo = JSON.stringify(Ravenfall.service.sessionInfo);
+            const sessionInfo = JSON.stringify(window.gRavenfall.service.sessionInfo);
             console.log('Authenticated with ravennest: ' + sessionInfo);
         } // END DEBUG
 
@@ -117,7 +122,8 @@ export default class RavenfallExtension {
     }
 
     get isReady() {
-        return Ravenfall.service.websocket.connected && Ravenfall.service.isRavenfallAvailable && Ravenfall.isCharactersLoaded();
+        
+        return window.gRavenfall.service.websocket.connected && window.gRavenfall.service.isRavenfallAvailable && window.gRavenfall.isCharactersLoaded();
     }
 
     updateDefaultView() {
@@ -152,27 +158,27 @@ export default class RavenfallExtension {
             return;
         }
 
-        if (!Ravenfall.isAuthenticated && !await Ravenfall.service.authenticateAsync()) {
+        if (!window.gRavenfall.isAuthenticated && !await window.gRavenfall.service.authenticateAsync()) {
             this.onConnectionError();
             return;
         }
 
-        const streamerInfo = await Ravenfall.service.getStreamerSessionAsync();
-        if (streamerInfo == null && Ravenfall.service.requests.serverError == true) {
+        const streamerInfo = await window.gRavenfall.service.getStreamerSessionAsync();
+        if (streamerInfo == null && window.gRavenfall.service.requests.serverError == true) {
             this.onConnectionError();
             return;
         }
 
-        if (!Ravenfall.service.isRavenfallAvailable) {
+        if (!window.gRavenfall.service.isRavenfallAvailable) {
             this.onGameNotRunning();
             return;
         }
 
-        if (!Ravenfall.isCharactersLoaded()) {
+        if (!window.gRavenfall.isCharactersLoaded()) {
             await this.loadCharactersAsync();
         }
 
-        if (Ravenfall.service.websocket.canConnect) {
+        if (window.gRavenfall.service.websocket.canConnect) {
             await Ravenfall.service.websocket.connectAsync();
         }
 
@@ -180,11 +186,4 @@ export default class RavenfallExtension {
         this.pollTimer = Ravenfall.pollInterval;
     }
 }
-
-Ravenfall.extension = new RavenfallExtension();
-
-import * as enviro from './var/envio.json';
-var {name} = enviro;
-console.log(name);
-console.log(enviro);
 

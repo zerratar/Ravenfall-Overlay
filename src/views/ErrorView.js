@@ -9,7 +9,7 @@ export class ErrorView extends MainView {
         super('error');
 
         this.anonymousUser = new AnonymousUserView(this);
-        this.badServerConnection = new ConnectionErrorView(this);
+        this.ConnectionError = new ConnectionErrorView(this);
         this.gameNotRunning = new GameNotRunningView(this);
     }
 
@@ -18,7 +18,7 @@ export class ErrorView extends MainView {
     }
 
     onConnectionError() {
-        this.setView(this.badServerConnection);
+        this.setView(this.ConnectionError);
     }
 
     onGameNotRunning() {

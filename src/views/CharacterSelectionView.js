@@ -1,4 +1,4 @@
-import RavenfallExtension from "../extension.js";
+import RavenfallExtension from "../modules/ravenfall-extension.js";
 import {
     SubView
 } from "./BaseViews.js";

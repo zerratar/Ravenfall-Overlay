@@ -114,7 +114,6 @@ extensionToggleButton.addEventListener('click', () => {
   }
   extension.classList.remove('hidden');
   extensionToggleButton.classList.add('hidden');
-  // pollGameState();
 });
 
 extensionCloseButton.addEventListener('click', () => {
