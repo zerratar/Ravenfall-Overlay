@@ -43,11 +43,11 @@ export class DefaultView extends MainView {
         // this needs to be a bit more fancy later
         // but will just do it super simple for now
 
-        this.views.forEach(x => {
-            const elm = this.element.querySelector(`.btn-view-tab[data-navigation='${x.name}']`);
+        this.views.forEach(view => {
+            const elm = this.element.querySelector(`.btn-view-tab[data-navigation='${view.name}']`);
             if (elm && typeof elm != 'undefined') {
                 elm.addEventListener('click', () => {
-                    this.setViewAndUpdateNavigation(x, elm);
+                    this.setViewAndUpdateNavigation(view, elm);
                 });
             }
         });

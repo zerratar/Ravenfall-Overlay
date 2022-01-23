@@ -7,6 +7,7 @@ const extensionCloseButton = document.querySelector('.btn-close-panel');
 const extensionDarkMode = document.querySelector('.btn-toggle-dark-mode');
 
 const storage = window.localStorage;
+
 const toggleDarkTheme = () => {
   if (extension.classList.contains('dark-theme')) {
     extension.classList.remove('dark-theme');

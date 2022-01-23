@@ -18,19 +18,19 @@ export class CreateAccountView extends SubView {
     }
 
     async createNewUserAccount() {
-        if (Ravenfall.isAuthenticated) {
+        if (window.gLogic.isAuthenticated) {
             return;
         }
 
-        if (!Ravenfall.service.twitchUserId.toLowerCase().startsWith('u')) {
+        if (!window.gViewer.id.toLowerCase().startsWith('u')) {
             return;
         }
 
-        const id = Ravenfall.service.twitchUserId.substring(1);
-        const user = await Twitch.service.getTwitchUser(id);
+        const id = window.gViewer.id.substring(1);
+        const user = await window.gLogic.twitch.getTwitchUser(id);
         if (user && typeof user.name != 'undefined') {
-            await Ravenfall.service.createUserAsync(user.name, user.display_name);
-            await Ravenfall.extension.loadCharactersAsync();
+            await window.gLogic.ravenfall.createUserAsync(user.name, user.display_name);
+            await window.gLogic.extension.loadCharactersAsync();
         }
     };
 }

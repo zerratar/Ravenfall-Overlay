@@ -8,17 +8,19 @@ export class LoadingView extends MainView {
 
     onEnter() {
         // update __NO_DEVELOPER_RIG__ from modules/states.js
-        if (__NO_DEVELOPER_RIG__ === true) {
+        if (window.gExtDevelopment.no_developer_rig === true) {
             // note(zerratar): auth token must be set in production
-            Ravenfall.service.setAuthInfo(__streamer_twitch_id, __your_twitch_id, null);
+            window.gLogic.ravenfall.setAuthInfo(window.gExtDevelopment.twitch_development.your_username, window.gExtDevelopment.twitch_development.your_id, null);
         } else {
-            if (typeof twitch != 'undefined') {
-                twitch.onContext(function (context) {
-                    twitch.rig.log(context);
+            
+            if (typeof window.Twitch.ext != 'undefined') 
+            {
+                window.Twitch.ext.onContext(function (context) {
+                    window.Twitch.ext.rig.log(context);
                 });
 
-                twitch.onAuthorized(function (auth) {
-                    Ravenfall.service.setAuthInfo(auth.channelId, auth.userId, auth.token);
+                window.Twitch.ext.onAuthorized(function (auth) {
+                    window.gLogic.setAuthInfo(auth.channelId, auth.userId, auth.token);
                 });
             }
         }

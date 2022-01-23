@@ -6,8 +6,8 @@ export class CharacterOverviewView extends SubView {
         const leaveGameBtn = document.querySelector('.btn-leave-game');
         
         leaveGameBtn.addEventListener('click', async () => {
-            await Ravenfall.service.leaveSessionAsync();
-            Ravenfall.extension.onCharacterUpdated(null);
+            await window.gServices.ravenfall.leaveSessionAsync();
+            window.gServices.extension.onCharacterUpdated(null);
         });
     }
 

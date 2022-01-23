@@ -1,8 +1,8 @@
 export class View {
     constructor(viewName) {
         this.name = viewName;
-        this.element = document.querySelector(`.view[data-name='${viewName}']`);
-        this.isSubView = this.element.parentElement && this.element.parentElement.classList.contains('view');
+        this.htmlElement = document.querySelector(`.view[data-name='${viewName}']`);
+        this.isSubView = this.htmlElement.parentElement && this.htmlElement.parentElement.classList.contains('view');
         this.isActive = false;
     }
     activate() {
@@ -10,12 +10,12 @@ export class View {
         //     this.element.parentElement.classList.add('active');
         // }
         this.isActive = true;
-        this.element.classList.add('active');
+        this.htmlElement.classList.add('active');
     }
 
     deactivate() {
         this.isActive = false;
-        this.element.classList.remove('active');
+        this.htmlElement.classList.remove('active');
     }
 
     onEnter() {
@@ -42,10 +42,10 @@ export class MainView extends View {
     }
 
     setView(subView) {
-        this.view = subView;
+        this.cView = subView;
     }
 
-    set view(subView) {
+    set cView(subView) {
         const oldSubView = this.activeSubView;
         const enter = oldSubView != subView;
         
@@ -66,7 +66,7 @@ export class MainView extends View {
         }
     }
 
-    get view() {
+    get cView() {
         return this.activeSubView;
     }
 }

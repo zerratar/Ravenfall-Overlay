@@ -71,21 +71,26 @@ export default class RavenfallExtension {
     }
 
     onConnectionError() {
-        this.pollTimer = window.gRavenfall.pollInterval * 3;
+        this.pollTimer = window.gLogic.pollInterval * 3;
         this.views.error.onConnectionError();
         this.setView(this.views.error);
     }
 
     onGameNotRunning() {
-        this.pollTimer = window.gRavenfall.pollInterval;
+        this.pollTimer = window.gLogic.pollInterval;
         this.views.error.onGameNotRunning();
         this.setView(this.views.error);
     }
 
-    async update(time) {
-        const delta = time - this.lastUpdate;
+    
+    /*
+    * update(duration)
+    * Wait until handleGameStatePollAsync has finished
+    */
+    async update(duration) {
+        const delta = duration - this.lastUpdate;
         await this.handleGameStatePollAsync(delta);
-        this.lastUpdate = time;
+        this.lastUpdate = duration;
         window.requestAnimationFrame(async t => await this.update(t));
     }
 
@@ -96,7 +101,7 @@ export default class RavenfallExtension {
             // user probably does not exist.
             // so we will try and get the twitch user info
             console.error('Failed to authenticate with ravenfall. Most likely has no user.');
-            if (!window.gRavenfall.service.twitchUserId.toLowerCase().startsWith('u')) {
+            if (!window.gViewer.id.toLowerCase().startsWith('u')) {
                 this.views.error.onAnonymousUser();
                 this.setView(this.views.error);
 
@@ -158,28 +163,28 @@ export default class RavenfallExtension {
             return;
         }
 
-        if (!window.gRavenfall.isAuthenticated && !await window.gRavenfall.service.authenticateAsync()) {
+        if (!window.gLogic.isAuthenticated && !await window.gLogic.ravenfall.authenticateAsync()) {
             this.onConnectionError();
             return;
         }
 
-        const streamerInfo = await window.gRavenfall.service.getStreamerSessionAsync();
-        if (streamerInfo == null && window.gRavenfall.service.requests.serverError == true) {
+        const streamerInfo = await window.gLogic.ravenfall.getStreamerSessionAsync();
+        if (streamerInfo == null && window.gLogic.ravenfall.requests.serverError == true) {
             this.onConnectionError();
             return;
         }
 
-        if (!window.gRavenfall.service.isRavenfallAvailable) {
+        if (!window.gRavenfall.gLogic.ravenfall.isRavenfallAvailable) {
             this.onGameNotRunning();
             return;
         }
 
-        if (!window.gRavenfall.isCharactersLoaded()) {
+        if (!window.gLogic.ravenfall.isCharactersLoaded()) {
             await this.loadCharactersAsync();
         }
 
-        if (window.gRavenfall.service.websocket.canConnect) {
-            await Ravenfall.service.websocket.connectAsync();
+        if (window.gLogic.ravenfall.websocket.canConnect) {
+            await window.gLogic.ravenfall.websocket.connectAsync();
         }
 
         this.updateDefaultView();

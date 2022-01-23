@@ -4,9 +4,9 @@ import WebSocketClient from "./websocket-client.js";
 export default class RavenfallService 
 {
   constructor(onCharacterChanged) {
-    window.gRavenfall.service = this;
+    window.gLogic.ravenfall = this;
 
-    let ravenfallWebsocketApiUrl = window.rf.getObj("ravenfall").rf_websocket_url;
+    let ravenfallWebsocketApiUrl = window.gRavenfallUrl.rf_websocket_url;
     this.requests = new Requests();
     this.websocket = new WebSocketClient(ravenfallWebsocketApiUrl);
 
@@ -26,19 +26,19 @@ export default class RavenfallService
 
   get isRavenfallAvailable() {
     
-    if (window.gStreamer.ravenfall.session.isActive) {
+    if (window.gStreamer.streamer_ravenfall.session.isActive) {
       return true;
     }
 
-    return !!window.gStreamer.ravenfall && window.gStreamer.ravenfall.session.isActive;
+    return !!window.gStreamer.streamer_ravenfall && window.gStreamer.streamer_ravenfall.session.isActive;
   }
 
   setAuthInfo(broadcasterId, twitchUserId, token) {
     window.gStreamer.twitch.id = broadcasterId;
     window.gViewer.id = twitchUserId;
-    window.gRavenfall.token = token;
+    window.gLogic.token = token;
     window.gStreamer.updated = new Date();
-    window.gRavenfall.updated = new Date();
+    window.gLogic.updated = new Date();
     this.requests.setToken(token);
     this.websocket.setBroadcasterId(broadcasterId);
   }
@@ -46,11 +46,11 @@ export default class RavenfallService
   setCharacter(character) {
 
     if (character != null && typeof character != 'undefined') {
-      window.gRavenfall.character = character;
-      window.gRavenfall.updated = new Date();
+      window.gRavenfallPlayer.character = character;
+      window.gRavenfallPlayer.updated = new Date();
       this.onCharacterChanged(character);
     } else {
-      window.gRavenfall.character = null;
+      window.gRavenfallPlayer.character = null;
       this.onCharacterChanged(null);
     }
   }
@@ -148,21 +148,21 @@ export default class RavenfallService
   }
 
   async authenticateAsync() {
-    let extensionApi = window.rf.getObj("ravenfall").rf_api_twitch_extension;
+    let extensionApi = window.gRavenfallUrl.rf_api_twitch_extension;
 
-    if (window.gRavenfall.isAuthenticated === true) {
+    if (window.gLogic.isAuthenticated === true) {
       return true;
     }
 
     this.sessionInfo = await this.requests.getAsync(extensionApi + '/' + window.gStreamer.twitch.id + '/' + window.gViewer.id);
-    window.gRavenfall.isAuthenticated = !!this.sessionInfo && this.sessionInfo.authenticated == true;
-    window.gRavenfall.updated = new Date();
+    window.gLogic.isAuthenticated = !!this.sessionInfo && this.sessionInfo.authenticated == true;
+    window.gLogic.updated = new Date();
 
-    if (window.gRavenfall.isAuthenticated) {
+    if (window.gLogic.isAuthenticated) {
       this.requests.setSessionId(this.sessionInfo.sessionId);
       this.websocket.setSessionId(this.sessionInfo.sessionId);
       this.updateActiveCharacter();
-      return window.gRavenfall.isAuthenticated === true;
+      return window.gLogic.isAuthenticated === true;
     }
 
     return window.gRavenfall.isAuthenticated === true&&this.requests.serverError == false;
@@ -178,7 +178,7 @@ export default class RavenfallService
   }
 
   async getStreamerSessionAsync() {
-    let extensionApi = window.rf.getObj("ravenfall").rf_api_twitch_extension;
+    let extensionApi = window.gRavenfallUrl.rf_api_twitch_extension;
 
     const streamerInfo = await this.requests.getAsync(extensionApi + '/' + window.gStreamer.twitch.id);
     if (streamerInfo == null || typeof streamerInfo == 'undefined') {

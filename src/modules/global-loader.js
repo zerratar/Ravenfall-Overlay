@@ -13,12 +13,25 @@ export default class ConfigurationLoader {
     
         ravenfall: 
         {
-            rf_url:"https://www.ravenfall.stream/",
-            rf_api: this.rf_url+"api/",
-            rf_api_auth: this.rf_api+"auth",
-            rf_api_player: this.rf_api+"players",
-            rf_api_twitch_extension: this.rf_api+"twitch/extension",
-            rf_websocket_url:"wss://www.ravenfall.stream/api/stream/extension",
+            ravenfall_url:
+            {
+                rf_url:"https://www.ravenfall.stream/",
+                rf_api: this.rf_url+"api/",
+                rf_api_auth: this.rf_api+"auth",
+                rf_api_player: this.rf_api+"players",
+                rf_api_twitch_extension: this.rf_api+"twitch/extension",
+                rf_websocket_url:"wss://www.ravenfall.stream/api/stream/extension",
+            },
+            logic:
+            {
+                twitch:null,
+                ravenfall:null,
+                extension:null,
+                pollInterval: 3000,
+                token: null,
+                isAuthenticated: false,
+                updated: null,
+            },
             rf_obj: {
                 skillNames:[
                     'attack',
@@ -41,23 +54,15 @@ export default class ConfigurationLoader {
                     id:null,
                     username:null,
                     displayName:null,
-                    service: null
                 },
                 rf_player:{
                     id: null,
                     characterId: null,
                     character: null,
                     characters: null,
-                    token: null,
-                    isAuthenticated: false,
-                    updated: null,
-                    service: null,
-                    extension: null,
-                
-                    pollInterval: 3000,
-                
+
                     getTaskBySkill: function(skill) {
-                        if (Ravenfall.isCombatSkill(skill)) {
+                        if (this.isCombatSkill(skill)) {
                             return 'fighting';
                         }
                         return skill;
@@ -71,10 +76,10 @@ export default class ConfigurationLoader {
                     },
                 
                     getCurrentSkill: function () {
-                        if (Ravenfall.character == null || Ravenfall.character.state.task == null) {
+                        if (this.character == null || this.character.state.task == null) {
                             return null;
                         }
-                        const state = Ravenfall.character.state;
+                        const state = this.character.state;
                         if (state.task.toLowerCase() == 'fighting') {
                             return state.taskArgument.toLowerCase();
                         }
@@ -82,7 +87,7 @@ export default class ConfigurationLoader {
                     },
                 
                     isCharactersLoaded: function() {
-                        return Ravenfall.characters != null && Ravenfall.characters.length > 0;
+                        return this.characters != null && this.characters.length > 0;
                     },
                 
                     isCombatSkill: function (skill) {
@@ -98,7 +103,7 @@ export default class ConfigurationLoader {
                         username: null,
                         displayName: null
                     },
-                    ravenfall: {
+                    streamer_ravenfall: {
                         id: null,
                         clientVersion: null,
                         session: {
@@ -113,20 +118,18 @@ export default class ConfigurationLoader {
                 
             } 
         },
-        twitch: 
-        {
-            NO_DEVELOPER_RIG:true,
-            streamer_username:null,
-            streamer_id:null,
-            your_username:null,
-            your_id:null
-    
-        },
-    
+            
         enviro: 
         {
-            developer_rig:false,
-            logging:[]
+            no_developer_rig:false,
+            logging:[],
+            twitch_development: 
+            {
+                streamer_username:null,
+                streamer_id:null,
+                your_username:null,
+                your_id:null
+            }
         },
         extention_viewstates:{
             NONE: 'NONE',
