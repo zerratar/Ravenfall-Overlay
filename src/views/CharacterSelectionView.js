@@ -12,7 +12,7 @@ export class CharacterSelectionView extends SubView {
 
     addCharacterSelectButton(character) {
 
-        const characterList = this.element.querySelector('.character-list');
+        const characterList = this.htmlElement.querySelector('.character-list');
         const characterSelectButton = document.createElement('div');
 
         characterSelectButton.classList.add('btn');
@@ -61,7 +61,7 @@ export class CharacterSelectionView extends SubView {
         // rebuild the view if necessary.
         console.log('rebuild character selection view requested');
 
-        const characterList = this.element.querySelector('.character-list');
+        const characterList = this.htmlElement.querySelector('.character-list');
         if (Ravenfall.characters == null) {
             characterList.innerHTML = 'Loading...';
         } else {

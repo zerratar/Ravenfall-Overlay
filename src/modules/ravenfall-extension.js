@@ -130,7 +130,7 @@ export default class RavenfallExtension {
 
     get isReady() {
         
-        return window.gRavenfall.service.websocket.connected && window.gRavenfall.service.isRavenfallAvailable && window.gRavenfall.isCharactersLoaded();
+        return window.gLogic.ravenfall.websocket.connected && window.gLogic.ravenfall.isRavenfallAvailable && window.gRavenfallPlayer.isCharactersLoaded();
     }
 
     updateDefaultView() {

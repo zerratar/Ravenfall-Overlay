@@ -22,7 +22,7 @@ export class DefaultView extends MainView {
         this.marketplace = new MarketplaceView(this);
         this.clan = new ClanView(this);
 
-        this.navigationButtonsContainer = this.element.querySelector('.view-tabs');
+        this.navigationButtonsContainer = this.htmlElement.querySelector('.view-tabs');
         this.lastActiveButton = null;
 
         this.views = [
@@ -44,7 +44,7 @@ export class DefaultView extends MainView {
         // but will just do it super simple for now
 
         this.views.forEach(view => {
-            const elm = this.element.querySelector(`.btn-view-tab[data-navigation='${view.name}']`);
+            const elm = this.htmlElement.querySelector(`.btn-view-tab[data-navigation='${view.name}']`);
             if (elm && typeof elm != 'undefined') {
                 elm.addEventListener('click', () => {
                     this.setViewAndUpdateNavigation(view, elm);
@@ -55,7 +55,7 @@ export class DefaultView extends MainView {
 
     setViewAndUpdateNavigation(view, elm = null) {
         if (elm == null || typeof elm == 'undefined') {
-            elm = this.element.querySelector(`.btn-view-tab[data-navigation='${view.name}']`);
+            elm = this.htmlElement.querySelector(`.btn-view-tab[data-navigation='${view.name}']`);
         }
 
         if (this.lastActiveButton != null) {

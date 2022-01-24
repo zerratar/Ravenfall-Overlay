@@ -167,8 +167,6 @@ export default class ConfigurationLoader {
                 {
                     return target[prop];
                 } else {
-                    console.log(prop);
-                    console.log("hasOwn")
                     return ConfigurationLoader.defaultExtensionValues.hasOwnProperty(prop) ? ConfigurationLoader.defaultExtensionValues[prop] : undefined;
                 }
             }
