@@ -10,9 +10,11 @@ export class LoadingView extends MainView {
         // update __NO_DEVELOPER_RIG__ from modules/states.js
         if (window.gExtDevelopment.no_developer_rig === true) {
             // note(zerratar): auth token must be set in production
-            window.gLogic.ravenfall.setAuthInfo(window.gExtDevelopment.twitch_development.your_username, window.gExtDevelopment.twitch_development.your_id, null);
+            window.gStreamer.twitch.id = window.gExtDevelopment.twitch_development.streamer_id;
+            window.gViewer.id = window.gExtDevelopment.twitch_development.your_id;
+            window.gViewer.updated = new Date();
+            window.gLogic.ravenfall.setAuthInfo();
         } else {
-            
             if (typeof window.Twitch.ext != 'undefined') 
             {
                 window.Twitch.ext.onContext(function (context) {
@@ -20,7 +22,9 @@ export class LoadingView extends MainView {
                 });
 
                 window.Twitch.ext.onAuthorized(function (auth) {
-                    window.gLogic.setAuthInfo(auth.channelId, auth.userId, auth.token);
+                    window.gLogic.twitch.processJWT(auth);
+                    window.gLogic.ravenfall.setAuthInfo();
+                    window.gLogic.twitch.processViewer(window.Twitch.ext.viewer);
                 });
             }
         }

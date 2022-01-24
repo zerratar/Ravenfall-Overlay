@@ -21,12 +21,10 @@ export class CreateAccountView extends SubView {
         if (window.gLogic.isAuthenticated) {
             return;
         }
-
-        if (!window.gViewer.id.toLowerCase().startsWith('u')) {
+        if(!window.gViewer.has_linked) {
             return;
         }
-
-        const id = window.gViewer.id.substring(1);
+        const id = window.gViewer.id;
         const user = await window.gLogic.twitch.getTwitchUser(id);
         if (user && typeof user.name != 'undefined') {
             await window.gLogic.ravenfall.createUserAsync(user.name, user.display_name);

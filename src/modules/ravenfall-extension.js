@@ -1,5 +1,6 @@
 import RavenfallService from "./ravenfall-service.js";
 import TwitchService from "./twitch-service.js";
+import { LinkTwitchView } from '../views/LinkTwitchView.js';
 import { LoadingView } from '../views/LoadingView.js';
 import { ErrorView } from "../views/ErrorView.js";
 import { DefaultView } from "../views/DefaultView.js";
@@ -11,12 +12,12 @@ import { DefaultView } from "../views/DefaultView.js";
 export default class RavenfallExtension {
 
     constructor() {
-        this.twitchService = new TwitchService();
         this.ravenfallService = new RavenfallService(x => this.onCharacterUpdated(x));
         this.ravenfallService.onConnectionClosed((data) => this.onConnectionLost(data));
         this.lastUpdate = 0;
         this.views = {
             loading: new LoadingView(),
+            linktwitch: new LinkTwitchView(),
             default: new DefaultView(),
             error: new ErrorView()
         };
@@ -61,7 +62,7 @@ export default class RavenfallExtension {
         this.setView(this.views.default);
 
         if (character == null || typeof character == 'undefined') {
-            if (window.gRavenfall.service.isRavenfallAvailable && Ravenfall.isCharactersLoaded()) {
+            if (window.gLogic.ravenfall.isRavenfallAvailable && window.gRavenfallPlayer.isCharactersLoaded()) {
                 this.activeView.onShowCharacterSelection();
             }
             return;
@@ -94,14 +95,16 @@ export default class RavenfallExtension {
         window.requestAnimationFrame(async t => await this.update(t));
     }
 
+    async getLinkedId() {
+        this.setView(this.views.linktwitch);
+    }
+
     async loadCharactersAsync() {
 
         if (!window.gRavenfall.isAuthenticated) {            
-            // failed to authenticate    
-            // user probably does not exist.
-            // so we will try and get the twitch user info
-            console.error('Failed to authenticate with ravenfall. Most likely has no user.');
-            if (!window.gViewer.id.toLowerCase().startsWith('u')) {
+            console.error('Failed to authenticate with ravenfall. Unknown ID, new user?');
+            //might be a new Users
+            if (!window.gViewer.has_linked) {
                 this.views.error.onAnonymousUser();
                 this.setView(this.views.error);
 
@@ -109,7 +112,6 @@ export default class RavenfallExtension {
                 this.views.default.onShowAccountCreation();
                 this.setView(this.views.default);
             }
-            return;
         }
 
 
@@ -161,6 +163,12 @@ export default class RavenfallExtension {
         this.pollTimer -= delta;
         if (this.pollTimer > 0) {
             return;
+        }
+
+        if(!window.gViewer.has_linked) {
+            //user has not linked their profile to the extension yet - show connection
+            await this.getLinkedId();
+            this.setView(this.views.loading);
         }
 
         if (!window.gLogic.isAuthenticated && !await window.gLogic.ravenfall.authenticateAsync()) {

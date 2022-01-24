@@ -111,6 +111,11 @@ div#app {
     margin-top: 25px;
 }
 
+.btn.btn-link-twitch{
+    padding: 5px;
+    margin-top: 25px;
+}
+
 .btn.btn-character-select:hover {
     right: 0;
 }

@@ -28,7 +28,6 @@ export default class ConfigurationLoader {
                 ravenfall:null,
                 extension:null,
                 pollInterval: 3000,
-                token: null,
                 isAuthenticated: false,
                 updated: null,
             },
@@ -50,10 +49,16 @@ export default class ConfigurationLoader {
                     'sailing',
                     'healing'
                 ],
-                rf_twitch_viewer:{
+                rf_twitch_viewer:{ //the person using the extension
                     id:null,
+                    opaque_id:null, //
+                    is_unlinked:null, //if token was for user that previously shared identity (aka, removed permission)
+                    has_linked:null, //helper to tell if user linked their account, we have user id if they have
+                    role:null,
                     username:null,
                     displayName:null,
+                    token:null,
+                    updated: null,
                 },
                 rf_player:{
                     id: null,
@@ -97,7 +102,7 @@ export default class ConfigurationLoader {
                             skill == 'healing';
                     }
                 },
-                rf_twitch_streamer:{
+                rf_twitch_streamer:{ //the streamer themselves
                     twitch: {
                         id: null,
                         username: null,
