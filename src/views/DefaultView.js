@@ -79,7 +79,8 @@ export class DefaultView extends MainView {
 
     update() {
         if ((this.activeSubView == null || this.activeSubView == this.characterSelection) && Ravenfall.character != null) {
-            this.setViewAndUpdateNavigation(this.characterOverview);
+            // this.setViewAndUpdateNavigation(this.characterOverview);
+            this.setViewAndUpdateNavigation(this.training);
         }
     }
 

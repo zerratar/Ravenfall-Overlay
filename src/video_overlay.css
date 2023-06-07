@@ -207,7 +207,9 @@ div#app {
     flex-flow: column;
     margin-top: 25px;
 }
-
+.view-message {
+    text-align: center;
+}
 .btn.btn-toggle-dark-mode {
     position: absolute;
     border-radius: 0;
@@ -267,6 +269,14 @@ img.no-connection {
     user-select: none;
     cursor: default;
     box-shadow: 0 3px 3px #0016311a;
+}
+
+.character-stat.btn-all {
+    padding-bottom: 7px;
+    padding-top: 6px;
+}
+.character-stat.btn-all .stats-progress {
+    display:none;
 }
 
 .character-stat.can-train {

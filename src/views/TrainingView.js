@@ -16,7 +16,9 @@ export class TrainingView extends SubView {
 
         this.characterStats.innerHTML = '';
         const currentSkill = Ravenfall.getCurrentSkill();
-        const props = Object.keys(character.skills);
+        let props = Object.keys(character.skills);
+        
+        props = ["allLevel", ...props];
 
         for (let prop of props) {
             if (prop.indexOf('Level') > 0) {
@@ -24,9 +26,20 @@ export class TrainingView extends SubView {
               try {
         
                 const skill = prop.replace('Level', '');
-                const level = character.skills[prop];
-                const experience = character.skills[skill];
-                const expPercent = character.skills[skill + 'Procent'];
+                const isAll = skill == 'all';
+                
+                let level = 1;
+                let experience = 0;
+                let expPercent = 0;
+
+                if (isAll) {
+                  level = character.combatLevel;
+                } else {
+                  level = character.skills[prop];
+                  experience = character.skills[skill];
+                  expPercent = character.skills[skill + 'Procent'];
+                }
+               
                 const skillButton = document.createElement("div");
                 this.characterStats.appendChild(skillButton);
         
@@ -42,6 +55,13 @@ export class TrainingView extends SubView {
                   .replace('{SkillExperience}', experience)
                   .replace('{SkillPercent}', percent);
         
+                  // remove progress bar for "is all"
+                  if (isAll) {
+                    let statsProgressBar = skillButton.querySelector('.stats-progress');
+                    if (statsProgressBar) {
+                      statsProgressBar.remove();
+                    }
+                  }
         
                 const btn = document.querySelector('.btn-' + skill);
                 if (currentSkill == skill) {

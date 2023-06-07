@@ -165,7 +165,7 @@ function getTaskArgumentBySkill(skill) {
 }
 
 function isCombatSkill(skill) {
-  return skill == 'attack' || skill == 'health' ||
+  return skill =='all' || skill == 'attack' || skill == 'health' ||
     skill == 'defense' || skill == 'strength' ||
     skill == 'ranged' || skill == 'magic' ||
     skill == 'healing';
@@ -208,21 +208,34 @@ function onCharacterUpdated(character) {
   const currentSkill = getCurrentSkill();
   const props = Object.keys(character.skills);
 
+  props = ["All", ...props]
+
   for (let prop of props) {
     if (prop.indexOf('Level') > 0) {
 
       try {
-
+        const isAll = prop == 'All';
         const skill = prop.replace('Level', '');
-        const level = character.skills[prop];
-        const experience = character.skills[skill];
-        const expPercent = character.skills[skill + 'Procent'];
-        const skillButton = document.createElement("div");
-        characterStats.appendChild(skillButton);
-
-        const canTrainClass = skill != 'health' && skill != 'slayer' && skill != 'sailing' ? 'can-train' : '';
+        const canTrainClass = (skill != 'health' && skill != 'slayer' && skill != 'sailing') ? 'can-train' : '';
         const canTrain = canTrainClass != '';
-        const percent = Math.floor(expPercent * 100);
+
+        let btn = undefined;
+        let percent = 0;
+        let level = 0;
+        let experience = 0;
+        let expPercent = 0;
+
+        if (isAll == true) {
+         
+        } else {
+          level = character.skills[prop];
+          experience = character.skills[skill];
+          expPercent = character.skills[skill + 'Procent'];
+          percent = Math.floor(expPercent * 100);
+        }
+
+
+        const skillButton = document.createElement("div");
         skillButton.outerHTML = characterStatsTemplate
           .replace('{trainable}', canTrainClass)
           .replace('{SkillName}', skill)
@@ -233,7 +246,8 @@ function onCharacterUpdated(character) {
           .replace('{SkillPercent}', percent);
 
 
-        const btn = document.querySelector('.btn-' + skill);
+        characterStats.appendChild(skillButton);
+        btn = document.querySelector('.btn-' + skill);
         if (currentSkill == skill) {
           btn.classList.add("active");
           btn.title = 'You\'re currently training this skill. (Level Progress ' + percent + '%)';
@@ -245,8 +259,7 @@ function onCharacterUpdated(character) {
         }
 
         btn.querySelector('.stats-progress-value').style.width = percent + '%';
-
-        if (canTrain) {
+        if (canTrain && btn) {
           btn.addEventListener('click', () => {
             btn.classList.add("active");
             activeTaskBtn.classList.remove("active");
