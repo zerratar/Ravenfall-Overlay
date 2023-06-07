@@ -21,11 +21,6 @@ const leaveGameBtn = document.querySelector('.btn-leave-game');
 
 const twitch = window.Twitch.ext;
 
-// update __NO_DEVELOPER_RIG__ from modules/states.js
-if (__NO_DEVELOPER_RIG__ === false) {
-  window.console.log = twitch.rig.log;
-}
-
 // Current ViewState can always be changed in case
 // server goes down or user leaves the game, etc.
 // however, we will need a sub state to keep track
@@ -404,7 +399,7 @@ function onStateUpdated(newState) {
 
 if (typeof twitch != 'undefined') {
   twitch.onContext(function (context) {
-    twitch.rig.log(context);
+    console.log(context);
   });
 
   twitch.onAuthorized(function (auth) {

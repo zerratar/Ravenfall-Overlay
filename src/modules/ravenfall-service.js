@@ -109,14 +109,35 @@ export default class RavenfallService {
     return !!Streamer.ravenfall && Streamer.ravenfall.session.isActive;
   }
 
-  setAuthInfo(broadcasterId, twitchUserId, token) {
-    Streamer.twitch.id = broadcasterId;
-    Twitch.id = twitchUserId;
-    Ravenfall.token = token;
+  setContext(context) {
+    Streamer.twitch.username = context.playerChannel;
+  }
+
+  setAuthInfo(auth) {
+    // broadcasterId, twitchUserId, token
+    console.log(auth);
+
+    Streamer.twitch.id = auth.channelId;
+
+    Viewer.opaqueId = auth.userId;    
+    Viewer.helixToken = auth.helixToken;
+    Viewer.token = auth.token;
+
+    Viewer.isAnonymous = auth.userId[0] == 'A';
+
+    if (window.Twitch.ext.viewer.isLinked) {
+      Viewer.userId = window.Twitch.ext.viewer.id;
+    }
+
+    Ravenfall.token = auth.token;
+    Ravenfall.helixToken = auth.helixToken;
+
     Streamer.updated = new Date();
     Ravenfall.updated = new Date();
-    this.requests.setToken(token);
-    this.websocket.setBroadcasterId(broadcasterId);
+    this.requests.setToken(auth.token);
+    this.websocket.setBroadcasterId(auth.channelId);
+
+    Viewer.service.tryResolveUser(auth);
   }
 
   setCharacter(character) {
@@ -227,7 +248,13 @@ export default class RavenfallService {
       return true;
     }
 
-    this.sessionInfo = await this.requests.getAsync(extensionApi + '/' + Streamer.twitch.id + '/' + Twitch.id);
+    if (Streamer.twitch.id == null || Viewer.userId == null) {
+      // we are not yet initialized with twitcch
+      // console.error("Unable to authenticate with Ravenfall, missing broadcaster or viewer Twitch ID.");
+      return false;
+    }
+
+    this.sessionInfo = await this.requests.getAsync(extensionApi + '/' + Streamer.twitch.id + '/' + Viewer.userId);
     Ravenfall.isAuthenticated = !!this.sessionInfo && this.sessionInfo.authenticated == true;
     Ravenfall.updated = new Date();
 
@@ -280,7 +307,7 @@ export default class RavenfallService {
   }
 
   async createUserAsync(userName, displayName) {
-    this.sessionInfo = await this.requests.getAsync(extensionApi + '/new/' + Streamer.twitch.id + '/' + Twitch.id + '/' + userName + '/' + encodeURIComponent(displayName));
+    this.sessionInfo = await this.requests.getAsync(extensionApi + '/new/' + Streamer.twitch.id + '/' + Viewer.opaqueId + '/' + userName + '/' + encodeURIComponent(displayName));
     Ravenfall.isAuthenticated = !!this.sessionInfo && this.sessionInfo.authenticated == true;
     if (Ravenfall.isAuthenticated) {
       this.requests.setSessionId(this.sessionInfo.sessionId);

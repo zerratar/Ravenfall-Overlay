@@ -7,19 +7,31 @@ export class LoadingView extends MainView {
     }
 
     onEnter() {
+        let twitch = window.Twitch.ext;
         // update __NO_DEVELOPER_RIG__ from modules/states.js
         if (__NO_DEVELOPER_RIG__ === true) {
             // note(zerratar): auth token must be set in production
-            Ravenfall.service.setAuthInfo(__streamer_twitch_id, __your_twitch_id, null);
+            Ravenfall.service.setAuthInfo({ 
+                channelId: __streamer_twitch_id, 
+                userId: __your_twitch_id, 
+                token: null,
+                helixToken: null,
+            });
         } else {
             if (typeof twitch != 'undefined') {
+
                 twitch.onContext(function (context) {
-                    twitch.rig.log(context);
+                    // console.log(context);
+                    Ravenfall.service.setContext(context);
                 });
 
                 twitch.onAuthorized(function (auth) {
-                    Ravenfall.service.setAuthInfo(auth.channelId, auth.userId, auth.token);
+                    Ravenfall.service.setAuthInfo(auth);
                 });
+                
+                if (!window.Twitch.ext.viewer.isLinked) {
+                    twitch.actions.requestIdShare();
+                }
             }
         }
     }

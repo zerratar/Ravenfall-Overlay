@@ -27,7 +27,7 @@ export class CreateAccountView extends SubView {
         }
 
         const id = Ravenfall.service.twitchUserId.substring(1);
-        const user = await Twitch.service.getTwitchUser(id);
+        const user = await Viewer.service.getTwitchUser(id);
         if (user && typeof user.name != 'undefined') {
             await Ravenfall.service.createUserAsync(user.name, user.display_name);
             await Ravenfall.extension.loadCharactersAsync();

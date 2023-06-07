@@ -131,7 +131,6 @@ export default class WebSocketClient {
   }
 
   onError() {
-    console.error("ERRRORROROROROOR!");
     this.connectedToServer = false;
     this.isConnecting = false;
     this.connectionSuccess(false);

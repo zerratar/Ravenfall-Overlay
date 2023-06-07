@@ -1,23 +1,18 @@
 var maximum_allowed_characters = 3; // change this if we want to introduce a 4th or 5th character
 // changing maximum: see PlayerManager.cs:27, RavenNest.BusinessLogic Kappa
 
-var ravenfallApiUrl = 'https://localhost:5001/api/';
-var ravenfallWebsocketApiUrl = 'wss://localhost:5001/api/stream/extension';
-// var ravenfallApiUrl = 'https://www.ravenfall.stream/api/';
-// var ravenfallWebsocketApiUrl = 'wss://www.ravenfall.stream/api/stream/extension';
+// var ravenfallApiUrl = 'https://localhost:5001/api/';
+// var ravenfallWebsocketApiUrl = 'wss://localhost:5001/api/stream/extension';
+var ravenfallApiUrl = 'https://www.ravenfall.stream/api/';
+var ravenfallWebsocketApiUrl = 'wss://www.ravenfall.stream/api/stream/extension';
 
 // SET __NO_DEVELOPER_RIG__ = true; if NOT using the twitch developer rig
-var __NO_DEVELOPER_RIG__ = true;
+var __NO_DEVELOPER_RIG__ = false;
 
-// var __streamer_twitch_username = 'abbycottontail';
-// var __streamer_twitch_id = '39575045';
-// var __your_twitch_username = 'abbycottontail';
-// var __your_twitch_id = '39575045';
-
-var __streamer_twitch_username = 'zerratar';
-var __streamer_twitch_id = '72424639';
-var __your_twitch_username = 'zerratar';
-var __your_twitch_id = '72424639';
+var __streamer_twitch_username = '';
+var __streamer_twitch_id = '';
+var __your_twitch_username = '';
+var __your_twitch_id = '';
 
 var skillNames = [
     'attack',
@@ -37,11 +32,14 @@ var skillNames = [
     'healing'
 ];
 
-var Twitch = {
-    id:null,
+var Viewer = {
+    userId:null,
+    opaqueId:null,
     username:null,
     displayName:null,
-    service: null
+    service: null,
+    token:null,
+    helixToken:null,
 }
 
 var Ravenfall = {
@@ -55,6 +53,7 @@ var Ravenfall = {
     character: null,
     characters: null,
     token: null,
+    helixToken: null,
     isAuthenticated: false,
     updated: null,
     service: null,
@@ -133,11 +132,3 @@ var ViewStates = {
 
     BAD_SERVER_CONNECTION: 'BAD_SERVER_CONNECTION'
 };
-
-
-var twitch = window.Twitch.ext;
-
-// update __NO_DEVELOPER_RIG__ from modules/states.js
-if (__NO_DEVELOPER_RIG__ === false) {
-  window.console.log = twitch.rig.log;
-}
