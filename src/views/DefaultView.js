@@ -7,7 +7,7 @@ import { InventoryView } from "./InventoryView.js";
 import { MarketplaceView } from "./MarketplaceView.js";
 import { TrainingView } from "./TrainingView.js";
 import { ClanView } from "./ClanView.js";
-
+import { IslandsView } from "./IslandsView.js";
 
 export class DefaultView extends MainView {
     constructor() {
@@ -21,6 +21,7 @@ export class DefaultView extends MainView {
         this.crafting = new CraftingView(this);
         this.marketplace = new MarketplaceView(this);
         this.clan = new ClanView(this);
+        this.islandsView = new IslandsView(this);
 
         this.navigationButtonsContainer = this.element.querySelector('.view-tabs');
         this.lastActiveButton = null;
@@ -33,7 +34,8 @@ export class DefaultView extends MainView {
             this.inventory,
             this.crafting,
             this.marketplace,
-            this.clan
+            this.clan,
+            this.islandsView
         ];
 
         this.setupNavigationButtons();
@@ -79,8 +81,8 @@ export class DefaultView extends MainView {
 
     update() {
         if ((this.activeSubView == null || this.activeSubView == this.characterSelection) && Ravenfall.character != null) {
-            // this.setViewAndUpdateNavigation(this.characterOverview);
-            this.setViewAndUpdateNavigation(this.training);
+            this.setViewAndUpdateNavigation(this.characterOverview);
+            // this.setViewAndUpdateNavigation(this.training);
         }
     }
 
@@ -89,11 +91,18 @@ export class DefaultView extends MainView {
         if (character != null) {
             this.characterOverview.onCharacterUpdated(character);
             this.training.onCharacterUpdated(character); 
+            this.islandsView.onCharacterUpdated(character);
+            this.inventory.onCharacterUpdated(character);
+            if (this.view && typeof this.view.onCharacterUpdated != 'undefined') {
+                this.view.onCharacterUpdated(character);
+            }
+
             this.showNavigation();
-            console.log('We have a character in game');
-        } else {
-            console.warn('Character removed from game?');
-        }
+            // console.log('We have a character in game');
+        } 
+        // else {
+        //     console.warn('Character removed from game?');
+        // }
     }
 
     onShowAccountCreation() {        

@@ -48,7 +48,7 @@ export default class WebSocketClient {
     this.socket.onopen = () => this.onConnectionOpen();
     this.socket.onclose = (e) => this.onConnectionClose(e);
     this.socket.onmessage = msg => this.onMessageReceived(msg);
-    this.socket.onerror = () => this.onError();
+    this.socket.onerror = (e) => this.onError(e);
     // this.socket.open();
 
     return this.connectionPromise;
@@ -130,7 +130,8 @@ export default class WebSocketClient {
     this.broadcasterId = broadcasterId;
   }
 
-  onError() {
+  onError(e) {
+    console.log("connection error: " + e);
     this.connectedToServer = false;
     this.isConnecting = false;
     this.connectionSuccess(false);

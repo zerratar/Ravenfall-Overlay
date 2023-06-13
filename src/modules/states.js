@@ -1,26 +1,28 @@
 var maximum_allowed_characters = 3; // change this if we want to introduce a 4th or 5th character
 // changing maximum: see PlayerManager.cs:27, RavenNest.BusinessLogic Kappa
 
-// var ravenfallApiUrl = 'https://localhost:5001/api/';
-// var ravenfallWebsocketApiUrl = 'wss://localhost:5001/api/stream/extension';
-var ravenfallApiUrl = 'https://www.ravenfall.stream/api/';
+var isLocalTest = false;
+
+var __streamer_twitch_username = 'zerratar';
+var __streamer_twitch_id = '72424639';
+var __your_twitch_username = 'zerratar';
+var __your_twitch_id = '72424639';
+
+var ravenfallUrl = 'https://www.ravenfall.stream/';
+var ravenfallApiUrl = ravenfallUrl+'api/';
 var ravenfallWebsocketApiUrl = 'wss://www.ravenfall.stream/api/stream/extension';
+if (isLocalTest) {
+    ravenfallUrl = 'https://localhost:5001/';
+    ravenfallApiUrl = 'https://localhost:5001/api/';
+    ravenfallWebsocketApiUrl = 'wss://localhost:5001/api/stream/extension';
+}
 
-// SET __NO_DEVELOPER_RIG__ = true; if NOT using the twitch developer rig
-var __NO_DEVELOPER_RIG__ = false;
-
-var __streamer_twitch_username = '';
-var __streamer_twitch_id = '';
-var __your_twitch_username = '';
-var __your_twitch_id = '';
 
 var skillNames = [
     'attack',
     'defense',
     'strength',
     'health',
-    'magic',
-    'ranged',
     'woodcutting',
     'fishing',
     'mining',
@@ -28,9 +30,24 @@ var skillNames = [
     'cooking',
     'farming',
     'slayer',
+    'magic',
+    'ranged',
     'sailing',
     'healing'
 ];
+
+// not guaranteed to be loaded, but we need to store it somewhere for easy access.
+// another approach is to have a ViewProvider that handles all views and their creation
+var Views = {
+    islands:null,
+    training:null,
+    inventory:null,
+    marketplace:null,
+    vendor:null,
+    overview:null,
+    characterSelection:null,
+    clan:null,
+};
 
 var Viewer = {
     userId:null,
@@ -48,6 +65,33 @@ var Ravenfall = {
         username: null,
         displayName: null
     },
+    gameState: {
+        playerCount:0,
+        dungeon: {
+          isActive:false,
+          name:null,
+          hasStarted:false,
+          bossCombatLevel:0,
+          currentBossHealth:0,
+          maxBossHealth:0,
+          playersAlive:0,          
+          playersJoined:0,
+          enemiesLeft:0,
+          timeUntilStartSeconds:0,
+          secondsUntilNextDungeon:0
+        },          
+        raid: {
+          isActive:false,
+          bossCombatLevel:0,
+          currentBossHealth:0,
+          maxBossHealth:0,
+          playersJoined:0,
+          secondsLeft:0,
+          secondsUntilNextRaid:0
+        }
+      },
+    itemsLoaded: false,
+    items: [],
     id: null,
     characterId: null,
     character: null,
@@ -75,6 +119,20 @@ var Ravenfall = {
         return skill;
     },
 
+    getSkillNameByIndex: function (index) {
+        if (index < 0 || index >= skillNames.length) {
+            return null;
+        }
+        return skillNames[index];
+    },
+
+    getCharacterById: function(id){
+        if (Ravenfall.characters == null || Ravenfall.characters.length ==0){
+            return null;
+        }
+        return Ravenfall.characters.find(x=>x.id == id);
+    },
+
     getCurrentSkill: function () {
         if (Ravenfall.character == null || Ravenfall.character.state.task == null) {
             return null;
@@ -91,6 +149,10 @@ var Ravenfall = {
     },
 
     isCombatSkill: function (skill) {
+        if (skill == null) {
+            return false;
+        }
+        skill = skill.toLowerCase();
         return skill == 'attack' || skill == 'health' ||
             skill == 'defense' || skill == 'strength' ||
             skill == 'ranged' || skill == 'magic' ||

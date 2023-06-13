@@ -5,15 +5,23 @@ export class TrainingView extends SubView {
     constructor(parentView) {
         super(parentView, 'training');
 
+        this.activeCharacter = null;
         this.characterStats = document.querySelector('.character-stats');
         // todo(zerratar): replace to use actual <template></template>
         this.characterStatsTemplate = document.querySelector('.character-stat').outerHTML;
         this.characterStats.innerHTML = '';
         this.activeTaskBtn = null;
+        Views.training = this;
     }
 
-    onCharacterUpdated(character) {
+    onExpUpdated(data) {
+      // this is so not a good way to do this, but it works for now
+      this.onCharacterUpdated(this.activeCharacter);
+    }
 
+
+    onCharacterUpdated(character) {
+        this.activeCharacter = character;
         this.characterStats.innerHTML = '';
         const currentSkill = Ravenfall.getCurrentSkill();
         let props = Object.keys(character.skills);
@@ -62,11 +70,13 @@ export class TrainingView extends SubView {
                       statsProgressBar.remove();
                     }
                   }
+
         
                 const btn = document.querySelector('.btn-' + skill);
+
                 if (currentSkill == skill) {
                   btn.classList.add("active");
-                  btn.title = 'You\'re currently training this skill. (Level Progress ' + percent + '%)';
+                  btn.title = 'You\'re currently training this skill. (Level Progress ' + percent + '%, Exp: ' + Math.floor(experience) + ')';
                   this.activeTaskBtn = btn;
                 } else {
                   btn.title =  canTrain 
@@ -78,10 +88,9 @@ export class TrainingView extends SubView {
         
                 if (canTrain) {
                   btn.addEventListener('click', () => {
-                    btn.classList.add("active");
                     this.activeTaskBtn.classList.remove("active");
                     this.activeTaskBtn = btn;
-        
+                    btn.classList.add("active");
                     Ravenfall.service.setTaskAsync(Ravenfall.getTaskBySkill(skill), Ravenfall.getTaskArgumentBySkill(skill));
                   });
                 }

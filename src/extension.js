@@ -19,6 +19,7 @@ export default class RavenfallExtension {
         this.pollTimer = 1;
         this.lastUpdate = 0;
         this.activeView = null;
+        this.ravenfallService.loadItemsAsync();
         this.setView(this.views.loading);
         this.update(0);
     }
@@ -28,6 +29,7 @@ export default class RavenfallExtension {
             Ravenfall.service.websocket.setSessionId(null);
             Ravenfall.service.requests.setSessionId(null);
             Ravenfall.isAuthenticated = false;
+
             this.onBadServerConnection();
             // 1006 = server died
             // 1011 = we fail to recover from server restart, server has no session matching ours.            
@@ -64,6 +66,10 @@ export default class RavenfallExtension {
         }
 
         this.activeView.onCharacterUpdated(character);
+
+        if (character!=null && Views.overview) {
+            Views.overview.onGameStateUpdated(Ravenfall.gameState);
+        }
     }
 
     onBadServerConnection() {

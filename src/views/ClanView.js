@@ -5,5 +5,6 @@ import { SubView } from "./BaseViews.js";
 export class ClanView extends SubView {
     constructor(parentView) {
         super(parentView, 'clan');
+        Views.clan = this;
     }
 }

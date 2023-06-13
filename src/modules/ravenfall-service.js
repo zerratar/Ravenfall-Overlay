@@ -6,6 +6,26 @@ var twitchApi = ravenfallApiUrl + 'twitch';
 var extensionApi = twitchApi + '/extension';
 var playersApi = ravenfallApiUrl + 'players';
 
+var island = [
+    'Ferry',
+    'Home',
+    'Away',
+    'Ironhill',
+    'Kyo',
+    'Heim',
+  ];
+
+var characterState = [
+  'None',
+  'Raid',
+  'Arena',
+  'Dungeon',
+  'Onsen',
+  'Duel',
+  'StreamRaidWar',
+  'JoinedDungeon',
+];
+
 export default class RavenfallService {
   constructor(onCharacterChanged) {
     Ravenfall.service = this;
@@ -23,6 +43,8 @@ export default class RavenfallService {
     this.websocket.subscribe('CharacterExpUpdate', data => this.onExpUpdated(data));
     this.websocket.subscribe('PlayerRemove', data => this.onCharacterLeft(data));
     this.websocket.subscribe('PlayerAdd', data => this.onCharacterJoined(data));
+    this.websocket.subscribe('CharacterStateUpdate', data => this.onCharacterStateUpdated(data));
+    this.websocket.subscribe('GameStateRequest', data => this.onGameStateRequest(data));
     // when ready: this.websocket.connectAsync(); but can only 
     // be used after both setBroadcasterId and setSessionId has been called
   }
@@ -34,7 +56,8 @@ export default class RavenfallService {
     Ravenfall.characterId = data.characterId;
     if (Ravenfall.isCharactersLoaded()) {
       console.log('We have joined the game!');
-      this.onCharacterChanged(Ravenfall.characters.find(x => x.id == data.characterId));      
+      let c = Ravenfall.characters.find(x => x.id == data.characterId);
+      this.setCharacter(c);
     } else {
       console.warn('We have joined the game, but no characters have been loaded yet!!');
     }    
@@ -42,12 +65,17 @@ export default class RavenfallService {
 
   onCharacterLeft(data) {
     if (data.characterId === Ravenfall.characterId) {
+      Ravenfall.characterId = null;
+      Ravenfall.character = null;
+
       this.onCharacterChanged(null);
+
       console.log('We have left the game!');
     } else {
       console.warn('We have received a player remove but not for our player? :o');
     }
   }
+
   onStreamerInfoUpdated(data) {
     /*
       the data looks like this:
@@ -62,6 +90,21 @@ export default class RavenfallService {
     */
     // this.setStreamerSession(data);
     //this.websocket.close();
+
+/* 
+    Ravenfall.characterId = streamerInfo.joinedCharacterId;
+    Streamer.twitch.id = streamerInfo.streamerUserId;
+    Streamer.twitch.username = streamerInfo.streamerUserName;
+
+    Streamer.ravenfall.clientVersion = streamerInfo.clientVersion;
+    Streamer.ravenfall.session.startedDateTime = streamerInfo.started;
+    Streamer.ravenfall.session.id = streamerInfo.streamerSessionId;
+    Streamer.ravenfall.session.playerCount = streamerInfo.playerCount;
+    Streamer.ravenfall.session.isActive = streamerInfo.isRavenfallRunning;
+*/
+
+    this.setStreamerSession(data);
+
     console.log("Streamer Session Info updated via ws: " + data);
   }
 
@@ -76,27 +119,107 @@ export default class RavenfallService {
      }
    */
     // console.log(data);
+
+    const character = Ravenfall.getCharacterById(data.characterId);
+    if (character) {
+      const skillName = Ravenfall.getSkillNameByIndex(data.skillIndex);
+      character.skills[skillName + 'Level'] = data.level;
+      character.skills[skillName] = data.experience;
+    }
+    
+    // this.onCharacterChanged(character);
     console.log('Exp for active character updated.');
+
+    if (Views.overview) {
+      Views.overview.onExpUpdated(data);
+    }
+
+    if (Views.training) {
+      Views.training.onExpUpdated(data);
+    }
+  }
+
+  onGameStateRequest(data) {
+    Ravenfall.gameState = {...data};
+
+    if (Views.overview){
+      Views.overview.onGameStateUpdated(data);
+    }
+  }
+
+  onCharacterStateUpdated(data) {
+    /*
+        Guid CharacterId
+        short Health
+        Island Island
+        CharacterState State
+        int TrainingSkillIndex
+        short X
+        short Y
+        short Z
+    */
+
+        const character = Ravenfall.getCharacterById(data.characterId);
+        if (character) {
+          character.state.island = island[data.island];
+          character.state.destination = island[data.destination];
+          character.state.x = data.x;
+          character.state.y = data.y;
+          character.state.z = data.z;
+          character.state.health = data.health;
+          character.state.expPerHour = data.expPerHour;
+          character.state.estimatedTimeForLevelUp = data.estimatedTimeForLevelUp;
+          character.state.inArena = false;
+          character.state.inDungeon = false;
+          character.state.joinedDungeon = false;
+          character.state.inOnsen = false;
+          character.state.inRaid = false;
+
+          switch(characterState[data.state]) {
+            case "Raid": character.state.inRaid = true; break;
+            case "Arena": character.state.inArena = true; break;
+            case "JoinedDungeon": character.state.joinedDungeon = true; break;
+            case "Dungeon": character.state.inDungeon = true; break;
+            case "Onsen": character.state.inOnsen = true; break;
+          }
+
+          character.state.taskArgument = Ravenfall.getSkillNameByIndex(data.trainingSkillIndex);
+          if (Ravenfall.isCombatSkill(character.state.taskArgument)) {
+            character.state.task = "Fighting";
+          } else {
+            character.state.task = character.state.taskArgument;
+          }
+
+        }
+
+
+        if (Views.islands != null) {
+          Views.islands.onCharacterStateUpdated(character);
+        }
+
+    // console.log("onCharacterStateUpdated " + JSON.stringify(data));
   }
 
   onRestedUpdated(data) {
     /*
       the data looks like this:
       { 
-        'characterId': 'guid', 
         'expBoost': 'either 0 or 2', 
         'statsBoost': 'unused', 
         'restedPercent': '0..1', 
-        'restedTime': 'seconds' 
-      }
-
-      and can be used by:
-
-      if (data.restedTime > 0) {
-        display('You still have ' + data.restedTime + ' seconds of being rested.');
+        'restedTime': 'seconds'
       }
     */
-    // console.log(data);
+   
+    const character = Ravenfall.getCharacterById(data.playerId);
+    if (character) {
+      character.state.restedTime = data.restedTime;
+    }
+
+    if (Views.overview) {
+      Views.overview.onRestedUpdated(character, data);
+    }
+
     console.log('Rested for active character updated.');
   }
 
@@ -287,7 +410,11 @@ export default class RavenfallService {
 
   setStreamerSession(streamerInfo) {
     Ravenfall.characterId = streamerInfo.joinedCharacterId;
-    Streamer.twitch.id = streamerInfo.streamerUserId;
+
+    if (streamerInfo.streamerUserId != null) {
+      Streamer.twitch.id = streamerInfo.streamerUserId;
+    }
+    
     Streamer.twitch.username = streamerInfo.streamerUserName;
 
     Streamer.ravenfall.clientVersion = streamerInfo.clientVersion;
@@ -304,7 +431,7 @@ export default class RavenfallService {
     this.updateActiveCharacter();
 
     return Streamer;
-  }
+  }  
 
   async createUserAsync(userName, displayName) {
     this.sessionInfo = await this.requests.getAsync(extensionApi + '/new/' + Streamer.twitch.id + '/' + Viewer.opaqueId + '/' + userName + '/' + encodeURIComponent(displayName));
@@ -331,6 +458,74 @@ export default class RavenfallService {
     return Ravenfall.characters;
   }
 
+  async loadItemsAsync() {
+    if (Ravenfall.itemsLoaded == true) {
+      return;
+    }
+    const apiUrl = ravenfallApiUrl + 'items'; // https://localhost:5001/api/items
+    Ravenfall.items = await this.requests.getAsync(apiUrl);
+    Ravenfall.itemsLoaded = true;
+
+    console.log(Ravenfall.items.length + " items loaded!");
+  }
+
+  async enterOnsenAsync() {
+    if (Ravenfall.character == null || typeof Ravenfall.character == 'undefined') {
+      return;
+    }
+    Ravenfall.character.state.inOnsen = true;
+    await this.requests.getAsync(extensionApi + '/enter-onsen/' + Streamer.twitch.id + '/' + Ravenfall.character.id);
+  }
+
+  async exitOnsenAsync() {
+    if (Ravenfall.character == null || typeof Ravenfall.character == 'undefined') {
+      return;
+    }
+    Ravenfall.character.state.inOnsen = false;
+    await this.requests.getAsync(extensionApi + '/exit-onsen/' + Streamer.twitch.id + '/' + Ravenfall.character.id);
+
+  }
+
+  async joinRaidAsync() {
+    if (Ravenfall.character == null || typeof Ravenfall.character == 'undefined') {
+      return;
+    }
+    Ravenfall.character.state.inRaid = true;
+    await this.requests.getAsync(extensionApi + '/join-raid/' + Streamer.twitch.id + '/' + Ravenfall.character.id);
+  }
+  
+  async joinDungeonAsync() {
+    if (Ravenfall.character == null || typeof Ravenfall.character == 'undefined') {
+      return;
+    }
+    Ravenfall.character.state.joinedDungeon = true;
+    await this.requests.getAsync(extensionApi + '/join-dungeon/' + Streamer.twitch.id + '/' + Ravenfall.character.id);
+  }
+
+  async startDungeonAsync() {
+    if (Ravenfall.character == null || typeof Ravenfall.character == 'undefined') {
+      return;
+    }
+
+    await this.requests.getAsync(extensionApi + '/start-dungeon/' + Streamer.twitch.id + '/' + Ravenfall.character.id);
+  }
+
+  async startRaidAsync() {
+    if (Ravenfall.character == null || typeof Ravenfall.character == 'undefined') {
+      return;
+    }
+
+    await this.requests.getAsync(extensionApi + '/start-raid/' + Streamer.twitch.id + '/' + Ravenfall.character.id);
+  }
+
+  async travelToIslandAsync(islandName) {
+    if (Ravenfall.character == null || typeof Ravenfall.character == 'undefined') {
+      return;
+    }
+
+    await this.requests.getAsync(extensionApi + '/travel/' + Streamer.twitch.id + '/' + Ravenfall.character.id + '/' + islandName);
+  }
+
   async setTaskAsync(task, taskArgument) {
     if (Ravenfall.character == null || typeof Ravenfall.character == 'undefined') {
       return;
@@ -342,6 +537,7 @@ export default class RavenfallService {
     }
 
     await this.requests.getAsync(extensionApi + '/set-task/' + Streamer.twitch.id + '/' + Ravenfall.character.id + '/' + taskData);
+    Ravenfall.character.state.destination = null;
     Ravenfall.character.state.task = task;
     Ravenfall.character.state.taskArgument = taskArgument;
   }

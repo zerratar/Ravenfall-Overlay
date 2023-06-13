@@ -6,8 +6,7 @@ import {
 export class CharacterSelectionView extends SubView {
     constructor(parentView) {
         super(parentView, 'character-selection');
-
-
+        Views.characterSelection = this;
     }
 
     addCharacterSelectButton(character) {

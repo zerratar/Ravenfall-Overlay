@@ -8,9 +8,10 @@ export class LoadingView extends MainView {
 
     onEnter() {
         let twitch = window.Twitch.ext;
-        // update __NO_DEVELOPER_RIG__ from modules/states.js
-        if (__NO_DEVELOPER_RIG__ === true) {
+        // update isLocalTest from modules/states.js
+        if (isLocalTest === true) {
             // note(zerratar): auth token must be set in production
+            Viewer.userId = __your_twitch_id;
             Ravenfall.service.setAuthInfo({ 
                 channelId: __streamer_twitch_id, 
                 userId: __your_twitch_id, 
@@ -26,12 +27,12 @@ export class LoadingView extends MainView {
                 });
 
                 twitch.onAuthorized(function (auth) {
-                    Ravenfall.service.setAuthInfo(auth);
+                    if (window.Twitch.ext.viewer.isLinked == false) {
+                        twitch.actions.requestIdShare();
+                    } else {
+                        Ravenfall.service.setAuthInfo(auth);
+                    }
                 });
-                
-                if (!window.Twitch.ext.viewer.isLinked) {
-                    twitch.actions.requestIdShare();
-                }
             }
         }
     }

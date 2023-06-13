@@ -24,20 +24,23 @@
 }
 
 .extension {
-    text-shadow: 1px 1px 2px rgb(0 0 0 / 25%);
-    width: 300px;
-    height: 80%;
+    width: 340px;
+    height: 600px;
+    max-height: 100%;
     max-width: 100%;
     margin: 0;
-    margin-left: 40px;
-    margin-top: 40px;
-    color: white;
+    position:relative;
+    /* margin-left: 40px;
+    margin-top: 40px; */
+    
     background: rgba(0, 3, 25, 0.65);
     background: linear-gradient(180deg, rgb(0 64 130 / 10%) 0%, rgb(94 46 0 / 25%) 100%);
 
     overflow-wrap: break-word;
     /* white-space: pre-wrap; */
+    /* rotateY should change from 5deg to -5deg depending on where on the screen it is located*/
     transform: perspective(400px) rotateY(5deg);
+    
     box-shadow:
         rgba(22, 31, 39, 0.42) 0px 60px 123px -25px,
         rgba(19, 26, 32, 0.08) 0px 35px 75px -35px;
@@ -50,33 +53,84 @@
 
 .extension.dark-theme {
     color: white;
+    text-shadow: 1px 1px 2px rgb(0 0 0 / 25%);
     background: rgba(0, 3, 25, 0.65);
     background: linear-gradient(180deg, rgb(0 24 49 / 90%) 0%, rgb(24 12 0/ 90%) 100%);
 }
 
-.extension img {
+.btn.btn-toggle-dark-theme {
+    position: absolute;
+    text-align: left;
     padding: 0;
-    height: 100%;
+    margin: 0;
+    outline: none;
+    top: initial;
+    right: initial;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    border-radius: 20px;
+}
+
+.extension .btn.btn-toggle-dark-theme {
+    color: black;
+    border: 1px solid black;
+}
+
+.extension.dark-theme .btn.btn-toggle-dark-theme {
+    color:white;
+    flex-direction: row-reverse;
+    border: 1px solid white;
+    outline: 0;
+}
+
+.btn-toggle-dark-theme .toggler {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    background-color: black;    
+    margin: 4px;    
+}
+.extension.dark-theme .btn.btn-toggle-dark-theme .toggler {
+    background-color: white;
+}
+.btn.btn-toggle-dark-theme .value {
+    width: 28px;
+    height: 23px;
+    text-align: center;
+    line-height: 25px;
+    font-size: 10pt;
+}
+
+.extension img {
+    user-select: none;
+    pointer-events: none;
+    padding: 0;
+    height: 80%;
     margin: 0;
     line-height: 55px;
-    margin-left: 55px;
-    margin-top: 20px;
-
+    margin-left: 90px;
+    margin-top: 15px;
     -webkit-filter: drop-shadow(3px 4px 25px rgba(0, 0, 0, 0.25));
     filter: url(#drop-shadow);
     -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=3, OffY=4, Color='#444')";
     filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=3, OffY=4, Color='#444')";
 }
 
-body {
+html,body {
     margin: 0;
     padding: 0;
+    height:100%;
+    width:100%;
 }
 
 div#app {
-    display: flex;
-    flex-flow: column;
+    /* display: flex; */
+    /* flex-flow: column; */
+    max-height: 100%;
     height: 100%;
+    /* height: 660px; */
 }
 
 .top-bar {
@@ -91,10 +145,28 @@ div#app {
 .btn {
     position: relative;
     text-align: center;
-    outline: 1px solid white;
+    outline: 1px solid black;
     cursor: pointer;
     border-radius: 8px;
     user-select: none;
+    font-size: 9pt;
+    padding: 5px 0;
+}
+
+.dark-theme .btn {
+    outline: 1px solid white;
+}
+.dark-theme .view-tabs .btn.btn-leave-game,
+.view-tabs .btn.btn-leave-game {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 8pt;
+    padding: 5px 15px;
+    text-transform: capitalize;
+    border-color: red;
+    outline-color: #d93a3a;
+    color: #d93a3a;
 }
 
 .btn:hover {
@@ -115,22 +187,114 @@ div#app {
     right: 0;
 }
 
-/* .btn-close-panel {
-    width: 42px;
-    height: 100%;
-    line-height: 9px;
-    border: 0;
-    outline: none;
-    border-radius: 0;
-} */
 
-.btn-close-panel {
+.btn.btn-close-panel {
     width: 42px;
     height: 100%;
     line-height: 40px;
     border: 0;
     outline: none;
     border-radius: 0;
+}
+.island-list {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    justify-content: space-between;
+}
+
+.island {
+    display:flex;
+    flex-flow: column;
+    margin: 10px 0;
+    padding: 5px;
+
+    margin-bottom: 5px;
+    border: 1px solid #ffffff08;
+    background-color: transparent;
+    padding: 5px 15px 5px 15px;
+
+    background-color: #ffffff08;
+    box-shadow: 0 3px 3px #00163126;
+    border-radius: 20px;
+    
+    min-width: 110px;
+    max-width: 110px;
+    height: 110px;
+}
+.home .island-stat,
+.sail .island-stat {
+    min-height: 54px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+.island.active {
+    background-color: #0051ff;
+}
+.island-header {
+    display: flex;    
+    flex-flow: column;
+}
+.island-name {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 3px;
+    margin-bottom: 2px;
+}
+.island-lv-req-label{
+    font-size: 8pt;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+.island-onsen {
+    font-size: 12pt;
+    text-transform: uppercase;
+    position: relative;
+    top: -25px;
+    height: 0px;
+}
+.island-onsen-value{
+    font-weight: bold;
+    font-size: 8pt;
+}
+
+.island-stats-list {
+    display:flex;
+}
+
+.island-lv-req-entry {
+    display: flex;
+    flex-flow: column;
+    min-height: 27px;
+}
+
+.island-stat {
+    display:flex;
+    min-width: 70px;
+}
+
+.island-stat span.level {
+    font-size: 9pt;
+    font-weight: bold;
+}
+
+.island-stat span.name {
+    font-size: 9pt;
+    margin-right: 5px;
+}
+
+.btn.btn-travel {
+    margin-top: 10px;
+    font-size: 8pt;
+}
+
+.island.destination .btn.btn-travel,
+.island.active .btn.btn-travel {
+    visibility: hidden;
 }
 
 .views {
@@ -139,14 +303,18 @@ div#app {
     width: 100%;
     display: flex;
     flex-flow: column;
-    padding: 25px;
-
+    padding: 20px;
+    padding-bottom: 50px;
+    padding-top: 0;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
 .view {
     display: none;
+    height: 485px;
+    min-height: 435px;
+    max-height: 100%;
 }
 
 .view h2 {
@@ -196,7 +364,323 @@ div#app {
     background-color: rgba(22, 0, 39, 0.9);
 } */
 
+/* Overview */
 
+.btn-join-raid,
+.btn-join-dungeon {
+    display:none;
+}
+
+.character-name {
+    text-align: center;
+    font-weight: 600;
+    font-size: 14pt;
+}
+
+.character-name span.index {
+    font-size: 9pt;
+    font-weight: 300;
+}
+.character-combat-level:before{
+    content: "Combat Level";    
+    display: block;
+    font-weight: 300;
+    font-size: 7pt;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.character-combat-level {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #ffffff08;
+    border-radius: 10px;
+    width: fit-content;
+    padding: 3px 10px;
+    margin-left: auto;
+    margin-right: auto; 
+}
+.character-resources {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.resource {
+    display: flex;
+    font-size: 10pt;
+}
+.resource-icon {
+    margin-right: 4px;
+}
+
+.training-skill-name:before{
+    content: "You're currently training ";
+    font-weight: 300;
+}
+
+.training-skill-name {
+    font-weight: bold;
+    text-align: center;
+}
+
+.training-skill-level:before {
+    content: "Level ";    
+    font-weight: 300;
+}
+
+.training-skill-level {
+    font-weight: bold;
+    text-align: center;
+    font-size: 10pt;
+    margin-right: 5px;
+}
+
+.training-skill-progress {
+    background-color: #00000059;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.is-training-all .training-skill-level,
+.is-training-all .training-skill-progress {
+    display:none;
+}
+
+
+.training-rate {
+    display:flex;
+    justify-content: space-between;
+}
+
+.training-skill-time-for-level:before {
+    content: "ETA ";
+    font-weight: 300;
+}
+.training-skill-time-for-level {
+    font-weight: bold;
+}
+.training-skill-rate{
+    text-align: center;
+}
+
+.health-progress-value{
+    text-align: center;
+    font-size: 9pt;
+    padding: 5px;
+    z-index: 1;
+    position: relative;
+}
+
+.training-skill-progress-value {
+    text-align: center;
+    font-size: 9pt;
+    padding: 4px;
+    z-index: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.training-skill-progress-fill {
+    position: relative;
+    position: relative;
+    width: 100%;
+
+    background: #00b09b;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #96c93d, #00b09b);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #96c93d, #00b09b); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
+    height: 23px;
+    margin-bottom: -23px;
+}
+
+.health-progress {
+    background-color: #00000059;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.health-progress-fill {
+    position: relative;
+    position: relative;
+    width: 100%;
+
+    background: #CB356B;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #BD3F32, #CB356B);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #BD3F32, #CB356B); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
+    height: 23px;
+    margin-bottom: -23px;
+}
+
+.dungeon-boss-locked .dungeon-status .health-progress-value {
+    color: black;
+}
+.dungeon-boss-locked .dungeon-status .health-progress-fill {
+    background: #ADA996;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.rest-status {
+    display:none;
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+
+    background-color: #ffffff08;
+    box-shadow: 0 3px 3px #00163126;
+    border: 1px solid #ffffff08;
+}
+
+.rested-time {    
+    padding: 5px;
+    font-size: 10pt;
+    text-align: center;
+}
+
+.rested-time span.label {
+    font-weight: 300;
+}
+
+.rested-time span.time {
+    font-weight: bold;
+}
+
+.rested-time .fa-chevrons-up {
+    color: #00ff00;
+}
+
+.rested-time .fa-chevrons-down {
+    color: #ff0000;
+    display: none;
+}
+
+.character-details:not(.is-resting) .fa-chevrons-up {
+    display:none;
+}
+
+.character-details:not(.is-resting) .fa-chevrons-down {
+    display:initial;
+}
+
+
+.rested-time,
+.rested-text,
+.btn-end-rest,
+.btn-begin-rest {
+    display:none;
+}
+
+
+.btn-join-raid,
+.btn-join-dungeon,
+.btn-end-rest,
+.btn-begin-rest {
+    width: 90px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+}
+
+.is-rested .rest-status { display:block;}
+.is-rested .rested-time {display: block;}
+.is-resting .btn-end-rest { display: block; }
+.can-rest .btn-begin-rest {display: block;}
+
+.can-join-raid .btn-join-raid,
+.can-join-dungeon .btn-join-dungeon {
+    display: block;
+}
+
+.raid-status,
+.dungeon-status,
+.character-training {
+    padding: 10px;
+    background-color: #0000000d;
+    border-radius: 10px;
+    margin-bottom: 10px;    
+    font-size: 10pt;
+    
+    border: 1px solid #ffffff08;
+    box-shadow: 0 3px 3px #00163126;
+}
+
+.dungeon-info {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.dungeon-top,
+.raid-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.raid-status {display:none;}
+.raid-active .raid-status {display:block;}
+
+.dungeon-status {display:none;}
+.dungeon-active .dungeon-status {display:block;}
+
+.dungeon-name,.raid-name { display: inline;}
+.dungeon-level,.raid-level { font-weight: bold; display: inline;}
+
+.character-training {display:none;margin-bottom:5px;}
+.is-training .character-training {display:block;}
+
+.dungeon-status .dungeon-level,
+.dungeon-status .health-progress {
+    display:none;
+}
+
+.dungeon-started.in-dungeon .dungeon-status .dungeon-level,
+.dungeon-started.in-dungeon .dungeon-status .health-progress {
+    display: block;
+}
+
+.dungeon-level:before {
+    content: "Level ";
+    font-weight: 300;
+}
+
+.dungeon-stats {
+    display: flex;
+    flex-flow: row;
+    margin-top: 10px;
+    justify-content: space-between;
+}
+
+.dungeon-active .dungeon-players-left:before {
+    font-weight: 300;
+    content: "Players Joined ";
+}
+.dungeon-started .dungeon-players-left:before {
+    content: "Players ";
+}
+
+.dungeon-enemies-left:before {
+    content: "Enemies Remaining ";
+    font-weight: 300;
+}
+
+.dungeon-enemies-left {
+    display: none;
+}
+
+.dungeon-started .dungeon-boss-locked .dungeon-enemies-left {
+    display: block;
+}
+
+.dungeon-players-left,
+.dungeon-enemies-left {
+    font-weight: bold;
+}
 
 .hidden {
     display: none;
@@ -207,40 +691,17 @@ div#app {
     flex-flow: column;
     margin-top: 25px;
 }
+
 .view-message {
     text-align: center;
 }
-.btn.btn-toggle-dark-mode {
-    position: absolute;
-    border-radius: 0;
-    text-align: left;
-    padding: 0;
-    margin: 0;
-    border: 0;
-    outline:none;
-    width: 12px;
-    height: 22px;
-    top: initial;
-    right: initial;
-    bottom: 5px;
-    left: 7px;
-
-    color: rgba(255, 255, 255, 0.75);
-}
-
-.btn.btn-toggle-dark-mode:hover {
-    top: initial;
-    right: initial;
-    bottom: 5px;
-    left: 7px;
-
-    color: rgba(255, 255, 255, 0.95);
-}
 
 img.no-connection {
-    margin-left: 40px;
+    margin-left: auto;
     width: 170px;
     margin-top: 50px;
+    height: 170px;
+    margin-right: auto;
 }
 
 .extension.dark-theme img.no-connection {
@@ -251,32 +712,82 @@ img.no-connection {
 .view[data-name='BAD_SERVER_CONNECTION'] h2 {
     margin-top: 10px;
 }
+/*inventory*/
+img.inventory-item-img {
+    width: 64px;
+    height: 64px;
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: initial;
+}
 
+.inventory-item-name{
+    text-align: center;
+    font-size: 9pt;
+}
 
+.inventory-items {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding: 2px;
+    height: 420px;
+}
+.inventory-item{
+    width:75px;
+    padding: 5px;
+    margin:5px;
+    display:flex;
+    flex-flow:column;
+    
+    box-shadow: 0 3px 3px #00163126;
+}
+.inventory-item.equipped {
+    outline: 2px solid #0051ff;
+}
+
+.inventory-item.enchanted {
+    box-shadow: 0 0px 7px #27ae60;
+}
+
+.enchanted .inventory-item-name {
+    color: #27ae60;
+}
+
+.inventory-item-amount {
+    z-index: 1;
+    position: relative;
+    font-size: 9pt;
+    padding: 4px 7px;
+    background-color: rgba(0,0,0,0.125);
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: -20px;
+}
 /*
     Character Skills
 */
 .character-stat {
     display: flex;
     flex-flow: column;
-    width: 90px;
-    margin-bottom: 5px;
+    width: 108px;
     border: 1px solid #ffffff08;
     background-color: transparent;
-    padding: 5px 15px 5px 15px;
-    border-radius: 20px;
-    margin-right: 10px;
+    padding: 8px 15px 8px 15px;
+    border-radius: 20px;    
     user-select: none;
     cursor: default;
     box-shadow: 0 3px 3px #0016311a;
 }
 
 .character-stat.btn-all {
-    padding-bottom: 7px;
-    padding-top: 6px;
+    padding-bottom: 4px;
+    padding-top: 12px;
 }
 .character-stat.btn-all .stats-progress {
-    display:none;
+    visibility:hidden;
 }
 
 .character-stat.can-train {
@@ -293,7 +804,11 @@ img.no-connection {
     display: flex;
     flex-flow: column;
     flex-wrap: wrap;
-    height: 290px;
+    height: 372px;
+    max-height: 100%;    
+    justify-content: space-between;
+    align-content: space-around;
+    margin-bottom: 10px;;
 }
 
 .stats-identifier {
@@ -321,14 +836,15 @@ img.no-connection {
 
 .character-stat .stats-name {
     text-transform: capitalize;
-    font-size: 8pt;
+    font-size: 10pt;
     font-weight: 300;
 }
 
 .stats-progress {
     position: relative;
     display: flex;
-    height: 3px;
+    height: 4px;
+    margin-top: 4px;
 }
 
 .stats-progress-background {
@@ -349,14 +865,18 @@ img.no-connection {
     display: flex;
     flex-flow: row;    
     gap: .33em;
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
 .view-tabs .btn {
     font-size: 7pt;
     flex-grow: 1;    
-    padding: 5px 10px;    
-    outline-color: rgba(255,255,255,0.25);
+    padding: 5px 10px;
+    outline-color: rgba(0,0,0,0.25);    
+}
+
+.dark-theme .view-tabs .btn{
+    outline-color: rgba(255,255,255,0.25)
 }
 
 .view-tabs .btn.active {
@@ -373,7 +893,7 @@ img.no-connection {
 
 .view h2.view-header {
     margin-top: 0px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .hidden {
