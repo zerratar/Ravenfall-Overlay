@@ -94,10 +94,12 @@ export class CharacterOverviewView extends SubView {
         });
 
         leaveGameBtn.addEventListener('click', async () => {
-            if (confirm("Are you sure you want to leave the game?") == true) {
-                await Ravenfall.service.leaveSessionAsync();
-                Ravenfall.extension.onCharacterUpdated(null);
-            }
+            // if (confirm("Are you sure you want to leave the game?") == true) {
+            //     await Ravenfall.service.leaveSessionAsync();
+            //     Ravenfall.extension.onCharacterUpdated(null);
+            // }
+            await Ravenfall.service.leaveSessionAsync();
+            Ravenfall.extension.onCharacterUpdated(null);
         });
 
         Views.overview = this;
@@ -175,12 +177,13 @@ export class CharacterOverviewView extends SubView {
     }
 
     updateTraining(character) {
-        var isTrainingAll = character.state.taskArgument != null && character.state.taskArgument.toLowerCase() === 'all';
+        var isTrainingAll = character.state.taskArgument != null 
+            && (character.state.taskArgument.toLowerCase() === 'all' || character.state.taskArgument.toLowerCase() === 'health');
         if (character.state.taskArgument != null) {
             const skillNameLower = character.state.taskArgument.toLowerCase();
 
             if (isTrainingAll) { 
-                this.training.name.innerText = 'All (Atk/Def/Str)';
+                this.training.name.innerText = 'All (Atk / Def / Str)';
             } else {
                 this.training.name.innerText = character.state.taskArgument;
                 this.training.level.innerText = character.skills[skillNameLower + 'Level'];
@@ -204,11 +207,26 @@ export class CharacterOverviewView extends SubView {
             let diff = (timeForLevel-timeNow) / 1000; // into seconds
 
             this.training.timeForLevel.innerText = this.formatTimeLeftForLevel(diff);
-            this.training.expPerHour.innerText = this.formatAmount(character.state.expPerHour) + ' exp/h';
+            let expPerHour = character.state.expPerHour;
+            let formattedExpPerHour=this.formatAmount(expPerHour);
+            let noExpGain = false;
+
+            if (formattedExpPerHour == 0) {
+                this.training.expPerHour.innerText = 'Not gaining exp';
+                noExpGain = true;
+            } else {
+                this.training.expPerHour.innerText = this.formatAmount(character.state.expPerHour) + ' exp/h';
+            }
+            this.training.expPerHour.classList.toggle('no-exp-gain', noExpGain);
         }
     }
 
     formatTimeLeftForLevel(totalSeconds) {
+
+        if (totalSeconds < 0) {
+            return "Unknown";
+        }
+
         if (totalSeconds < 60) {
             return Math.floor(totalSeconds) + " seconds";
         }
@@ -262,6 +280,9 @@ export class CharacterOverviewView extends SubView {
     }
 
     formatAmount(amount) {
+        if (amount == null || amount <= 0) {
+            return 0;
+        }
         // if the amount is less than 1000, display as-is
         // if amount is less than 1 million, display as K
         // if amount is less than 1 billion, display as M

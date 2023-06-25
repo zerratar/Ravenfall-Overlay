@@ -16,6 +16,7 @@ export default class RavenfallExtension {
             default: new DefaultView(),
             error: new ErrorView()
         };
+        this.appContainer = document.querySelector('#app');
         this.pollTimer = 1;
         this.lastUpdate = 0;
         this.activeView = null;
@@ -26,10 +27,10 @@ export default class RavenfallExtension {
 
     onConnectionLost(data) {
         if (data.code == 1006 || data.code == 1011 || data.gameSessionEnded == false) {
+            console.log('Connection lost. Trying to reconnect...');
             Ravenfall.service.websocket.setSessionId(null);
             Ravenfall.service.requests.setSessionId(null);
             Ravenfall.isAuthenticated = false;
-
             this.onBadServerConnection();
             // 1006 = server died
             // 1011 = we fail to recover from server restart, server has no session matching ours.            
@@ -147,6 +148,23 @@ export default class RavenfallExtension {
 
             this.updateDefaultView();
             return;
+        } 
+        
+        if (Streamer.twitch.id == null || Viewer.userId == null) {
+            // We don't have a twitch id or a viewer id yet. 
+            // record how long we are without an Id to give a better error message to the user
+            Ravenfall.timeWithoutId += delta;
+
+            this.appContainer.classList.toggle('id-unavailable', Ravenfall.timeWithoutId >= 3000);
+            this.views.error.onAnonymousUser();
+            this.setView(this.views.error);
+            return;
+        }
+
+        Ravenfall.timeWithoutId=0;
+
+        if (Ravenfall.timeWithoutId > 0) {
+            this.appContainer.classList.toggle('id-unavailable', false);            
         }
 
         if (this.pollTimer <= 0) {

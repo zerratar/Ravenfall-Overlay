@@ -450,6 +450,10 @@ div#app {
     display:none;
 }
 
+.is-training-all .training-skill-name {
+    margin-bottom: 10px;
+}
+
 
 .training-rate {
     display:flex;
@@ -460,13 +464,16 @@ div#app {
     content: "ETA ";
     font-weight: 300;
 }
+
 .training-skill-time-for-level {
     font-weight: bold;
 }
 .training-skill-rate{
     text-align: center;
 }
-
+.training-skill-rate.no-exp-gain {
+    color: #ff9900;
+}
 .health-progress-value{
     text-align: center;
     font-size: 9pt;
@@ -551,20 +558,20 @@ div#app {
     font-weight: bold;
 }
 
-.rested-time .fa-chevrons-up {
+.rested-time .fa-chevron-up {
     color: #00ff00;
 }
 
-.rested-time .fa-chevrons-down {
+.rested-time .fa-chevron-down {
     color: #ff0000;
     display: none;
 }
 
-.character-details:not(.is-resting) .fa-chevrons-up {
+.character-details:not(.is-resting) .fa-chevron-up {
     display:none;
 }
 
-.character-details:not(.is-resting) .fa-chevrons-down {
+.character-details:not(.is-resting) .fa-chevron-down {
     display:initial;
 }
 
@@ -587,8 +594,22 @@ div#app {
     margin-top: 5px;
 }
 
+.show-if-id-unavailable {
+    display: none;
+}
+
+.id-unavailable .show-if-id-unavailable {
+    display:block;
+}
+
+.can-rest .rest-status,
+.is-resting .rest-status,
 .is-rested .rest-status { display:block;}
+
+.can-rest .rested-time,
+.is-resting .rested-time,
 .is-rested .rested-time {display: block;}
+
 .is-resting .btn-end-rest { display: block; }
 .can-rest .btn-begin-rest {display: block;}
 
@@ -655,7 +676,6 @@ div#app {
     margin-top: 10px;
     justify-content: space-between;
 }
-
 .dungeon-active .dungeon-players-left:before {
     font-weight: 300;
     content: "Players Joined ";

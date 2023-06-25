@@ -68,7 +68,8 @@ export default class WebSocketClient {
   }
 
   onConnectionClose(event) {
-    console.log("connection closed");
+    console.log("connection closed: " + JSON.stringify(event));
+    
     this.isConnecting = false;
     this.connectedToServer = false;
 
@@ -131,7 +132,7 @@ export default class WebSocketClient {
   }
 
   onError(e) {
-    console.log("connection error: " + e);
+    console.log("connection error: " + JSON.stringify(e));
     this.connectedToServer = false;
     this.isConnecting = false;
     this.connectionSuccess(false);

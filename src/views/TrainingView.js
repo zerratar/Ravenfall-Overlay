@@ -88,7 +88,9 @@ export class TrainingView extends SubView {
         
                 if (canTrain) {
                   btn.addEventListener('click', () => {
-                    this.activeTaskBtn.classList.remove("active");
+                    if (this.activeTaskBtn != null) {
+                      this.activeTaskBtn.classList.remove("active");
+                    }
                     this.activeTaskBtn = btn;
                     btn.classList.add("active");
                     Ravenfall.service.setTaskAsync(Ravenfall.getTaskBySkill(skill), Ravenfall.getTaskArgumentBySkill(skill));

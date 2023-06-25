@@ -13,6 +13,10 @@ export class ErrorView extends MainView {
         this.gameNotRunning = new GameNotRunningView(this);
     }
 
+    update() {
+        super.view.update();
+    }
+
     onAnonymousUser() {
         this.setView(this.anonymousUser);
     }

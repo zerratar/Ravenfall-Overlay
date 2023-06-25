@@ -7,20 +7,21 @@ export class LoadingView extends MainView {
     }
 
     onEnter() {
+        console.log("Loading extension...");
         let twitch = window.Twitch.ext;
         // update isLocalTest from modules/states.js
-        if (isLocalTest === true) {
+        if (isLocalTest === true) {http://localhost:5500/src/
+            console.warn("We are running in debug mode. This will not work on Twitch!");
             // note(zerratar): auth token must be set in production
-            Viewer.userId = __your_twitch_id;
+            Viewer.userId = debug_viewer.id;
             Ravenfall.service.setAuthInfo({ 
-                channelId: __streamer_twitch_id, 
-                userId: __your_twitch_id, 
+                channelId: debug_streamer.id, 
+                userId: debug_viewer.id, 
                 token: null,
                 helixToken: null,
             });
         } else {
             if (typeof twitch != 'undefined') {
-
                 twitch.onContext(function (context) {
                     // console.log(context);
                     Ravenfall.service.setContext(context);
@@ -33,6 +34,8 @@ export class LoadingView extends MainView {
                         Ravenfall.service.setAuthInfo(auth);
                     }
                 });
+            } else {
+                console.error("Twitch extension could not be properly initialized. 'window.Twitch.ext' is undefined.");
             }
         }
     }

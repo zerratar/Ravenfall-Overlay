@@ -1,17 +1,28 @@
 var maximum_allowed_characters = 3; // change this if we want to introduce a 4th or 5th character
 // changing maximum: see PlayerManager.cs:27, RavenNest.BusinessLogic Kappa
 
-var isLocalTest = false;
+var dev_users = {
+    zerratar: { id: '72424639', username: 'zerratar' },
+    ravenmmo: { id: '645348224', username: 'ravenmmo' },
+    abby: { id: '39575045', username: 'abbycottontail'},
+    yreon: { id: '232994157', username: 'varietydefenceforce' },
+    c00kies: { id: '83365039', username: 'grandmazc00kies' }
+}
 
-var __streamer_twitch_username = 'zerratar';
-var __streamer_twitch_id = '72424639';
-var __your_twitch_username = 'zerratar';
-var __your_twitch_id = '72424639';
+var isLocalTest = false;
+var useDevServer = false;
+
+if (window.location.href.indexOf('localhost') > -1) {
+    isLocalTest = true;
+}
+
+var debug_streamer = dev_users.c00kies;
+var debug_viewer = dev_users.zerratar;
 
 var ravenfallUrl = 'https://www.ravenfall.stream/';
 var ravenfallApiUrl = ravenfallUrl+'api/';
 var ravenfallWebsocketApiUrl = 'wss://www.ravenfall.stream/api/stream/extension';
-if (isLocalTest) {
+if (useDevServer) {
     ravenfallUrl = 'https://localhost:5001/';
     ravenfallApiUrl = 'https://localhost:5001/api/';
     ravenfallWebsocketApiUrl = 'wss://localhost:5001/api/stream/extension';
@@ -90,6 +101,7 @@ var Ravenfall = {
           secondsUntilNextRaid:0
         }
       },
+    timeWithoutId:0,
     itemsLoaded: false,
     items: [],
     id: null,
@@ -113,7 +125,7 @@ var Ravenfall = {
     },
 
     getTaskArgumentBySkill: function (skill) {
-        if (skill == 'health') {
+        if (skill.toLowerCase() == 'health') {
             return 'all';
         }
         return skill;
@@ -139,7 +151,7 @@ var Ravenfall = {
         }
         const state = Ravenfall.character.state;
         if (state.task.toLowerCase() == 'fighting') {
-            return state.taskArgument.toLowerCase();
+            return this.getTaskArgumentBySkill(state.taskArgument.toLowerCase());
         }
         return state.task.toLowerCase();
     },
@@ -153,7 +165,7 @@ var Ravenfall = {
             return false;
         }
         skill = skill.toLowerCase();
-        return skill == 'attack' || skill == 'health' ||
+        return skill == 'all' || skill == 'attack' || skill == 'health' ||
             skill == 'defense' || skill == 'strength' ||
             skill == 'ranged' || skill == 'magic' ||
             skill == 'healing';

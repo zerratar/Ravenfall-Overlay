@@ -4,13 +4,12 @@
 <head>
     <title>Viewer Page</title>
     <link rel="stylesheet" href="video_overlay.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
 </head>
 
 <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-    <script src="https://kit.fontawesome.com/55112255e0.js" crossorigin="anonymous"></script>
     <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
     <script src="jquery-3.3.1.min.js"></script>
-
 
     <div id="app" class="full-height">
 
@@ -36,6 +35,7 @@
                 <div class="view" data-name="loading">
                     <h2>Loading...</h2>
                     <p style="text-align: center;">Our ravens are checking if Ravenfall is ready to be played.</p>
+                    <p class="show-if-id-unavailable" style="text-align: center;">Psst.. If nothing happens, try refreshing the page and see if it works.</p>
                 </div>
 
                 <div class="view" data-name="error">
@@ -53,9 +53,9 @@
                     </div>
 
                     <div class="view sub-view" data-name="anonymous-user">
-                        <h2>This extension requires your permissions to identify who you are. If no, it is impossible
-                            for
-                            Ravenfall to know which characters are yours.</h2>
+                        <h2>Twitch User Id is Required</h2>
+                        <p style="text-align: center;">Unfortunately this extension is not able to verify who you are. Please make sure you grant the required permissions to share your user Id with this extension. Otherwise it's not possible to for Ravenfall to know which characters are yours.</p>
+                        <p style="text-align: center;">If you're seeing this page but have granted permissions to this extension, please try revoking and granting them again.</p>
                     </div>
                 </div>
 
@@ -93,23 +93,23 @@
 
                             <div class="character-resources">
                                 <div class="resource coins">
-                                    <div class="resource-icon"><i class="fa-sharp fa-solid fa-coins"></i></div>
+                                    <div class="resource-icon"><i class="fa-solid fa-coins"></i></div>
                                     <div class="resource-value">10000</div>
                                 </div>
                                 <div class="resource wood">
-                                    <div class="resource-icon"><i class="fa-sharp fa-solid fa-tree"></i></div>
+                                    <div class="resource-icon"><i class="fa-solid fa-tree"></i></div>
                                     <div class="resource-value">10000</div>
                                 </div>
                                 <div class="resource ore">
-                                    <div class="resource-icon"><i class="fa-sharp fa-solid fa-pickaxe"></i></div>
+                                    <div class="resource-icon"><i class="fa-solid fa-mountain"></i></div>
                                     <div class="resource-value">10000</div>
                                 </div>
                                 <div class="resource fish">
-                                    <div class="resource-icon"><i class="fa-sharp fa-solid fa-fish"></i></div>
+                                    <div class="resource-icon"><i class="fa-solid fa-fish"></i></div>
                                     <div class="resource-value">10000</div>
                                 </div>
                                 <div class="resource wheat">
-                                    <div class="resource-icon"><i class="fa-sharp fa-regular fa-wheat"></i></div>
+                                    <div class="resource-icon"><i class="fa-solid fa-wheat-awn"></i></div>
                                     <div class="resource-value">10000</div>
                                 </div>
                             </div>
@@ -135,8 +135,8 @@
                                 <div class="rested-time">
                                     <span class="label">You are currently rested for</span>&nbsp;<span
                                         class="time">??</span>
-                                    <i class="icon fa-sharp fa-solid fa-chevrons-up"></i>
-                                    <i class="icon fa-sharp fa-solid fa-chevrons-down"></i>
+                                    <i class="icon fa-solid fa-chevron-up"></i>
+                                    <i class="icon fa-solid fa-chevron-down"></i>
                                 </div>
                                 <div class="btn btn-begin-rest">Rest</div>
                                 <div class="btn btn-end-rest">Stop resting</div>
