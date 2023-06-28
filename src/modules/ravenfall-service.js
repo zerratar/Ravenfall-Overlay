@@ -174,6 +174,7 @@ export default class RavenfallService {
           character.state.joinedDungeon = false;
           character.state.inOnsen = false;
           character.state.inRaid = false;
+          character.state.onFerry = character.state.island == null || character.state.island === island[0];
 
           switch(characterState[data.state]) {
             case "Raid": character.state.inRaid = true; break;
@@ -183,11 +184,16 @@ export default class RavenfallService {
             case "Onsen": character.state.inOnsen = true; break;
           }
 
-          character.state.taskArgument = Ravenfall.getSkillNameByIndex(data.trainingSkillIndex);
-          if (Ravenfall.isCombatSkill(character.state.taskArgument)) {
-            character.state.task = "Fighting";
+          if (data.trainingSkillIndex == -1) {
+            character.state.taskArgument = null;
+            character.state.task = null;
           } else {
-            character.state.task = character.state.taskArgument;
+            character.state.taskArgument = Ravenfall.getSkillNameByIndex(data.trainingSkillIndex);
+            if (Ravenfall.isCombatSkill(character.state.taskArgument)) {
+              character.state.task = "Fighting";
+            } else {
+              character.state.task = character.state.taskArgument;
+            }
           }
 
         }

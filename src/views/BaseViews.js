@@ -19,7 +19,6 @@ export class View {
     }
 
     onEnter() {
-        
         console.log('on enter ' + this.constructor.name);
     }
 

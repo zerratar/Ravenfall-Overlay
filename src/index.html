@@ -5,6 +5,7 @@
     <title>Viewer Page</title>
     <link rel="stylesheet" href="video_overlay.css">
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <script src="utilities.js"></script>
 </head>
 
 <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
@@ -61,6 +62,17 @@
 
                 <div class="view" data-name="default">
 
+                    <div class="view-tabs">
+                        <div class="btn btn-view-tab" data-navigation='character-overview'>Overview</div>
+                        <div class="btn btn-view-tab" data-navigation='training'>Training</div>
+                        <div class="btn btn-view-tab" data-navigation='inventory'>Inventory</div>
+                        <div class="btn btn-view-tab" data-navigation='islands'>Sailing</div>                        
+                    </div>
+
+                    <div class="view sub-view" data-name="initialize">
+                        <h2>Loading...</h2>
+                        <p style="text-align: center;">Hold on to your Ravens, you will be able to play soon!</p>
+                    </div>
                     <div class="view sub-view" data-name="create-account">
                         <h2>You don't seem to have any characters.<br />First time playing?</h2>
                         <a class="btn btn-create-account">Click here or type !join in chat</a>
@@ -73,7 +85,6 @@
                     </div>
 
                     <div class="view sub-view" data-name="character-overview">
-                        <!-- <h2 class="view-header">Overview</h2> -->
                         <div class="character-details">
 
                             <!-- character names are split into 3 parts: 
@@ -132,6 +143,9 @@
                             </div>
 
                             <div class="rest-status">
+                                <div class="rest-help">
+                                    <div class="rest-help-text"><i class="fa-solid fa-info"></i>&nbsp;You can rest on this island, while rested you gain 2x more experience.</div>
+                                </div>
                                 <div class="rested-time">
                                     <span class="label">You are currently rested for</span>&nbsp;<span
                                         class="time">??</span>
@@ -140,6 +154,10 @@
                                 </div>
                                 <div class="btn btn-begin-rest">Rest</div>
                                 <div class="btn btn-end-rest">Stop resting</div>
+                            </div>
+
+                            <div class="ferry-animation">
+                                <img src="imgs/disney-mickey.gif" />
                             </div>
 
                             <div class="dungeon-status">
@@ -195,7 +213,6 @@
                     </div>
 
                     <div class="view sub-view" data-name="inventory">
-                        <h2 class="view-header">Inventory</h2>
                         <div class="inventory-items">
                             <div class="inventory-item {classList}">
                                 <div class="inventory-item-amount">{amount}</div>
@@ -206,7 +223,6 @@
                     </div>
 
                     <div class="view sub-view" data-name="islands">
-                        <h2 class="view-header">Sailing</h2>
                         <div class="island-list">
 
                             <div class="island home" data-name="home">
@@ -324,7 +340,6 @@
                     </div>
 
                     <div class="view sub-view" data-name="training">
-                        <h2 class="view-header">Training</h2>
                         <div class="character-stats">
                             <div class="character-stat btn-{SkillName} {trainable}" title="">
                                 <div class="stats-identifier">
@@ -348,14 +363,8 @@
                     <div class="view sub-view" data-name="clan">
                         <h2 class="view-header">Clan</h2>
                     </div>
-
-                    <div class="view-tabs">
-                        <div class="btn btn-view-tab" data-navigation='character-overview'>Overview</div>
-                        <div class="btn btn-view-tab" data-navigation='training'>Training</div>
-                        <div class="btn btn-view-tab" data-navigation='inventory'>Inventory</div>
-                        <div class="btn btn-view-tab" data-navigation='islands'>Sailing</div>
-                        <div class="btn btn-leave-game">leave</div>
-                    </div>
+                    
+                    <div class="btn btn-leave-game">Change Character</div>
                 </div>
 
                 <div class="debug-info">

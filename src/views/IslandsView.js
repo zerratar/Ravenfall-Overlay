@@ -30,7 +30,7 @@ export class IslandsView extends SubView {
     onCharacterStateUpdated(character) {
         let islandName = character.state.island;
         if (islandName == null) {
-            islandName = 'ferry';
+            islandName = 'Ferry';
         }
 
         const currentIsland = islandName.toLowerCase();
@@ -47,7 +47,7 @@ export class IslandsView extends SubView {
         }
 
         if (character.state.destination == null) {
-            character.state.destination = "ferry";
+            character.state.destination = "Ferry";
         }
         const destination = character.state.destination.toLowerCase();
         if (destination != "ferry") {

@@ -19,7 +19,6 @@ export class TrainingView extends SubView {
       this.onCharacterUpdated(this.activeCharacter);
     }
 
-
     onCharacterUpdated(character) {
         this.activeCharacter = character;
         this.characterStats.innerHTML = '';
@@ -60,7 +59,7 @@ export class TrainingView extends SubView {
                   .replace('{SkillName}', skill)
                   .replace('{SkillName}', skill)
                   .replace('{SkillLevel}', level)
-                  .replace('{SkillExperience}', experience)
+                  .replace('{SkillExperience}', formatExp(experience))
                   .replace('{SkillPercent}', percent);
         
                   // remove progress bar for "is all"
@@ -76,12 +75,12 @@ export class TrainingView extends SubView {
 
                 if (currentSkill == skill) {
                   btn.classList.add("active");
-                  btn.title = 'You\'re currently training this skill. (Level Progress ' + percent + '%, Exp: ' + Math.floor(experience) + ')';
+                  btn.title = 'You\'re currently training this skill. (Level Progress ' + percent + '%, XP: ' + formatExp(experience) + ')';
                   this.activeTaskBtn = btn;
                 } else {
                   btn.title =  canTrain 
-                    ? 'Click to train ' + skill + ' (Level Progress ' + percent + '%)'
-                    : skill + ' (Level Progress ' + percent + '%)';
+                    ? 'Click to train ' + skill + ' (Level Progress ' + percent + '%, XP: ' + formatExp(experience) + ')'
+                    : skill + ' (Level Progress ' + percent + '%, XP: ' + formatExp(experience) + ')';
                 }
         
                 btn.querySelector('.stats-progress-value').style.width = percent + '%';

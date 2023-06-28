@@ -1,4 +1,5 @@
 import { MainView } from "./BaseViews.js";
+import { InitializeView } from "./InitializeView.js";
 import { CreateAccountView } from "./CreateAccountView.js";
 import { CharacterSelectionView } from './CharacterSelectionView.js';
 import { CharacterOverviewView } from './CharacterOverviewView.js';
@@ -13,6 +14,13 @@ export class DefaultView extends MainView {
     constructor() {
         super('default');
 
+        this.leaveGameBtn = document.querySelector('.btn-leave-game');
+        this.leaveGameBtn .addEventListener('click', async () => {
+            await Ravenfall.service.leaveSessionAsync();
+            Ravenfall.extension.onCharacterUpdated(null);
+        });
+
+        this.initialize = new InitializeView(this);
         this.createAccount = new CreateAccountView(this);
         this.characterSelection = new CharacterSelectionView(this);
         this.characterOverview = new CharacterOverviewView(this);
@@ -27,6 +35,7 @@ export class DefaultView extends MainView {
         this.lastActiveButton = null;
 
         this.views = [
+            this.initialize,
             this.createAccount,
             this.characterSelection,
             this.characterOverview,
@@ -39,6 +48,10 @@ export class DefaultView extends MainView {
         ];
 
         this.setupNavigationButtons();
+    }
+
+    onEnter() {
+        this.onInitialize();
     }
 
     setupNavigationButtons() {
@@ -68,50 +81,62 @@ export class DefaultView extends MainView {
             elm.classList.add('active');
             this.lastActiveButton = elm;
         }
-        
+
         this.setView(view);
     }
 
     hideNavigation() {
+        this.leaveGameBtn.classList.add('hidden');
         this.navigationButtonsContainer.classList.add('hidden');
     }
+
     showNavigation() {
+        this.leaveGameBtn.classList.remove('hidden');
         this.navigationButtonsContainer.classList.remove('hidden');
     }
 
     update() {
-        if ((this.activeSubView == null || this.activeSubView == this.characterSelection) && Ravenfall.character != null) {
+
+        if ((this.activeSubView == null || this.activeSubView == this.characterSelection || this.activeSubView == this.initialize) && Ravenfall.character != null) {
             this.setViewAndUpdateNavigation(this.characterOverview);
             // this.setViewAndUpdateNavigation(this.training);
+        } else if (Ravenfall.character != null) {
+            // ensure we have navigation visible
+            this.showNavigation();
         }
     }
 
     onCharacterUpdated(character) {
-
+        this.inventory.onCharacterUpdated(character);
         if (character != null) {
             this.characterOverview.onCharacterUpdated(character);
-            this.training.onCharacterUpdated(character); 
+            this.training.onCharacterUpdated(character);
             this.islandsView.onCharacterUpdated(character);
-            this.inventory.onCharacterUpdated(character);
             if (this.view && typeof this.view.onCharacterUpdated != 'undefined') {
                 this.view.onCharacterUpdated(character);
             }
-
-            this.showNavigation();
+            if (this.activeSubView != this.initialize) {
+                this.showNavigation();
+            }
             // console.log('We have a character in game');
-        } 
+        }
         // else {
         //     console.warn('Character removed from game?');
         // }
     }
 
-    onShowAccountCreation() {        
+    onInitialize() {
+        this.setViewAndUpdateNavigation(this.initialize);
+        this.hideNavigation();
+    }
+
+    onShowAccountCreation() {
         this.setViewAndUpdateNavigation(this.createAccount);
         this.hideNavigation();
     }
 
     onShowCharacterSelection() {
-        this.characterSelection.update();        
+        this.characterSelection.update();
         this.setViewAndUpdateNavigation(this.characterSelection);
         this.hideNavigation();
     }

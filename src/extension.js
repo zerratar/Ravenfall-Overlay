@@ -149,7 +149,7 @@ export default class RavenfallExtension {
             this.updateDefaultView();
             return;
         } 
-        
+
         if (Streamer.twitch.id == null || Viewer.userId == null) {
             // We don't have a twitch id or a viewer id yet. 
             // record how long we are without an Id to give a better error message to the user

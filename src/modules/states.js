@@ -16,7 +16,7 @@ if (window.location.href.indexOf('localhost') > -1) {
     isLocalTest = true;
 }
 
-var debug_streamer = dev_users.c00kies;
+var debug_streamer = dev_users.zerratar;
 var debug_viewer = dev_users.zerratar;
 
 var ravenfallUrl = 'https://www.ravenfall.stream/';

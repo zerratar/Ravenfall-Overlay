@@ -5,8 +5,8 @@ export class CharacterOverviewView extends SubView {
         super(parentView, 'character-overview');
 
         this.activeCharacter = null;
-        this.container = document.querySelector('.character-details');
 
+        this.container = document.querySelector('.character-details');
         this.btnJoinRaid = document.querySelector('.btn-join-raid');
         this.btnJoinDungeon = document.querySelector('.btn-join-dungeon');
         this.btnBeginRest = document.querySelector('.btn-begin-rest');
@@ -70,8 +70,6 @@ export class CharacterOverviewView extends SubView {
             }
         };
 
-        const leaveGameBtn = document.querySelector('.btn-leave-game');
-
         this.btnJoinRaid.addEventListener('click', async () => {
             await Ravenfall.service.joinRaidAsync();
             // onGameStateUpdated is not necessary to trigger, but it will make the changes immediate
@@ -93,36 +91,32 @@ export class CharacterOverviewView extends SubView {
             this.onGameStateUpdated(Ravenfall.gameState);
         });
 
-        leaveGameBtn.addEventListener('click', async () => {
-            // if (confirm("Are you sure you want to leave the game?") == true) {
-            //     await Ravenfall.service.leaveSessionAsync();
-            //     Ravenfall.extension.onCharacterUpdated(null);
-            // }
-            await Ravenfall.service.leaveSessionAsync();
-            Ravenfall.extension.onCharacterUpdated(null);
-        });
 
         Views.overview = this;
     }
 
     updateCharacterDetails(character) {
-        var isRested = character.state.restedTime > 0;
-        var isTrainingAll = character.state.taskArgument != null && character.state.taskArgument.toLowerCase() === 'all';
+        let isRested = character.state.restedTime > 0;
+        let isTrainingAll = character.state.taskArgument != null && character.state.taskArgument.toLowerCase() === 'all';
+        let onFerry = character.state.onFerry === true || character.state.island === null || character.state.island === 'Ferry';
+        let isCaptain = character.state.isCaptain === true;
+
         this.container.classList.toggle('is-training', character.state.taskArgument != null && character.state.taskArgument.length > 0);
         this.container.classList.toggle('is-training-all', isTrainingAll);
-
         this.container.classList.toggle('is-rested', isRested);
+        this.container.classList.toggle('is-captain', isCaptain);
+
         this.container.classList.toggle('in-dungeon', character.state.inDungeon === true || character.state.joinedDungeon === true);
         this.container.classList.toggle('in-raid', character.state.inRaid === true);
         this.container.classList.toggle('in-duel', character.state.inDuel === true);
         this.container.classList.toggle('in-arena', character.state.inArena === true);
-        this.container.classList.toggle('on-ferry', character.state.onFerry === true);
+        this.container.classList.toggle('on-ferry', onFerry);
 
         this.combatLevel.innerText = character.combatLevel;
         this.characterName.username.innerText = character.name;
         this.characterName.alias.innerText = character.alias;
         this.characterName.index.innerText = '#' + character.characterIndex;
-        this.restedTimeLeft.innerText = this.formatTimeShort(character.state.restedTime);
+        this.restedTimeLeft.innerText = formatTimeShort(character.state.restedTime);
 
         this.updateResources(character);
         this.updateTraining(character);
@@ -144,7 +138,7 @@ export class CharacterOverviewView extends SubView {
         this.raid.level.innerText = Ravenfall.gameState.raid.bossCombatLevel;
         this.raid.secondsLeft.innerText = Math.floor(raidEndsSeconds)  + ' seconds left';//this.formatTime();
         this.raid.health.fill.style.width = this.raid.health.percent * 100 + '%';
-        this.raid.health.value.innerText = this.formatAmount(this.raid.health.currentValue) + ' / ' + this.formatAmount(this.raid.health.maxValue);
+        this.raid.health.value.innerText = formatAmount(this.raid.health.currentValue) + ' / ' + formatAmount(this.raid.health.maxValue);
     }
 
     updateDungeon() {
@@ -165,15 +159,15 @@ export class CharacterOverviewView extends SubView {
         this.dungeon.level.innerText = Ravenfall.gameState.dungeon.bossCombatLevel;
         this.dungeon.secondsLeft.innerText = dungeonStartsSeconds > 0 ? (Math.floor(dungeonStartsSeconds) + 's') : '';//this.formatTime();
         this.dungeon.health.fill.style.width = this.dungeon.health.percent * 100 + '%';
-        this.dungeon.health.value.innerText = this.formatAmount(this.dungeon.health.currentValue) + ' / ' + this.formatAmount(this.dungeon.health.maxValue);
+        this.dungeon.health.value.innerText = formatAmount(this.dungeon.health.currentValue) + ' / ' + formatAmount(this.dungeon.health.maxValue);
     }
 
     updateResources(character) {
-        this.resources.coins.innerText = this.formatAmount(character.resources.coins);
-        this.resources.wood.innerText = this.formatAmount(character.resources.wood);
-        this.resources.ore.innerText = this.formatAmount(character.resources.ore);
-        this.resources.wheat.innerText = this.formatAmount(character.resources.wheat);
-        this.resources.fish.innerText = this.formatAmount(character.resources.fish);
+        this.resources.coins.innerText = formatAmount(character.resources.coins);
+        this.resources.wood.innerText = formatAmount(character.resources.wood);
+        this.resources.ore.innerText = formatAmount(character.resources.ore);
+        this.resources.wheat.innerText = formatAmount(character.resources.wheat);
+        this.resources.fish.innerText = formatAmount(character.resources.fish);
     }
 
     updateTraining(character) {
@@ -194,7 +188,7 @@ export class CharacterOverviewView extends SubView {
 
                 this.training.progress.fill.style.width = percent + '%';
                 
-                this.training.progress.value.title = Math.floor(currentExp) + " exp";
+                this.training.progress.value.title = formatExp(currentExp) + " XP";
                 this.training.progress.value.innerText = '('+percent + '%)';
             }
 
@@ -207,15 +201,15 @@ export class CharacterOverviewView extends SubView {
             let diff = (timeForLevel-timeNow) / 1000; // into seconds
 
             this.training.timeForLevel.innerText = this.formatTimeLeftForLevel(diff);
-            let expPerHour = character.state.expPerHour;
-            let formattedExpPerHour=this.formatAmount(expPerHour);
+            let expPerHour = character.state.expPerHour;            
+            let formattedExpPerHour= formatExp(expPerHour);
             let noExpGain = false;
 
             if (formattedExpPerHour == 0) {
                 this.training.expPerHour.innerText = 'Not gaining exp';
                 noExpGain = true;
             } else {
-                this.training.expPerHour.innerText = this.formatAmount(character.state.expPerHour) + ' exp/h';
+                this.training.expPerHour.innerText = formatExp(character.state.expPerHour) + ' XP/H';
             }
             this.training.expPerHour.classList.toggle('no-exp-gain', noExpGain);
         }
@@ -234,27 +228,37 @@ export class CharacterOverviewView extends SubView {
         let seconds = Math.floor(totalSeconds % 60);
         let totalMinutes = Math.floor(totalSeconds / 60);
         if (totalMinutes < 60) {
+            if (seconds == 0) {
+                return totalMinutes + " mins";    
+            }
             return totalMinutes + " mins, " +  seconds + " seconds";
         }
 
         let minutes = (totalMinutes % 60);
         let totalHours = Math.floor(totalMinutes / 60);
         if (totalHours < 24) {
+            if (minutes == 0) { 
+                return totalHours + " hours";
+            }
             return totalHours + " hours, " + minutes + " mins";
         }
 
+        let hours = Math.floor(totalHours % 24);
         let totalDays = Math.floor(totalHours / 24);
-        if (totalDays <= 7) { 
-            return "Less than a week";
+        if (totalDays <= 30) { 
+            if (hours == 0) {
+                return totalDays + " days";
+            }
+            return totalDays + " days, " + hours + " hours";
         }
 
-        if (totalDays <= 14) { 
-            return "2 weeks";
-        }
+        // if (totalDays <= 14) { 
+        //     return "2 weeks";
+        // }
         
-        if (totalDays <= 21) { 
-            return "3 weeks";
-        }
+        // if (totalDays <= 21) { 
+        //     return "2-3 weeks";
+        // }
 
         if (totalDays < 1000) {
             return totalDays + " days";
@@ -262,53 +266,6 @@ export class CharacterOverviewView extends SubView {
 
         return "unknown";
     }
-
-    formatTimeShort(totalSeconds) {
-        // display the totalSeconds as seconds if less than 60, otherwise display as minutes,
-        // if less than 60, otherwise display as hours
-
-        if (totalSeconds < 60) {
-            return totalSeconds + "s";
-        }
-        let totalMinutes = Math.floor(totalSeconds / 60);
-        if (totalMinutes < 60) {
-            return totalMinutes + "m";
-        }
-
-        let totalHours = Math.floor(totalMinutes / 60);
-        return totalHours + "h+";
-    }
-
-    formatAmount(amount) {
-        if (amount == null || amount <= 0) {
-            return 0;
-        }
-        // if the amount is less than 1000, display as-is
-        // if amount is less than 1 million, display as K
-        // if amount is less than 1 billion, display as M
-        // if amount is less than 1 trillion, display as B
-        // if amount is less than 1 quadrillion, display as T
-
-        if (amount < 1000) {
-            return amount;
-        }
-
-        if (amount < 1000000) {
-            return (amount / 1000).toFixed(1) + "K";
-        }
-
-        if (amount < 1000000000) {
-            return (amount / 1000000).toFixed(1) + "M";
-        }
-
-        if (amount < 1000000000000) {
-
-            return (amount / 1000000000).toFixed(1) + "B";
-        }
-
-        return (amount / 1000000000000).toFixed(1) + "T";
-    }
-
 
     onRestedUpdated(character, rested) {
         if (this.activeCharacter == null) {

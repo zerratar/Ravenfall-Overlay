@@ -25,8 +25,8 @@
 
 .extension {
     width: 340px;
-    height: 600px;
-    max-height: 100%;
+    /* height: 300px; */
+    /* max-height: 100%; */
     max-width: 100%;
     margin: 0;
     position:relative;
@@ -66,7 +66,7 @@
     outline: none;
     top: initial;
     right: initial;
-    bottom: 10px;
+    top: 10px;
     left: 10px;
     display: flex;
     border-radius: 20px;
@@ -118,11 +118,35 @@
     filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=3, OffY=4, Color='#444')";
 }
 
+.extension .ferry-animation img {
+    padding: 0;
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+    transition: all 0.25s;
+}
+
+.ferry-animation {
+    display:none;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.on-ferry .ferry-animation {
+    display: flex;
+}
+
+.extension .dungeon-active .ferry-animation img {
+    width: 100px;
+    height: 100px;
+}
+
 html,body {
     margin: 0;
     padding: 0;
     height:100%;
     width:100%;
+    overflow:hidden;
 }
 
 div#app {
@@ -201,6 +225,7 @@ div#app {
     flex-wrap: wrap;
     overflow-y: auto;
     justify-content: space-between;
+    height: 430px;
 }
 
 .island {
@@ -304,16 +329,14 @@ div#app {
     display: flex;
     flex-flow: column;
     padding: 20px;
-    padding-bottom: 50px;
+    padding-bottom: 30px;
     padding-top: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
 .view {
     display: none;
-    height: 485px;
-    min-height: 435px;
+    /* height: 485px; */
+    min-height: 385px;
     max-height: 100%;
 }
 
@@ -566,7 +589,9 @@ div#app {
     color: #ff0000;
     display: none;
 }
-
+.character-details {    
+    margin-bottom: 5px;
+}
 .character-details:not(.is-resting) .fa-chevron-up {
     display:none;
 }
@@ -606,9 +631,33 @@ div#app {
 .is-resting .rest-status,
 .is-rested .rest-status { display:block;}
 
-.can-rest .rested-time,
+/* .can-rest .rested-time, */
 .is-resting .rested-time,
 .is-rested .rested-time {display: block;}
+
+.rest-help {
+    display: none;
+}
+
+.can-rest .rest-help {
+    display: flex;
+    flex-flow: row;
+    font-size: 10pt;
+    justify-content: space-around;
+    align-items: flex-start;
+    align-content: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.rest-help-text {
+    text-align: center;
+}
+
+.is-resting .rest-help,
+.is-rested .rest-help {
+    display: none;
+}
 
 .is-resting .btn-end-rest { display: block; }
 .can-rest .btn-begin-rest {display: block;}
@@ -752,8 +801,7 @@ img.inventory-item-img {
     flex-wrap: wrap;
     overflow-y: auto;
     margin-bottom: 10px;
-    padding: 2px;
-    height: 420px;
+    height: 370px;
 }
 .inventory-item{
     width:75px;
@@ -825,10 +873,10 @@ img.inventory-item-img {
     flex-flow: column;
     flex-wrap: wrap;
     height: 372px;
-    max-height: 100%;    
+    /* max-height: 100%; */
     justify-content: space-between;
     align-content: space-around;
-    margin-bottom: 10px;;
+    margin-bottom: 10px;
 }
 
 .stats-identifier {
@@ -885,6 +933,8 @@ img.inventory-item-img {
     display: flex;
     flex-flow: row;    
     gap: .33em;
+    margin-top: 5px;
+    margin-bottom: 15px;
     /* margin-top: 10px; */
 }
 
@@ -908,7 +958,8 @@ img.inventory-item-img {
 }
 
 .sub-view {
-    min-height: 330px;
+    overflow-y: auto;
+    padding: 2px;
 }
 
 .view h2.view-header {
