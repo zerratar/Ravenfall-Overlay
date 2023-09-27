@@ -14,8 +14,11 @@ export class DefaultView extends MainView {
     constructor() {
         super('default');
 
+        this.lastClientVersion = '';
+        this.clientVersion = document.querySelector('.client-version');
+        this.inGameFooter = document.querySelector('.in-game-footer');
         this.leaveGameBtn = document.querySelector('.btn-leave-game');
-        this.leaveGameBtn .addEventListener('click', async () => {
+        this.leaveGameBtn.addEventListener('click', async () => {
             await Ravenfall.service.leaveSessionAsync();
             Ravenfall.extension.onCharacterUpdated(null);
         });
@@ -86,12 +89,14 @@ export class DefaultView extends MainView {
     }
 
     hideNavigation() {
-        this.leaveGameBtn.classList.add('hidden');
+        this.inGameFooter.classList.add('hidden');
+        // this.leaveGameBtn.classList.add('hidden');
         this.navigationButtonsContainer.classList.add('hidden');
     }
 
     showNavigation() {
-        this.leaveGameBtn.classList.remove('hidden');
+        this.inGameFooter.classList.remove('hidden');
+        // this.leaveGameBtn.classList.remove('hidden');
         this.navigationButtonsContainer.classList.remove('hidden');
     }
 
@@ -103,6 +108,12 @@ export class DefaultView extends MainView {
         } else if (Ravenfall.character != null) {
             // ensure we have navigation visible
             this.showNavigation();
+        }
+
+        let v = Streamer.ravenfall.clientVersion;
+        if (v != null && typeof v != 'undefined' && v != this.lastClientVersion) {
+            this.clientVersion.innerHTML = "Streamer is running Ravenfall <span class='version-tag'>v" + v + "</span>";
+            this.lastClientVersion = v;
         }
     }
 

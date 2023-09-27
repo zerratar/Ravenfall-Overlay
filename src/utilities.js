@@ -18,7 +18,7 @@ function formatValue(value, postfix, secondary = "Q") {
 }
 
 function formatExp(amount) {
-    return formatValue(amount, ExpValuePostfix);
+    return formatValue(amount, AmountPostFix, "");//ExpValuePostfix);
 }
 
 function formatAmount(amount) {

@@ -97,7 +97,7 @@ export class CharacterOverviewView extends SubView {
 
     updateCharacterDetails(character) {
         let isRested = character.state.restedTime > 0;
-        let isTrainingAll = character.state.taskArgument != null && character.state.taskArgument.toLowerCase() === 'all';
+        let isTrainingAll = character.state.taskArgument != null && (character.state.taskArgument.toLowerCase() === 'all' || character.state.taskArgument.toLowerCase() === 'health');
         let onFerry = character.state.onFerry === true || character.state.island === null || character.state.island === 'Ferry';
         let isCaptain = character.state.isCaptain === true;
 
@@ -173,11 +173,14 @@ export class CharacterOverviewView extends SubView {
     updateTraining(character) {
         var isTrainingAll = character.state.taskArgument != null 
             && (character.state.taskArgument.toLowerCase() === 'all' || character.state.taskArgument.toLowerCase() === 'health');
+
         if (character.state.taskArgument != null) {
             const skillNameLower = character.state.taskArgument.toLowerCase();
 
             if (isTrainingAll) { 
-                this.training.name.innerText = 'All (Atk / Def / Str)';
+                let html = 'All (Atk / Def / Str)\n';
+                html += 'Level: <span class="training-all attack-level">' + character.skills.attackLevel + '</span> / <span class="training-all defense-level">' + character.skills.defenseLevel + '</span> / <span class="training-all strength-level">' + character.skills.strengthLevel + '</span>';
+                this.training.name.innerHTML = html;
             } else {
                 this.training.name.innerText = character.state.taskArgument;
                 this.training.level.innerText = character.skills[skillNameLower + 'Level'];
@@ -187,7 +190,6 @@ export class CharacterOverviewView extends SubView {
                 const percent = Math.floor(currentProgress * 100);
 
                 this.training.progress.fill.style.width = percent + '%';
-                
                 this.training.progress.value.title = formatExp(currentExp) + " XP";
                 this.training.progress.value.innerText = '('+percent + '%)';
             }

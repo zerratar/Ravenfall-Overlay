@@ -141,7 +141,6 @@ export default class RavenfallService {
 
   onGameStateRequest(data) {
     Ravenfall.gameState = {...data};
-
     if (Views.overview){
       Views.overview.onGameStateUpdated(data);
     }
@@ -175,7 +174,7 @@ export default class RavenfallService {
           character.state.inOnsen = false;
           character.state.inRaid = false;
           character.state.onFerry = character.state.island == null || character.state.island === island[0];
-
+          character.state.isCaptain = data.isCaptain === true;
           switch(characterState[data.state]) {
             case "Raid": character.state.inRaid = true; break;
             case "Arena": character.state.inArena = true; break;
@@ -220,6 +219,7 @@ export default class RavenfallService {
     const character = Ravenfall.getCharacterById(data.playerId);
     if (character) {
       character.state.restedTime = data.restedTime;
+      character.state.restedUpdated = new Date();
     }
 
     if (Views.overview) {

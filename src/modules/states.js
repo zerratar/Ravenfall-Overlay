@@ -6,7 +6,8 @@ var dev_users = {
     ravenmmo: { id: '645348224', username: 'ravenmmo' },
     abby: { id: '39575045', username: 'abbycottontail'},
     yreon: { id: '232994157', username: 'varietydefenceforce' },
-    c00kies: { id: '83365039', username: 'grandmazc00kies' }
+    c00kies: { id: '83365039', username: 'grandmazc00kies' },
+    madgarou: { id: '158976550', username: 'madgarou' },
 }
 
 var isLocalTest = false;

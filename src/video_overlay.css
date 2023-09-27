@@ -121,6 +121,8 @@
 .extension .ferry-animation img {
     padding: 0;
     margin: 0;
+    width: 220px;
+    height: 180px;
     margin-left: auto;
     margin-right: auto;
     transition: all 0.25s;
@@ -132,7 +134,18 @@
     margin-bottom: 20px;
 }
 
-.on-ferry .ferry-animation {
+.on-ferry .ferry-animation.sailing {
+    display: flex;
+}
+
+.on-ferry.is-captain .ferry-animation.sailing {
+    display:none;
+}
+
+.ferry-animation.captain {
+    display: none;
+}
+.is-captain .ferry-animation.captain {
     display: flex;
 }
 
@@ -225,13 +238,12 @@ div#app {
     flex-wrap: wrap;
     overflow-y: auto;
     justify-content: space-between;
-    height: 430px;
+    height: 400px;
 }
 
 .island {
     display:flex;
     flex-flow: column;
-    margin: 10px 0;
     padding: 5px;
 
     margin-bottom: 5px;
@@ -432,6 +444,17 @@ div#app {
     margin-bottom: 15px;
 }
 
+.client-version {
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: -15px;
+    font-size: 9pt;    
+}
+
+.client-version .version-tag {
+    font-weight: bold;
+}
+
 .resource {
     display: flex;
     font-size: 10pt;
@@ -473,14 +496,22 @@ div#app {
     display:none;
 }
 
-.is-training-all .training-skill-name {
+/* .is-training-all .training-skill-name {
     margin-bottom: 10px;
-}
-
+} */
 
 .training-rate {
     display:flex;
     justify-content: space-between;
+}
+
+.is-training-all .training-skill-time-for-level {
+    display:none;
+}
+
+.is-training-all .training-skill-rate{
+    text-align: center;
+    flex-grow: 1;
 }
 
 .training-skill-time-for-level:before {

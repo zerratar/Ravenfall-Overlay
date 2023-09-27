@@ -68,7 +68,7 @@ export default class RavenfallExtension {
 
         this.activeView.onCharacterUpdated(character);
 
-        if (character!=null && Views.overview) {
+        if (character != null && Views.overview) {
             Views.overview.onGameStateUpdated(Ravenfall.gameState);
         }
     }
@@ -88,6 +88,7 @@ export default class RavenfallExtension {
     async update(time) {
         const delta = time - this.lastUpdate;
         await this.handleGameStatePollAsync(delta);
+        this.updateInternal(delta);
         this.lastUpdate = time;
         window.requestAnimationFrame(async t => await this.update(t));
     }
@@ -130,9 +131,49 @@ export default class RavenfallExtension {
     updateDefaultView() {
         if (this.activeView != this.views.default) {
             this.setView(this.views.default);
-        } 
-        
+        }
+
         this.activeView.update();
+    }
+
+    // bad naming convention
+    // but this is suppose to update things that we want to give a more responsive feel to
+    // like character resting amount, or the time left on a level up, raid timeout, dungeon start, etc.
+    updateInternal(deltaMs) {
+        // check if we have an active character, otherwise return.
+        let char = Ravenfall.service.getActiveCharacter();
+        if (char == null || typeof char == 'undefined') {
+            return; // nope.
+        }
+        
+        // Handle rested state
+        this.updateRestedTime(deltaMs, char);
+
+        // check if we have a game state that we could update. example: raid timeout, dungeon start, etc.
+        if (Ravenfall.gameState == null || typeof Ravenfall.gameState == 'undefined') {
+            return; // no game state avialable. so lets say bye bye
+        }
+    }
+
+    updateRestedTime(deltaMs, char) {
+        let restedLastUpdated = char.state.restedUpdated;
+        if (typeof restedLastUpdated == 'undefined') {
+            restedLastUpdated = new Date();
+        }
+
+        let dateNow = new Date();
+        let elapsedSeconds = Math.abs(dateNow - restedLastUpdated) / 1000;
+        let deltaSeconds = deltaMs / 1000;
+        if (elapsedSeconds > 0){
+            let restedSeconds = char.state.restedTime;
+            if (char.state.inOnsen === true) {
+                // tick up
+                char.state.restedTime += (deltaSeconds*2);
+            } else {
+                // tick down
+                char.state.restedTime -= deltaSeconds;
+            }
+        }
     }
 
     async handleGameStatePollAsync(delta) {
@@ -148,7 +189,7 @@ export default class RavenfallExtension {
 
             this.updateDefaultView();
             return;
-        } 
+        }
 
         if (Streamer.twitch.id == null || Viewer.userId == null) {
             // We don't have a twitch id or a viewer id yet. 
@@ -161,10 +202,10 @@ export default class RavenfallExtension {
             return;
         }
 
-        Ravenfall.timeWithoutId=0;
+        Ravenfall.timeWithoutId = 0;
 
         if (Ravenfall.timeWithoutId > 0) {
-            this.appContainer.classList.toggle('id-unavailable', false);            
+            this.appContainer.classList.toggle('id-unavailable', false);
         }
 
         if (this.pollTimer <= 0) {
