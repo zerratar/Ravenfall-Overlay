@@ -224,7 +224,7 @@ var debug_viewer = dev_users.tripthefirst;
 var ravenfallHost = 'www.ravenfall.stream';
 
 if (useDevServer) {
-	var ravenfallHost = 'localhost:5001';
+	ravenfallHost = 'localhost:5001';
 }
 
 var ravenfallUrl = 'https://' + ravenfallHost;

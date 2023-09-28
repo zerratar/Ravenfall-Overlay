@@ -16,7 +16,7 @@ var skillNames = [
 	'sailing',
 	'healing',
 	'gathering',
-	'herbalism'
+	'alchemy'
 ];
 var ExpValuePostfix = [' ', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'];
 var AmountPostFix = ['', 'K', 'M', 'B', 'T', 'Q'];
