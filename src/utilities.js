@@ -1,4 +1,23 @@
-
+// [Trip] Temp place for this? As it didn't belong in states.js
+var skillNames = [
+	'attack',
+	'defense',
+	'strength',
+	'health',
+	'woodcutting',
+	'fishing',
+	'mining',
+	'crafting',
+	'cooking',
+	'farming',
+	'slayer',
+	'magic',
+	'ranged',
+	'sailing',
+	'healing',
+	'gathering',
+	'herbalism'
+];
 var ExpValuePostfix = [' ', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'];
 var AmountPostFix = ['', 'K', 'M', 'B', 'T', 'Q'];
 

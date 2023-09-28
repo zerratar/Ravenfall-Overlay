@@ -1,54 +1,6 @@
-var maximum_allowed_characters = 3; // change this if we want to introduce a 4th or 5th character
+// change this if we want to introduce a 4th or 5th character
 // changing maximum: see PlayerManager.cs:27, RavenNest.BusinessLogic Kappa
-
-var dev_users = {
-	zerratar: { id: '72424639', username: 'zerratar' },
-	ravenmmo: { id: '645348224', username: 'ravenmmo' },
-	abby: { id: '39575045', username: 'abbycottontail' },
-	yreon: { id: '232994157', username: 'varietydefenceforce' },
-	c00kies: { id: '83365039', username: 'grandmazc00kies' },
-	madgarou: { id: '158976550', username: 'madgarou' },
-	tripthefirst: { id: '130814585', username: 'tripthefirst' }
-}
-
-var isLocalTest = false;
-var useDevServer = false;
-
-if (window.location.href.indexOf('localhost') > -1) {
-	isLocalTest = true;
-}
-
-var debug_streamer = dev_users.tripthefirst;
-var debug_viewer = dev_users.tripthefirst;
-
-var ravenfallUrl = 'https://www.ravenfall.stream/';
-var ravenfallApiUrl = ravenfallUrl + 'api/';
-var ravenfallWebsocketApiUrl = 'wss://www.ravenfall.stream/api/stream/extension';
-if (useDevServer) {
-	ravenfallUrl = 'https://localhost:5001/';
-	ravenfallApiUrl = 'https://localhost:5001/api/';
-	ravenfallWebsocketApiUrl = 'wss://localhost:5001/api/stream/extension';
-}
-
-var skillNames = [
-	'attack',
-	'defense',
-	'strength',
-	'health',
-	'woodcutting',
-	'fishing',
-	'mining',
-	'crafting',
-	'cooking',
-	'farming',
-	'slayer',
-	'magic',
-	'ranged',
-	'sailing',
-	'healing',
-	'gathering',
-	'herbalism'
-];
+var maximum_allowed_characters = 3;
 
 // not guaranteed to be loaded, but we need to store it somewhere for easy access.
 // another approach is to have a ViewProvider that handles all views and their creation
@@ -118,7 +70,7 @@ var Ravenfall = {
 	service: null,
 	extension: null,
 
-	pollInterval: 3000,
+	pollInterval: 1000,
 
 	getTaskBySkill: function (skill) {
 		if (Ravenfall.isCombatSkill(skill)) {
@@ -194,7 +146,6 @@ var Streamer = {
 	updated: null,
 };
 
-
 var ViewStates = {
 	NONE: 'NONE',
 	GAME_NOT_RUNNING: 'GAME_NOT_RUNNING',
@@ -209,3 +160,72 @@ var ViewStates = {
 
 	BAD_SERVER_CONNECTION: 'BAD_SERVER_CONNECTION'
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [Trip] Dev config stuff, I moved this down here so it wouldn't be easily exposed on stream...
+// But in all honesty this doesnt belong here.
+var dev_users = {
+	zerratar: { id: '72424639', username: 'zerratar' },
+	ravenmmo: { id: '645348224', username: 'ravenmmo' },
+	abby: { id: '39575045', username: 'abbycottontail' },
+	yreon: { id: '232994157', username: 'varietydefenceforce' },
+	c00kies: { id: '83365039', username: 'grandmazc00kies' },
+	madgarou: { id: '158976550', username: 'madgarou' },
+	tripthefirst: { id: '130814585', username: 'tripthefirst' }
+}
+
+var isLocalTest = false;
+var useDevServer = false;
+
+if (window.location.href.indexOf('localhost') > -1 || window.location.href.indexOf('127.0.0.1') > -1) { // 127.0.0.1 added as it's the default for "Live Server" VScode Addon.
+	isLocalTest = true;
+}
+
+var debug_streamer = dev_users.tripthefirst;
+var debug_viewer = dev_users.tripthefirst;
+
+var ravenfallUrl = 'www.ravenfall.stream/api';
+
+if (useDevServer) {
+	ravenfallUrl = 'localhost:5001';
+}
+
+var ravenfallApiUrl = 'https://' + ravenfallUrl + '/';
+var ravenfallWebsocketApiUrl = 'wss://' + ravenfallUrl + 'stream/extension';
