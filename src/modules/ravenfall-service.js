@@ -1,9 +1,7 @@
 import Requests from "./requests.js";
 import WebSocketClient from "./websocket-client.js";
 
-var authApi = ravenfallApiUrl + 'auth';
-var twitchApi = ravenfallApiUrl + 'twitch';
-var extensionApi = twitchApi + '/extension';
+var extensionApi = ravenfallApiUrl + 'twitch/extension';
 var playersApi = ravenfallApiUrl + 'players';
 
 var island = [
