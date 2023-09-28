@@ -221,11 +221,12 @@ if (window.location.href.indexOf('localhost') > -1 || window.location.href.index
 var debug_streamer = dev_users.tripthefirst;
 var debug_viewer = dev_users.tripthefirst;
 
-var ravenfallUrl = 'www.ravenfall.stream/api';
+var ravenfallHost = 'www.ravenfall.stream';
 
 if (useDevServer) {
-	ravenfallUrl = 'localhost:5001';
+	var ravenfallHost = 'localhost:5001';
 }
 
-var ravenfallApiUrl = 'https://' + ravenfallUrl + '/';
-var ravenfallWebsocketApiUrl = 'wss://' + ravenfallUrl + 'stream/extension';
+var ravenfallUrl = 'https://' + ravenfallHost;
+var ravenfallApiUrl = ravenfallUrl + '/api/';
+var ravenfallWebsocketApiUrl = 'wss://' + ravenfallHost + '/api/stream/extension';
