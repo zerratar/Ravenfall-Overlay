@@ -1016,7 +1016,7 @@
   .character-stat.active,
   .character-stat.active:hover,
   .character-stat.active:active {
-      background-color: rgb(0, 81, 255);
+      outline: 2px solid #0051ff;
   }
 
   .character-stat .stats-level {
