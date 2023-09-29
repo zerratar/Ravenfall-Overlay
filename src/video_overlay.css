@@ -231,9 +231,11 @@
 
   .btn.btn-close-panel,
   .btn.btn-refresh-panel {
-      width: 42px;
-      height: 100%;
-      line-height: 40px;
+      padding: 0;
+      margin: 0;
+      padding-right: 20px;
+      height: 20px;
+      line-height: 50px;
       border: 0;
       outline: none;
       border-radius: 0;
@@ -423,6 +425,10 @@
       text-align: center;
       font-weight: 600;
       font-size: 14pt;
+  }
+
+  .character-name .alias {
+      font-size: 8pt;
   }
 
   .character-name span.index {
@@ -942,20 +948,23 @@
   .character-stat {
       display: flex;
       flex-flow: column;
+      flex-wrap: wrap;
+      max-height: 23px;
       width: 108px;
       border: 1px solid #ffffff08;
       background-color: transparent;
-      padding: 8px 15px 8px 15px;
+      padding: 5px 14px 8px 14px;
+      margin: 2px 0 2px 0;
       border-radius: 20px;
       user-select: none;
       cursor: default;
       box-shadow: 0 3px 3px #0016311a;
   }
 
-  .character-stat.btn-all {
+  /* .character-stat.btn-all {
       padding-bottom: 4px;
       padding-top: 12px;
-  }
+  } */
 
   .character-stat.btn-all .stats-progress {
       visibility: hidden;
@@ -976,11 +985,12 @@
       display: flex;
       flex-flow: column;
       flex-wrap: wrap;
-      height: 372px;
+      height: 375px;
       /* max-height: 100%; */
-      justify-content: space-between;
-      align-content: space-around;
+      justify-content: space-evenly;
+      align-content: flex-start;
       margin-bottom: 10px;
+      flex-direction: row;
   }
 
   .stats-identifier {

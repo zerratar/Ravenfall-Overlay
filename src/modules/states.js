@@ -230,3 +230,17 @@ if (useDevServer) {
 var ravenfallUrl = 'https://' + ravenfallHost + '/';
 var ravenfallApiUrl = ravenfallUrl + 'api/';
 var ravenfallWebsocketApiUrl = 'wss://' + ravenfallHost + '/api/stream/extension';
+
+if (isLocalTest || window.location.href.indexOf('letsdohosting.com') > -1) {
+    var btnRefreshPanel = document.createElement('div');
+    var refreshIcon = document.createElement('i');
+
+    btnRefreshPanel.className = 'btn btn-refresh-panel';
+    refreshIcon.className = 'fa fa-refresh';
+
+    btnRefreshPanel.appendChild(refreshIcon);
+
+    var topBar = document.querySelector('.top-bar');
+
+    topBar.appendChild(btnRefreshPanel);
+}
