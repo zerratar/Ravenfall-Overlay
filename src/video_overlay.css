@@ -1000,7 +1000,17 @@
   }
 
   .character-stat {
-      cursor: pointer;
+      display: flex;
+      flex-flow: column;
+      max-height: 23px;
+      width: 108px;
+      border: 1px solid #ffffff08;
+      background-color: transparent;
+      padding: 5px 14px 8px 14px;
+      margin: 2px 0 2px 0;
+      user-select: none;
+      cursor: default;
+      box-shadow: 0 3px 3px #0016311a;
   }
 
   .character-stat.active,
