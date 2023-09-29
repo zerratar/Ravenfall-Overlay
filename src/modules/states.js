@@ -5,160 +5,160 @@ var maximum_allowed_characters = 3;
 // not guaranteed to be loaded, but we need to store it somewhere for easy access.
 // another approach is to have a ViewProvider that handles all views and their creation
 var Views = {
-	islands: null,
-	training: null,
-	inventory: null,
-	marketplace: null,
-	vendor: null,
-	overview: null,
-	characterSelection: null,
-	clan: null,
+    islands: null,
+    training: null,
+    inventory: null,
+    marketplace: null,
+    vendor: null,
+    overview: null,
+    characterSelection: null,
+    clan: null,
 };
 
 var Viewer = {
-	userId: null,
-	opaqueId: null,
-	username: null,
-	displayName: null,
-	service: null,
-	token: null,
-	helixToken: null,
+    userId: null,
+    opaqueId: null,
+    username: null,
+    displayName: null,
+    service: null,
+    token: null,
+    helixToken: null,
 }
 
 var Ravenfall = {
-	twitch: {
-		id: null,
-		username: null,
-		displayName: null
-	},
-	gameState: {
-		playerCount: 0,
-		dungeon: {
-			isActive: false,
-			name: null,
-			hasStarted: false,
-			bossCombatLevel: 0,
-			currentBossHealth: 0,
-			maxBossHealth: 0,
-			playersAlive: 0,
-			playersJoined: 0,
-			enemiesLeft: 0,
-			timeUntilStartSeconds: 0,
-			secondsUntilNextDungeon: 0
-		},
-		raid: {
-			isActive: false,
-			bossCombatLevel: 0,
-			currentBossHealth: 0,
-			maxBossHealth: 0,
-			playersJoined: 0,
-			secondsLeft: 0,
-			secondsUntilNextRaid: 0
-		}
-	},
-	timeWithoutId: 0,
-	itemsLoaded: false,
-	items: [],
-	id: null,
-	characterId: null,
-	character: null,
-	characters: null,
-	token: null,
-	helixToken: null,
-	isAuthenticated: false,
-	updated: null,
-	service: null,
-	extension: null,
+    twitch: {
+        id: null,
+        username: null,
+        displayName: null
+    },
+    gameState: {
+        playerCount: 0,
+        dungeon: {
+            isActive: false,
+            name: null,
+            hasStarted: false,
+            bossCombatLevel: 0,
+            currentBossHealth: 0,
+            maxBossHealth: 0,
+            playersAlive: 0,
+            playersJoined: 0,
+            enemiesLeft: 0,
+            timeUntilStartSeconds: 0,
+            secondsUntilNextDungeon: 0
+        },
+        raid: {
+            isActive: false,
+            bossCombatLevel: 0,
+            currentBossHealth: 0,
+            maxBossHealth: 0,
+            playersJoined: 0,
+            secondsLeft: 0,
+            secondsUntilNextRaid: 0
+        }
+    },
+    timeWithoutId: 0,
+    itemsLoaded: false,
+    items: [],
+    id: null,
+    characterId: null,
+    character: null,
+    characters: null,
+    token: null,
+    helixToken: null,
+    isAuthenticated: false,
+    updated: null,
+    service: null,
+    extension: null,
 
-	pollInterval: 1000,
+    pollInterval: 1000,
 
-	getTaskBySkill: function (skill) {
-		if (Ravenfall.isCombatSkill(skill)) {
-			return 'fighting';
-		}
-		return skill;
-	},
+    getTaskBySkill: function (skill) {
+        if (Ravenfall.isCombatSkill(skill)) {
+            return 'fighting';
+        }
+        return skill;
+    },
 
-	getTaskArgumentBySkill: function (skill) {
-		if (skill.toLowerCase() == 'health') {
-			return 'all';
-		}
-		return skill;
-	},
+    getTaskArgumentBySkill: function (skill) {
+        if (skill.toLowerCase() == 'health') {
+            return 'all';
+        }
+        return skill;
+    },
 
-	getSkillNameByIndex: function (index) {
-		if (index < 0 || index >= skillNames.length) {
-			return null;
-		}
-		return skillNames[index];
-	},
+    getSkillNameByIndex: function (index) {
+        if (index < 0 || index >= skillNames.length) {
+            return null;
+        }
+        return skillNames[index];
+    },
 
-	getCharacterById: function (id) {
-		if (Ravenfall.characters == null || Ravenfall.characters.length == 0) {
-			return null;
-		}
-		return Ravenfall.characters.find(x => x.id == id);
-	},
+    getCharacterById: function (id) {
+        if (Ravenfall.characters == null || Ravenfall.characters.length == 0) {
+            return null;
+        }
+        return Ravenfall.characters.find(x => x.id == id);
+    },
 
-	getCurrentSkill: function () {
-		if (Ravenfall.character == null || Ravenfall.character.state.task == null) {
-			return null;
-		}
-		const state = Ravenfall.character.state;
-		if (state.task.toLowerCase() == 'fighting') {
-			return this.getTaskArgumentBySkill(state.taskArgument.toLowerCase());
-		}
-		return state.task.toLowerCase();
-	},
+    getCurrentSkill: function () {
+        if (Ravenfall.character == null || Ravenfall.character.state.task == null) {
+            return null;
+        }
+        const state = Ravenfall.character.state;
+        if (state.task.toLowerCase() == 'fighting') {
+            return this.getTaskArgumentBySkill(state.taskArgument.toLowerCase());
+        }
+        return state.task.toLowerCase();
+    },
 
-	isCharactersLoaded: function () {
-		return Ravenfall.characters != null && Ravenfall.characters.length > 0;
-	},
+    isCharactersLoaded: function () {
+        return Ravenfall.characters != null && Ravenfall.characters.length > 0;
+    },
 
-	isCombatSkill: function (skill) {
-		if (skill == null) {
-			return false;
-		}
-		skill = skill.toLowerCase();
-		return skill == 'all' || skill == 'attack' || skill == 'health' ||
-			skill == 'defense' || skill == 'strength' ||
-			skill == 'ranged' || skill == 'magic' ||
-			skill == 'healing';
-	},
+    isCombatSkill: function (skill) {
+        if (skill == null) {
+            return false;
+        }
+        skill = skill.toLowerCase();
+        return skill == 'all' || skill == 'attack' || skill == 'health' ||
+            skill == 'defense' || skill == 'strength' ||
+            skill == 'ranged' || skill == 'magic' ||
+            skill == 'healing';
+    },
 };
 
 var Streamer = {
-	twitch: {
-		id: null,
-		username: null,
-		displayName: null
-	},
-	ravenfall: {
-		id: null,
-		clientVersion: null,
-		session: {
-			id: null,
-			playerCount: 0,
-			isActive: false,
-			startedDateTime: null,
-		}
-	},
-	updated: null,
+    twitch: {
+        id: null,
+        username: null,
+        displayName: null
+    },
+    ravenfall: {
+        id: null,
+        clientVersion: null,
+        session: {
+            id: null,
+            playerCount: 0,
+            isActive: false,
+            startedDateTime: null,
+        }
+    },
+    updated: null,
 };
 
 var ViewStates = {
-	NONE: 'NONE',
-	GAME_NOT_RUNNING: 'GAME_NOT_RUNNING',
-	ANONYMOUS_USER: 'ANONYMOUS_USER',
-	NO_USER_ACCOUNT: 'NO_USER_ACCOUNT',
-	ALL_AUTH_OK: 'ALL_AUTH_OK',
-	CHARACTER_SELECTION: 'CHARACTER_SELECTION',
+    NONE: 'NONE',
+    GAME_NOT_RUNNING: 'GAME_NOT_RUNNING',
+    ANONYMOUS_USER: 'ANONYMOUS_USER',
+    NO_USER_ACCOUNT: 'NO_USER_ACCOUNT',
+    ALL_AUTH_OK: 'ALL_AUTH_OK',
+    CHARACTER_SELECTION: 'CHARACTER_SELECTION',
 
-	JOINING_GAME: 'JOINING_GAME',
-	PLAYING: 'PLAYING',
-	GAME_JOIN_FAILED: 'GAME_JOIN_FAILED',
+    JOINING_GAME: 'JOINING_GAME',
+    PLAYING: 'PLAYING',
+    GAME_JOIN_FAILED: 'GAME_JOIN_FAILED',
 
-	BAD_SERVER_CONNECTION: 'BAD_SERVER_CONNECTION'
+    BAD_SERVER_CONNECTION: 'BAD_SERVER_CONNECTION'
 };
 
 
@@ -202,20 +202,20 @@ var ViewStates = {
 // [Trip] Dev config stuff, I moved this down here so it wouldn't be easily exposed on stream...
 // But in all honesty this doesnt belong here.
 var dev_users = {
-	zerratar: { id: '72424639', username: 'zerratar' },
-	ravenmmo: { id: '645348224', username: 'ravenmmo' },
-	abby: { id: '39575045', username: 'abbycottontail' },
-	yreon: { id: '232994157', username: 'varietydefenceforce' },
-	c00kies: { id: '83365039', username: 'grandmazc00kies' },
-	madgarou: { id: '158976550', username: 'madgarou' },
-	tripthefirst: { id: '130814585', username: 'tripthefirst' }
+    zerratar: { id: '72424639', username: 'zerratar' },
+    ravenmmo: { id: '645348224', username: 'ravenmmo' },
+    abby: { id: '39575045', username: 'abbycottontail' },
+    yreon: { id: '232994157', username: 'varietydefenceforce' },
+    c00kies: { id: '83365039', username: 'grandmazc00kies' },
+    madgarou: { id: '158976550', username: 'madgarou' },
+    tripthefirst: { id: '130814585', username: 'tripthefirst' }
 }
 
 var isLocalTest = false;
 var useDevServer = false;
 
-if (window.location.href.indexOf('localhost') > -1 || window.location.href.indexOf('127.0.0.1') > -1) { // 127.0.0.1 added as it's the default for "Live Server" VScode Addon.
-	isLocalTest = true;
+if (window.location.href.indexOf('localhost') > -1 || window.location.href.indexOf('127.0.0.1') > -1 || window.location.href.indexOf('letsdohosting.com') > -1) { // 127.0.0.1 added as it's the default for "Live Server" VScode Addon.
+    isLocalTest = true;
 }
 
 var debug_streamer = dev_users.tripthefirst;
@@ -224,9 +224,9 @@ var debug_viewer = dev_users.tripthefirst;
 var ravenfallHost = 'www.ravenfall.stream';
 
 if (useDevServer) {
-	ravenfallHost = 'localhost:5001';
+    ravenfallHost = 'localhost:5001';
 }
 
-var ravenfallUrl = 'https://' + ravenfallHost;
-var ravenfallApiUrl = ravenfallUrl + '/api/';
+var ravenfallUrl = 'https://' + ravenfallHost + '/';
+var ravenfallApiUrl = ravenfallUrl + 'api/';
 var ravenfallWebsocketApiUrl = 'wss://' + ravenfallHost + '/api/stream/extension';

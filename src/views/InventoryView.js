@@ -54,7 +54,7 @@ export class InventoryView extends SubView {
             console.log("Items has not been loaded yet, while trying to update inventory items.");
             return;
         }
-                
+
         for (let item of this.items) {
             item.updated = false;
         }
@@ -118,7 +118,7 @@ export class InventoryView extends SubView {
             .replace('{enchantment}', inventoryItem.enchantment)
             .replace('{type}', item.type)
             .replace('{category}', item.category)
-            .replace('{url}', window.ravenfallUrl + 'imgs/items/' + item.id + '.png');
+            .replace('{url}', ravenfallUrl + 'imgs/items/' + item.name.toLowerCase().replaceAll(' ', '-').replaceAll('\'', '') + '.png');
 
         return elm;
     }
@@ -153,7 +153,7 @@ export class InventoryView extends SubView {
             .replace('{enchantment}', inventoryItem.enchantment)
             .replace('{type}', item.type)
             .replace('{category}', item.category)
-            .replace('{url}', window.ravenfallUrl + 'imgs/items/' + item.id + '.png');
+            .replace('{url}', ravenfallUrl + 'imgs/items/' + item.name.toLowerCase().replaceAll(' ', '-').replaceAll('\'', '') + '.png');
 
         existing.updated = true;
     }
