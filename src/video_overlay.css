@@ -261,7 +261,7 @@
 
       background-color: #ffffff08;
       box-shadow: 0 3px 3px #00163126;
-      border-radius: 20px;
+      border-radius: 10px;
 
       min-width: 110px;
       max-width: 110px;
@@ -427,10 +427,7 @@
       font-size: 14pt;
   }
 
-  .character-name .alias {
-      font-size: 8pt;
-  }
-
+  .character-name .alias,
   .character-name span.index {
       font-size: 9pt;
       font-weight: 300;
@@ -915,7 +912,7 @@
       margin: 5px;
       display: flex;
       flex-flow: column;
-
+      border-radius: 10px;
       box-shadow: 0 3px 3px #00163126;
   }
 
@@ -955,7 +952,7 @@
       background-color: transparent;
       padding: 5px 14px 8px 14px;
       margin: 2px 0 2px 0;
-      border-radius: 20px;
+      border-radius: 10px;
       user-select: none;
       cursor: default;
       box-shadow: 0 3px 3px #0016311a;
