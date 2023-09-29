@@ -4,6 +4,7 @@ let movingToggleButton = false;
 const extension = document.querySelector('.extension');
 const extensionToggleButton = document.querySelector('.extension-toggle');
 const extensionCloseButton = document.querySelector('.btn-close-panel');
+const extensionRefreshButton = document.querySelector('.btn-refresh-panel');
 const extensionDarkMode = document.querySelector('.btn-toggle-dark-theme');
 
 const storage = window.localStorage;
@@ -206,6 +207,10 @@ extensionToggleButton.addEventListener('click', e => {
 extensionCloseButton.addEventListener('click', () => {
     extension.classList.add('hidden');
     extensionToggleButton.classList.remove('hidden');
+});
+
+extensionRefreshButton.addEventListener('click', () => {
+    window.location.reload(true)
 });
 
 dragElement(extensionToggleButton);

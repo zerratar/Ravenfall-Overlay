@@ -214,7 +214,7 @@ var dev_users = {
 var isLocalTest = false;
 var useDevServer = false;
 
-if (window.location.href.indexOf('localhost') > -1 || window.location.href.indexOf('127.0.0.1') > -1 || window.location.href.indexOf('letsdohosting.com') > -1) { // 127.0.0.1 added as it's the default for "Live Server" VScode Addon.
+if (window.location.href.indexOf('localhost') > -1 || window.location.href.indexOf('127.0.0.1') > -1) { // 127.0.0.1 added as it's the default for "Live Server" VScode Addon.
     isLocalTest = true;
 }
 
