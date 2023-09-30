@@ -209,9 +209,11 @@ extensionCloseButton.addEventListener('click', () => {
     extensionToggleButton.classList.remove('hidden');
 });
 
-extensionRefreshButton.addEventListener('click', () => {
-    window.location.reload(true)
-});
+if (extensionRefreshButton != undefined) {
+    extensionRefreshButton.addEventListener('click', () => {
+        window.location.reload(true)
+    });
+}
 
 dragElement(extensionToggleButton);
 
