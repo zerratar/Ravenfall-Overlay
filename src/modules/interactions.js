@@ -209,7 +209,7 @@ extensionCloseButton.addEventListener('click', () => {
     extensionToggleButton.classList.remove('hidden');
 });
 
-if (extensionRefreshButton != undefined) {
+if (typeof extensionRefreshButton != 'undefined' && extensionRefreshButton) {
     extensionRefreshButton.addEventListener('click', () => {
         window.location.reload(true)
     });
