@@ -3,22 +3,17 @@
 
     <head>
         <title>Viewer Page</title>
-        <link rel="stylesheet" href="video_overlay.css">
-        <link rel="stylesheet" href="fontawesome/css/all.min.css">
-        <script src="utilities.js"></script>
-        <script src="modules/states.js"></script>
+        <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+        <script src="./jquery-3.3.1.min.js"></script>
+        <link rel="stylesheet" href="./default.css">
+        <link rel="stylesheet" href="./fontawesome/css/all.min.css">
     </head>
 
     <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-        <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
-        <script src="jquery-3.3.1.min.js"></script>
-
         <div id="app" class="full-height">
-
             <div class="extension-toggle" id="extension-toggle">
-                <img src="imgs/ravenfall_logo_tiny.png" />
+                <img src="./imgs/ravenfall_logo_tiny.png" />
             </div>
-
             <div class="extension hidden" id="extension">
                 <div class="extension-bg"></div>
                 <div class="top-bar">
@@ -26,30 +21,15 @@
                         <div class="toggler"></div>
                         <div class="value">&#x263E;</div>
                     </div>
-                    <img class="header" src="imgs/ravenfall_logo2.png"></img>
+                    <img class="header" src="./imgs/ravenfall_logo2.png"></img>
                     <div class="btn btn-close-panel">
                         <i class="fa fa-close"></i>
                     </div>
-                    <script>
-                        if (isLocalTest || window.location.href.indexOf('letsdohosting.com') > -1) {
-                            var btnRefreshPanel = document.createElement('div');
-                            var refreshIcon = document.createElement('i');
-
-                            btnRefreshPanel.className = 'btn btn-refresh-panel';
-                            refreshIcon.className = 'fa fa-refresh';
-
-                            btnRefreshPanel.appendChild(refreshIcon);
-
-                            var topBar = document.querySelector('.top-bar');
-
-                            topBar.appendChild(btnRefreshPanel);
-                        }
-                    </script>
                 </div>
 
                 <div class="views">
-
                     <div class="view" data-name="loading">
+                        <img src="./imgs/ravenfall_logo_tiny.png" class="no-connection" />
                         <h2>Loading...</h2>
                         <p style="text-align: center;">Our ravens are checking if Ravenfall is ready to be played.</p>
                         <p class="show-if-id-unavailable" style="text-align: center;">Psst.. If nothing happens, try
@@ -58,13 +38,14 @@
 
                     <div class="view" data-name="error">
                         <div class="view sub-view" data-name="bad-server-connection">
-                            <img src="imgs/sad-raven.png" class="no-connection" />
+                            <img src="./imgs/sad-raven.png" class="no-connection" />
                             <h2>Unable to connect to the game server.</h2>
                             <p style="text-align: center;">We are retrying every couple of seconds. The server should be
                                 back online soon!</p>
                         </div>
 
                         <div class="view sub-view" data-name="game-not-running">
+                            <img src="./imgs/sad-raven.png" class="no-connection" />
                             <h2>Ravenfall is unavailable</h2>
                             <p style="text-align: center;">It looks like we don't have a connection to Ravenfall just
                                 yet,
@@ -72,6 +53,7 @@
                         </div>
 
                         <div class="view sub-view" data-name="anonymous-user">
+                            <img src="./imgs/sad-raven.png" class="no-connection" />
                             <h2>Twitch User Id is Required</h2>
                             <p style="text-align: center;">Unfortunately this extension is not able to verify who you
                                 are. Please make sure you grant the required permissions to share your user Id with this
@@ -92,18 +74,21 @@
                         </div>
 
                         <div class="view sub-view" data-name="initialize">
+                            <img src="./imgs/ravenfall_logo_tiny.png" class="no-connection" />
                             <h2>Loading...</h2>
-                            <p style="text-align: center;">Hold on to your Ravens, you will be able to play soon!</p>
+                            <p style="text-align: center;">Hold on to your Ravens..<br />You will be able to play soon!
+                            </p>
                         </div>
                         <div class="view sub-view" data-name="create-account">
+                            <img src="./imgs/ravenfall_logo_tiny.png" class="no-connection" />
                             <h2>You don't seem to have any characters.<br />First time playing?</h2>
                             <a class="btn btn-create-account">Click here or type !join in chat</a>
                         </div>
 
                         <div class="view sub-view" data-name="character-selection">
+                            <img src="./imgs/ravenfall_logo_tiny.png" class="no-connection" />
                             <h2>Select character you want to play with</h2>
-                            <div class="character-list">
-                            </div>
+                            <div class="character-list"></div>
                         </div>
 
                         <div class="view sub-view" data-name="character-overview">
@@ -180,11 +165,11 @@
                                 </div>
 
                                 <div class="ferry-animation sailing">
-                                    <img src="imgs/steamboat.gif" />
+                                    <img src="./imgs/steamboat.gif" />
                                 </div>
 
                                 <div class="ferry-animation captain">
-                                    <img src="imgs/disney-mickey.gif" />
+                                    <img src="./imgs/disney-mickey.gif" />
                                 </div>
 
                                 <div class="dungeon-status">
@@ -424,8 +409,7 @@
                         </div>
                     </div>
 
-                    <div class="debug-info">
-                    </div>
+                    <div class="debug-info"></div>
 
                     <div class="footer"></div>
                 </div>
@@ -444,8 +428,11 @@
                 </feMerge>
             </filter>
         </svg>
-        <script src="modules/interactions.js"></script>
-        <script src="extension.js" type="module"></script>
+
+        <script src="./utilities.js"></script>
+        <script src="./modules/states.js"></script>
+        <script src="./modules/interactions.js"></script>
+        <script src="./extension.js" type="module"></script>
     </body>
 
 </html>

@@ -231,9 +231,11 @@
 
   .btn.btn-close-panel,
   .btn.btn-refresh-panel {
-      width: 42px;
-      height: 100%;
-      line-height: 40px;
+      padding: 0;
+      margin: 0;
+      padding-right: 20px;
+      height: 20px;
+      line-height: 50px;
       border: 0;
       outline: none;
       border-radius: 0;
@@ -259,7 +261,7 @@
 
       background-color: #ffffff08;
       box-shadow: 0 3px 3px #00163126;
-      border-radius: 20px;
+      border-radius: 10px;
 
       min-width: 110px;
       max-width: 110px;
@@ -425,6 +427,7 @@
       font-size: 14pt;
   }
 
+  .character-name .alias,
   .character-name span.index {
       font-size: 9pt;
       font-weight: 300;
@@ -909,7 +912,7 @@
       margin: 5px;
       display: flex;
       flex-flow: column;
-
+      border-radius: 10px;
       box-shadow: 0 3px 3px #00163126;
   }
 
@@ -942,20 +945,23 @@
   .character-stat {
       display: flex;
       flex-flow: column;
+      flex-wrap: wrap;
+      max-height: 23px;
       width: 108px;
       border: 1px solid #ffffff08;
       background-color: transparent;
-      padding: 8px 15px 8px 15px;
-      border-radius: 20px;
+      padding: 5px 14px 8px 14px;
+      margin: 2px 0 2px 0;
+      border-radius: 10px;
       user-select: none;
       cursor: default;
       box-shadow: 0 3px 3px #0016311a;
   }
 
-  .character-stat.btn-all {
+  /* .character-stat.btn-all {
       padding-bottom: 4px;
       padding-top: 12px;
-  }
+  } */
 
   .character-stat.btn-all .stats-progress {
       visibility: hidden;
@@ -976,11 +982,12 @@
       display: flex;
       flex-flow: column;
       flex-wrap: wrap;
-      height: 372px;
+      height: 375px;
       /* max-height: 100%; */
-      justify-content: space-between;
-      align-content: space-around;
+      justify-content: space-evenly;
+      align-content: flex-start;
       margin-bottom: 10px;
+      flex-direction: row;
   }
 
   .stats-identifier {
@@ -993,13 +1000,23 @@
   }
 
   .character-stat {
-      cursor: pointer;
+      display: flex;
+      flex-flow: column;
+      max-height: 23px;
+      width: 108px;
+      border: 1px solid #ffffff08;
+      background-color: transparent;
+      padding: 5px 14px 8px 14px;
+      margin: 2px 0 2px 0;
+      user-select: none;
+      cursor: default;
+      box-shadow: 0 3px 3px #0016311a;
   }
 
   .character-stat.active,
   .character-stat.active:hover,
   .character-stat.active:active {
-      background-color: rgb(0, 81, 255);
+      outline: 2px solid #0051ff;
   }
 
   .character-stat .stats-level {

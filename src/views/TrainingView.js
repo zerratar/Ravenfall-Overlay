@@ -1,6 +1,5 @@
 import { SubView } from "./BaseViews.js";
 
-
 export class TrainingView extends SubView {
     constructor(parentView) {
         super(parentView, 'training');
@@ -15,92 +14,86 @@ export class TrainingView extends SubView {
     }
 
     onExpUpdated(data) {
-      // this is so not a good way to do this, but it works for now
-      this.onCharacterUpdated(this.activeCharacter);
+        // this is so not a good way to do this, but it works for now
+        this.onCharacterUpdated(this.activeCharacter);
     }
 
     onCharacterUpdated(character) {
         this.activeCharacter = character;
         this.characterStats.innerHTML = '';
+
         const currentSkill = Ravenfall.getCurrentSkill();
         let props = Object.keys(character.skills);
-        
         props = ["allLevel", ...props];
 
         for (let prop of props) {
-            if (prop.indexOf('Level') > 0) {
-        
-              try {
-        
-                const skill = prop.replace('Level', '');
-                const isAll = skill == 'all';
-                
-                let level = 1;
-                let experience = 0;
-                let expPercent = 0;
+            if (prop.indexOf('Level') > -1) {
+                try {
+                    const skill = prop.replace('Level', '');
+                    const isAll = skill == 'all';
 
-                if (isAll) {
-                  level = character.combatLevel;
-                } else {
-                  level = character.skills[prop];
-                  experience = character.skills[skill];
-                  expPercent = character.skills[skill + 'Procent'];
-                }
-               
-                const skillButton = document.createElement("div");
-                this.characterStats.appendChild(skillButton);
-        
-                const canTrainClass = skill != 'health' && skill != 'slayer' && skill != 'sailing' ? 'can-train' : '';
-                const canTrain = canTrainClass != '';
-                const percent = Math.floor(expPercent * 100);
-                skillButton.outerHTML = this.characterStatsTemplate
-                  .replace('{trainable}', canTrainClass)
-                  .replace('{SkillName}', skill)
-                  .replace('{SkillName}', skill)
-                  .replace('{SkillName}', skill)
-                  .replace('{SkillLevel}', level)
-                  .replace('{SkillExperience}', formatExp(experience))
-                  .replace('{SkillPercent}', percent);
-        
-                  // remove progress bar for "is all"
-                  if (isAll) {
-                    let statsProgressBar = skillButton.querySelector('.stats-progress');
-                    if (statsProgressBar) {
-                      statsProgressBar.remove();
+                    let level = 1;
+                    let experience = 0;
+                    let expPercent = 0;
+
+                    if (isAll) {
+                        level = character.combatLevel;
+                    } else {
+                        level = character.skills[prop];
+                        experience = character.skills[skill];
+                        expPercent = character.skills[skill + 'Procent'];
                     }
-                  }
 
-        
-                const btn = document.querySelector('.btn-' + skill);
+                    const skillButton = document.createElement("div");
+                    this.characterStats.appendChild(skillButton);
 
-                if (currentSkill == skill) {
-                  btn.classList.add("active");
-                  btn.title = 'You\'re currently training this skill. (Level Progress ' + percent + '%, XP: ' + formatExp(experience) + ')';
-                  this.activeTaskBtn = btn;
-                } else {
-                  btn.title =  canTrain 
-                    ? 'Click to train ' + skill + ' (Level Progress ' + percent + '%, XP: ' + formatExp(experience) + ')'
-                    : skill + ' (Level Progress ' + percent + '%, XP: ' + formatExp(experience) + ')';
-                }
-        
-                btn.querySelector('.stats-progress-value').style.width = percent + '%';
-        
-                if (canTrain) {
-                  btn.addEventListener('click', () => {
-                    if (this.activeTaskBtn != null) {
-                      this.activeTaskBtn.classList.remove("active");
+                    const canTrainClass = skill != 'health' && skill != 'slayer' && skill != 'sailing' ? 'can-train' : '';
+                    const canTrain = canTrainClass != '';
+                    const percent = Math.floor(expPercent * 100);
+                    skillButton.outerHTML = this.characterStatsTemplate
+                        .replace('{trainable}', canTrainClass)
+                        .replaceAll('{SkillName}', skill)
+                        .replace('{SkillLevel}', level)
+                        .replace('{SkillExperience}', formatExp(experience))
+                        .replace('{SkillPercent}', percent);
+
+                    // remove progress bar for "is all"
+                    if (isAll) {
+                        let statsProgressBar = skillButton.querySelector('.stats-progress');
+                        if (statsProgressBar) {
+                            statsProgressBar.remove();
+                        }
                     }
-                    this.activeTaskBtn = btn;
-                    btn.classList.add("active");
-                    Ravenfall.service.setTaskAsync(Ravenfall.getTaskBySkill(skill), Ravenfall.getTaskArgumentBySkill(skill));
-                  });
+
+                    const btn = document.querySelector('.btn-' + skill);
+
+                    if (currentSkill == skill) {
+                        btn.classList.add("active");
+                        btn.title = 'You\'re currently training this skill. (Level Progress ' + percent + '%, XP: ' + formatExp(experience) + ')';
+                        this.activeTaskBtn = btn;
+                    } else {
+                        btn.title = canTrain
+                            ? 'Click to train ' + skill + ' (Level Progress ' + percent + '%, XP: ' + formatExp(experience) + ')'
+                            : skill + ' (Level Progress ' + percent + '%, XP: ' + formatExp(experience) + ')';
+                    }
+
+                    btn.querySelector('.stats-progress-value').style.width = percent + '%';
+
+                    if (canTrain) {
+                        btn.addEventListener('click', () => {
+                            if (this.activeTaskBtn != null) {
+                                this.activeTaskBtn.classList.remove("active");
+                            }
+                            this.activeTaskBtn = btn;
+                            btn.classList.add("active");
+                            Ravenfall.service.setTaskAsync(Ravenfall.getTaskBySkill(skill), Ravenfall.getTaskArgumentBySkill(skill));
+                        });
+                    }
+
+                } catch (err) {
+                    console.error(err);
                 }
-        
-              } catch (err) {
-                console.error(err);
-              }
             }
-          }
-
+        }
     }
 }
