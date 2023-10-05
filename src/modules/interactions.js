@@ -1,4 +1,7 @@
-let movingToggleButton = false;
+const offsetTop = 50;
+const offsetLeft = 10;
+const width = 340;
+const height = 600;
 
 const extension = document.querySelector('.extension');
 const extensionToggleButton = document.querySelector('.extension-toggle');
@@ -6,10 +9,9 @@ const extensionCloseButton = document.querySelector('.btn-close-panel');
 const extensionRefreshButton = document.querySelector('.btn-refresh-panel');
 const extensionDarkMode = document.querySelector('.btn-toggle-dark-theme');
 
-const offsetTop = 50;
-const offsetLeft = 10;
-
 const storage = window.localStorage;
+
+let movingToggleButton = false;
 
 const toggleDarkTheme = () => {
     if (extension.classList.contains('dark-theme')) {
@@ -52,7 +54,7 @@ function dragElement(elmnt) {
     var elmX = 0;
     var elmY = 0;
 
-    const elmPos = localStorage.getItem('rf-toggle-pos');
+    const elmPos = storage.getItem('rf-toggle-pos');
 
     if (elmPos && elmPos.indexOf(';') > 0) {
         const d = elmPos.split(';');
@@ -67,7 +69,6 @@ function dragElement(elmnt) {
     }
 
     addEventListener("resize", (event) => {
-
         /*make sure that the toggler is within view */
         if (elmY < 0) { elmY = 0; }
         if (elmX < 0) { elmX = 0; }
@@ -77,10 +78,6 @@ function dragElement(elmnt) {
         // ensure the button is always within the screen
         elmnt.style.top = elmY + "px";
         elmnt.style.left = elmX + "px";
-
-        /* make sure the extension is in view. */
-        let width = 340;
-        let height = 600;
 
         // check if we need to adjust the rotationY 
         let top = parseInt(extensionToggleButton.style.top.replace('px', ''));
@@ -134,7 +131,7 @@ function dragElement(elmnt) {
         elmnt.style.left = newLeft + "px";
         movingToggleButton = true;
 
-        localStorage.setItem('rf-toggle-pos', elmnt.style.top + ';' + elmnt.style.left);
+        storage.setItem('rf-toggle-pos', elmnt.style.top + ';' + elmnt.style.left);
     }
 
     function closeDragElement(e) {
@@ -154,12 +151,6 @@ function dragElement(elmnt) {
     }
 }
 
-
-/*
-  Make the toggle button draggable
-*/
-
-
 extensionDarkMode.addEventListener('click', () => {
     toggleDarkTheme();
 });
@@ -168,9 +159,6 @@ extensionToggleButton.addEventListener('click', e => {
     if (movingToggleButton == true) {
         return;
     }
-
-    let width = 340;
-    let height = 600;
 
     // check if we need to adjust the rotationY 
     let left = parseInt(extensionToggleButton.style.left.replace('px', ''));
