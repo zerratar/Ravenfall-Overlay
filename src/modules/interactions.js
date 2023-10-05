@@ -15,28 +15,18 @@ let movingToggleButton = false;
 
 const toggleDarkTheme = () => {
     if (extension.classList.contains('dark-theme')) {
-        extension.classList.remove('dark-theme');
-        extensionDarkMode.querySelector('.value').innerHTML = '&#x263E;';
-        storage.removeItem('rf-theme');
-    } else {
         extension.classList.add('dark-theme');
         extensionDarkMode.querySelector('.value').innerHTML = '&#x2600;';
         storage.setItem('rf-theme', 'dark-theme');
+    } else {
+        extension.classList.remove('dark-theme');
+        extensionDarkMode.querySelector('.value').innerHTML = '&#x263E;';
+        storage.removeItem('rf-theme');
     }
 }
 
 let loadedTheme = storage.getItem('rf-theme');
-if (loadedTheme != null) {
-    toggleDarkTheme();
-} else {
-    // Note(zerratar): For some reason the "Toggle dark mode" button is rendered
-    //                 in the wrong place. calling the toggleDarkTheme seem to fix it.
-    //                 but since we dont want to enforce an inverted change we will toggle it twice.
-    //
-    //  << You can try and comment these two lines and check the behaviour. Technically it adds the 
-    //     dark theme style and update the content then reverts it back by removing the style 
-    //     and change back the content. For some reason, this seem to fix the weird thing. >>
-    toggleDarkTheme();
+if (loadedTheme = 'dark-theme') {
     toggleDarkTheme();
 }
 
@@ -45,26 +35,29 @@ function dragElement(elmnt) {
     var pos1 = 0,
         pos2 = 0,
         pos3 = 0,
-        pos4 = 0;
-    var mdX = 0,
-        mdY = 0;
+        pos4 = 0,
+        mdX = 0,
+        mdY = 0,
+        elmX = 0,
+        elmY = 0;
 
     elmnt.onmousedown = dragMouseDown;
-
-    var elmX = 0;
-    var elmY = 0;
 
     const elmPos = storage.getItem('rf-toggle-pos');
 
     if (elmPos && elmPos.indexOf(';') > 0) {
         const d = elmPos.split(';');
 
-        if (parseInt(d[0].replace('px', '')) > offsetTop && parseInt(d[1].replace('px', '')) > offsetLeft) {
-            elmnt.style.top = d[0];
-            elmnt.style.left = d[1];
+        if (d[0] > offsetTop) {
+            elmnt.style.top = d[0] + 'px';
         } else {
-            elmnt.style.top = offsetTop + "px";
-            elmnt.style.left = offsetLeft + "px";
+            elmnt.style.top = offsetTop + 'px';
+        }
+
+        if (d[1] > offsetLeft) {
+            elmnt.style.left = d[1] + 'px';
+        } else {
+            elmnt.style.left = offsetLeft + 'px';
         }
     }
 
@@ -76,8 +69,8 @@ function dragElement(elmnt) {
         if (elmX >= window.innerWidth - offsetLeft) { elmX = window.innerWidth - offsetLeft; }
 
         // ensure the button is always within the screen
-        elmnt.style.top = elmY + "px";
-        elmnt.style.left = elmX + "px";
+        elmnt.style.top = elmY + 'px';
+        elmnt.style.left = elmX + 'px';
 
         // check if we need to adjust the rotationY 
         let top = parseInt(extensionToggleButton.style.top.replace('px', ''));
@@ -127,11 +120,21 @@ function dragElement(elmnt) {
         elmY = newTop;
         elmX = newLeft;
 
-        elmnt.style.top = newTop + "px";
-        elmnt.style.left = newLeft + "px";
+        if (newTop > offsetTop) {
+            elmnt.style.top = newTop + 'px';
+        } else {
+            elmnt.style.top = offsetTop + 'px';
+        }
+
+        if (newLeft > offsetLeft) {
+            elmnt.style.left = newLeft + 'px';
+        } else {
+            elmnt.style.left = offsetLeft + 'px';
+        }
+
         movingToggleButton = true;
 
-        storage.setItem('rf-toggle-pos', elmnt.style.top + ';' + elmnt.style.left);
+        storage.setItem('rf-toggle-pos', newTop + ';' + newLeft);
     }
 
     function closeDragElement(e) {
@@ -190,7 +193,6 @@ extensionToggleButton.addEventListener('click', e => {
 
     extension.classList.remove('hidden');
     extensionToggleButton.classList.add('hidden');
-    //pollGameState();
 });
 
 extensionCloseButton.addEventListener('click', () => {
