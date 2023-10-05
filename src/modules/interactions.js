@@ -11,9 +11,7 @@ const extensionDarkMode = document.querySelector('.btn-toggle-dark-theme');
 
 const storage = window.localStorage;
 
-let movingToggleButton = false;
-
-const toggleDarkTheme = () => {
+function toggleDarkTheme() {
     if (extension.classList.contains('dark-theme')) {
         extension.classList.remove('dark-theme');
         extensionDarkMode.querySelector('.value').innerHTML = '<i class="fa fa-moon"></i>';
@@ -25,54 +23,51 @@ const toggleDarkTheme = () => {
     }
 }
 
-let loadedTheme = storage.getItem('rf-theme');
+const loadedTheme = storage.getItem('rf-theme');
 
-if (loadedTheme != null) {
-    toggleDarkTheme();
-}
+if (loadedTheme != null) toggleDarkTheme();
+
+let movingToggleButton = false;
 
 function dragElement(elmnt) {
-    var pos1 = 0,
-        pos2 = 0,
-        pos3 = 0,
-        pos4 = 0,
-        mdX = 0,
-        mdY = 0,
-        elmX = 0,
-        elmY = 0;
+    const elmPos = storage.getItem('rf-toggle-pos');
+
+    let d = [offsetTop, offsetLeft];
+    let pos1 = 0;
+    let pos2 = 0;
+    let pos3 = 0;
+    let pos4 = 0;
+    let mdX = 0;
+    let mdY = 0;
+    let elmX = 0;
+    let elmY = 0;
 
     elmnt.onmousedown = dragMouseDown;
 
-    const elmPos = storage.getItem('rf-toggle-pos');
-
-    if (elmPos && elmPos.indexOf(';') > 0) {
-        const d = elmPos.split(';');
-
-        if (d[0] > offsetTop) {
-            elmnt.style.top = d[0] + 'px';
-        } else {
-            elmnt.style.top = offsetTop + 'px';
-        }
-
-        if (d[1] > offsetLeft) {
-            elmnt.style.left = d[1] + 'px';
-        } else {
-            elmnt.style.left = offsetLeft + 'px';
-        }
+    if (elmPos && elmPos.indexOf(';') > -1) {
+        d = elmPos.split(';');
     }
 
-    addEventListener("resize", (event) => {
-        /*make sure that the toggler is within view */
-        if (elmY < 0) { elmY = 0; }
-        if (elmX < 0) { elmX = 0; }
-        if (elmY >= window.innerHeight - offsetTop) { elmY = window.innerHeight - offsetTop; }
-        if (elmX >= window.innerWidth - offsetLeft) { elmX = window.innerWidth - offsetLeft; }
+    if (d[0] > offsetTop)
+        elmnt.style.top = d[0] + 'px'
+    else
+        elmnt.style.top = offsetTop + 'px';
 
-        // ensure the button is always within the screen
+    if (d[1] > offsetLeft)
+        elmnt.style.left = d[1] + 'px';
+    else
+        elmnt.style.left = offsetLeft + 'px';
+
+
+    addEventListener("resize", (event) => {
+        if (elmY < 0) elmY = offsetTop;
+        if (elmX < 0) elmX = offsetLeft;
+        if (elmY >= window.innerHeight - offsetTop) elmY = window.innerHeight - offsetTop;
+        if (elmX >= window.innerWidth - offsetLeft) elmX = window.innerWidth - offsetLeft;
+
         elmnt.style.top = elmY + 'px';
         elmnt.style.left = elmX + 'px';
 
-        // check if we need to adjust the rotationY 
         let top = parseInt(extensionToggleButton.style.top.replace('px', ''));
         let left = parseInt(extensionToggleButton.style.left.replace('px', ''));
         let yDelta = window.innerHeight - top;
@@ -89,66 +84,60 @@ function dragElement(elmnt) {
 
     function dragMouseDown(e) {
         movingToggleButton = false;
+
         e = e || window.event;
         e.preventDefault();
-        // get the mouse cursor position at startup:
+
         mdX = pos3 = e.clientX;
         mdY = pos4 = e.clientY;
 
         document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
     }
 
     function elementDrag(e) {
+        movingToggleButton = true;
+
         e = e || window.event;
         e.preventDefault();
 
-        // calculate the new cursor position:
         pos1 = pos3 - e.clientX;
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
-        // set the element's new position:
+
         let newTop = (elmnt.offsetTop - pos2);
         let newLeft = (elmnt.offsetLeft - pos1);
-        if (newLeft < 0) { newLeft = 0; }
-        if (newTop < 0) { newTop = 0; }
-        if (newTop >= window.innerHeight - offsetTop) { newTop = window.innerHeight - offsetTop; }
-        if (newLeft >= window.innerWidth - offsetLeft) { newLeft = window.innerWidth - offsetLeft; }
+
+        if (newTop < 0) newTop = 0;
+        if (newLeft < 0) newLeft = 0;
+        if (newTop >= window.innerHeight - offsetTop) newTop = window.innerHeight - offsetTop;
+        if (newLeft >= window.innerWidth - offsetLeft) newLeft = window.innerWidth - offsetLeft;
 
         elmY = newTop;
         elmX = newLeft;
 
-        if (newTop > offsetTop) {
+        if (newTop > offsetTop)
             elmnt.style.top = newTop + 'px';
-        } else {
+        else
             elmnt.style.top = offsetTop + 'px';
-        }
 
-        if (newLeft > offsetLeft) {
+        if (newLeft > offsetLeft)
             elmnt.style.left = newLeft + 'px';
-        } else {
+        else
             elmnt.style.left = offsetLeft + 'px';
-        }
-
-        movingToggleButton = true;
 
         storage.setItem('rf-toggle-pos', newTop + ';' + newLeft);
     }
 
     function closeDragElement(e) {
         e = e || window.event;
+
         let dx = mdX - e.clientX;
         let dy = mdY - e.clientY;
 
-        // to ensure that you can accidently just move slightly when
-        // intention is to open the extension
-        if (Math.abs(dx) <= 2 && Math.abs(dy) <= 2) {
-            movingToggleButton = false;
-        }
+        if (Math.abs(dx) <= 2 && Math.abs(dy) <= 2) movingToggleButton = false;
 
-        // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
     }
@@ -159,11 +148,8 @@ extensionDarkMode.addEventListener('click', () => {
 });
 
 extensionToggleButton.addEventListener('click', e => {
-    if (movingToggleButton == true) {
-        return;
-    }
+    if (movingToggleButton) return;
 
-    // check if we need to adjust the rotationY 
     let left = parseInt(extensionToggleButton.style.left.replace('px', ''));
     let top = parseInt(extensionToggleButton.style.top.replace('px', ''));
     let xDelta = window.innerWidth - left;
@@ -173,8 +159,8 @@ extensionToggleButton.addEventListener('click', e => {
 
     if (proc < 0) proc = 0;
     if (proc > 1) proc = 1;
-    proc = 1 - proc; // inverse
-    // lerp
+
+    proc = 1 - proc;
 
     var lerp = function (v0, v1, t) {
         return v0 + (v1 - v0) * t;
