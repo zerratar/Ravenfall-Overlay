@@ -112,8 +112,8 @@ export default class RavenfallExtension {
 
 
         { // DEBUG
-            const sessionInfo = JSON.stringify(Ravenfall.service.sessionInfo);
-            console.log('Authenticated with ravennest: ' + sessionInfo);
+            // const sessionInfo = JSON.stringify(Ravenfall.service.sessionInfo);
+            // console.log('Authenticated with ravennest: ' + sessionInfo);
         } // END DEBUG
 
         if (Ravenfall.service.isRavenfallAvailable && !Ravenfall.isCharactersLoaded()) {
@@ -145,7 +145,7 @@ export default class RavenfallExtension {
         if (char == null || typeof char == 'undefined') {
             return; // nope.
         }
-        
+
         // Handle rested state
         this.updateRestedTime(deltaMs, char);
 
@@ -164,11 +164,11 @@ export default class RavenfallExtension {
         let dateNow = new Date();
         let elapsedSeconds = Math.abs(dateNow - restedLastUpdated) / 1000;
         let deltaSeconds = deltaMs / 1000;
-        if (elapsedSeconds > 0){
+        if (elapsedSeconds > 0) {
             let restedSeconds = char.state.restedTime;
             if (char.state.inOnsen === true) {
                 // tick up
-                char.state.restedTime += (deltaSeconds*2);
+                char.state.restedTime += (deltaSeconds * 2);
             } else {
                 // tick down
                 char.state.restedTime -= deltaSeconds;

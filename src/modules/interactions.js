@@ -44,9 +44,7 @@ function dragElement(elmnt) {
 
     elmnt.onmousedown = dragMouseDown;
 
-    if (elmPos && elmPos.indexOf(';') > -1) {
-        d = elmPos.split(';');
-    }
+    if (elmPos && elmPos.indexOf(';') > -1) d = elmPos.split(';');
 
     if (d[0] > offsetTop)
         elmnt.style.top = d[0] + 'px'
@@ -166,8 +164,7 @@ extensionToggleButton.addEventListener('click', e => {
         return v0 + (v1 - v0) * t;
     };
 
-    let val = lerp(-5, 5, proc);
-    extension.style.transform = 'perspective(400px) rotateY(' + val + 'deg)';
+    extension.style.transform = 'perspective(400px) rotateY(' + lerp(-5, 5, proc) + 'deg)';
 
     if (yDelta < height + offsetTop) top = window.innerHeight - (height + offsetTop);
     if (xDelta < width + offsetLeft) left = window.innerWidth - (width + offsetLeft);
