@@ -16,27 +16,18 @@ let movingToggleButton = false;
 const toggleDarkTheme = () => {
     if (extension.classList.contains('dark-theme')) {
         extension.classList.remove('dark-theme');
-        extensionDarkMode.querySelector('.value').innerHTML = '&#x263E;';
+        extensionDarkMode.querySelector('.value').innerHTML = '<i class="fa fa-moon"></i>';
         storage.removeItem('rf-theme');
     } else {
         extension.classList.add('dark-theme');
-        extensionDarkMode.querySelector('.value').innerHTML = '&#x2600;';
+        extensionDarkMode.querySelector('.value').innerHTML = '<i class="fa fa-sun"></i>';
         storage.setItem('rf-theme', 'dark-theme');
     }
 }
 
 let loadedTheme = storage.getItem('rf-theme');
+
 if (loadedTheme != null) {
-    toggleDarkTheme();
-} else {
-    // Note(zerratar): For some reason the "Toggle dark mode" button is rendered
-    //                 in the wrong place. calling the toggleDarkTheme seem to fix it.
-    //                 but since we dont want to enforce an inverted change we will toggle it twice.
-    //
-    //  << You can try and comment these two lines and check the behaviour. Technically it adds the 
-    //     dark theme style and update the content then reverts it back by removing the style 
-    //     and change back the content. For some reason, this seem to fix the weird thing. >>
-    toggleDarkTheme();
     toggleDarkTheme();
 }
 
@@ -208,11 +199,5 @@ extensionCloseButton.addEventListener('click', () => {
     extension.classList.add('hidden');
     extensionToggleButton.classList.remove('hidden');
 });
-
-if (typeof extensionRefreshButton != 'undefined' && extensionRefreshButton) {
-    extensionRefreshButton.addEventListener('click', () => {
-        window.location.reload(true)
-    });
-}
 
 dragElement(extensionToggleButton);
