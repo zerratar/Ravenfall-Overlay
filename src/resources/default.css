@@ -381,7 +381,9 @@
   }
 
   .extension-toggle {
-      position: absolute;
+      position: fixed;
+      top: 50px;
+      left: 10px;
       border: 2px solid #e4e4e4;
       cursor: pointer;
       border-radius: 34px;

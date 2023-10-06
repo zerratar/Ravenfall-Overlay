@@ -1,16 +1,4 @@
-var ravenfallHost = 'www.ravenfall.stream';
-
-var useDevServer = false;
-
-if (useDevServer) {
-    ravenfallHost = 'localhost:5001';
-}
-
-var ravenfallUrl = 'https://' + ravenfallHost + '/';
-var ravenfallApiUrl = ravenfallUrl + 'api/';
-var ravenfallWebsocketApiUrl = 'wss://' + ravenfallHost + '/api/stream/extension';
-
-var isLocalTest = false;
+let isLocalTest = false; // Don't touch.
 
 if (window.location.href.indexOf('localhost') > -1 || window.location.href.indexOf('127.0.0.1') > -1) {
     var dev_users = {

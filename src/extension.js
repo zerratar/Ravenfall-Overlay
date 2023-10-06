@@ -1,11 +1,10 @@
-import RavenfallService from "./modules/ravenfall-service.js";
-import TwitchService from "./modules/twitch-service.js";
+import RavenfallService from "./resources/js/ravenfall-service.js";
+import TwitchService from "./resources/js/twitch-service.js";
 import { LoadingView } from './views/LoadingView.js';
 import { ErrorView } from "./views/ErrorView.js";
 import { DefaultView } from "./views/DefaultView.js";
 
 export default class RavenfallExtension {
-
     constructor() {
         this.twitchService = new TwitchService();
         this.ravenfallService = new RavenfallService(x => this.onCharacterUpdated(x));
@@ -74,7 +73,7 @@ export default class RavenfallExtension {
     }
 
     onBadServerConnection() {
-        this.pollTimer = Ravenfall.pollInterval * 3;
+        this.pollTimer = Ravenfall.pollInterval;
         this.views.error.onBadServerConnection();
         this.setView(this.views.error);
     }

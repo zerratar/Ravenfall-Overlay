@@ -1,2 +1,2 @@
-.vscode/sftp.json
-src/src.zip
+.vscode/*.json
+src/*.zip

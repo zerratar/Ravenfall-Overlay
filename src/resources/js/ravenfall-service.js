@@ -1,31 +1,6 @@
 import Requests from "./requests.js";
 import WebSocketClient from "./websocket-client.js";
 
-var extensionApi = ravenfallApiUrl + 'twitch/extension';
-var playersApi = ravenfallApiUrl + 'players';
-
-var island = [
-    'Ferry',
-    'Home',
-    'Away',
-    'Ironhill',
-    'Kyo',
-    'Heim',
-    'Atria',
-    'Eldara'
-];
-
-var characterState = [
-    'None',
-    'Raid',
-    'Arena',
-    'Dungeon',
-    'Onsen',
-    'Duel',
-    'StreamRaidWar',
-    'JoinedDungeon'
-];
-
 export default class RavenfallService {
     constructor(onCharacterChanged) {
         Ravenfall.service = this;
@@ -36,7 +11,6 @@ export default class RavenfallService {
         this.onCharacterChanged = onCharacterChanged;
         this.sessionInfo = undefined;
         this.joinError = '';
-
 
         this.websocket.subscribe('StreamerInfo', data => this.onStreamerInfoUpdated(data));
         this.websocket.subscribe('PlayerRestedUpdate', data => this.onRestedUpdated(data));
@@ -468,8 +442,8 @@ export default class RavenfallService {
         if (Ravenfall.itemsLoaded == true) {
             return;
         }
-        const apiUrl = ravenfallApiUrl + 'items'; // https://localhost:5001/api/items
-        Ravenfall.items = await this.requests.getAsync(apiUrl);
+
+        Ravenfall.items = await this.requests.getAsync(itemsApi);
         Ravenfall.itemsLoaded = true;
 
         console.log(Ravenfall.items.length + " items loaded!");
