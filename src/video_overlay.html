@@ -1,113 +1,117 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>Viewer Page</title>
-    <link rel="stylesheet" href="video_overlay.css">
-    <link rel="stylesheet" href="fontawesome/css/all.min.css">
-    <script src="utilities.js"></script>
-</head>
+    <head>
+        <title>Ravenfall Overlay</title>
+        <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+        <link rel="stylesheet" href="./resources/default.css">
+        <link rel="stylesheet" href="./resources/fontawesome/css/all.min.css">
+    </head>
 
-<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-    <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
-    <script src="jquery-3.3.1.min.js"></script>
-
-    <div id="app" class="full-height">
-
-        <div class="extension-toggle" id="extension-toggle">
-            <img src="imgs/ravenfall_logo_tiny.png" />
-        </div>
-
-        <div class="extension hidden" id="extension">
-            <div class="extension-bg"></div>
-            <div class="top-bar">
-                <div class="btn btn-toggle-dark-theme">
-                    <div class="toggler"></div>
-                    <div class="value">&#x263E;</div>
-                </div>
-                <img class="header" src="imgs/ravenfall_logo2.png"></img>
-                <div class="btn btn-close-panel">
-                    &times;
-                </div>
+    <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+        <div id="app" class="full-height">
+            <div class="extension-toggle" id="extension-toggle">
+                <img src="./resources/imgs/ravenfall_logo_tiny.png" />
             </div>
-
-            <div class="views">
-
-                <div class="view" data-name="loading">
-                    <h2>Loading...</h2>
-                    <p style="text-align: center;">Our ravens are checking if Ravenfall is ready to be played.</p>
-                    <p class="show-if-id-unavailable" style="text-align: center;">Psst.. If nothing happens, try refreshing the page and see if it works.</p>
+            <div class="extension hidden" id="extension">
+                <div class="extension-bg"></div>
+                <div class="top-bar">
+                    <div class="btn btn-toggle-dark-theme">
+                        <div class="toggler"></div>
+                        <div class="value"><i class="fa fa-moon"></i></div>
+                    </div>
+                    <img class="header" src="./resources/imgs/ravenfall_logo2.png"></img>
+                    <div class="btn btn-close-panel"><i class="fa fa-close"></i></div>
                 </div>
 
-                <div class="view" data-name="error">
-                    <div class="view sub-view" data-name="bad-server-connection">
-                        <img src="imgs/sad-raven.png" class="no-connection" />
-                        <h2>Unable to connect to the game server.</h2>
-                        <p style="text-align: center;">We are retrying every couple of seconds. The server should be
-                            back online soon!</p>
-                    </div>
-
-                    <div class="view sub-view" data-name="game-not-running">
-                        <h2>Ravenfall is unavailable</h2>
-                        <p style="text-align: center;">It looks like we don't have a connection to Ravenfall just yet,
-                            maybe the streamer is not running the game or we are still connecting.</p>
-                    </div>
-
-                    <div class="view sub-view" data-name="anonymous-user">
-                        <h2>Twitch User Id is Required</h2>
-                        <p style="text-align: center;">Unfortunately this extension is not able to verify who you are. Please make sure you grant the required permissions to share your user Id with this extension. Otherwise it's not possible to for Ravenfall to know which characters are yours.</p>
-                        <p style="text-align: center;">If you're seeing this page but have granted permissions to this extension, please try revoking and granting them again.</p>
-                    </div>
-                </div>
-
-                <div class="view" data-name="default">
-
-                    <div class="view-tabs">
-                        <div class="btn btn-view-tab" data-navigation='character-overview'>Overview</div>
-                        <div class="btn btn-view-tab" data-navigation='training'>Training</div>
-                        <div class="btn btn-view-tab" data-navigation='inventory'>Inventory</div>
-                        <div class="btn btn-view-tab" data-navigation='islands'>Sailing</div>                        
-                    </div>
-
-                    <div class="view sub-view" data-name="initialize">
+                <div class="views">
+                    <div class="view" data-name="loading">
+                        <img src="./resources/imgs/ravenfall_logo_tiny.png" class="no-connection" />
                         <h2>Loading...</h2>
-                        <p style="text-align: center;">Hold on to your Ravens, you will be able to play soon!</p>
-                    </div>
-                    <div class="view sub-view" data-name="create-account">
-                        <h2>You don't seem to have any characters.<br />First time playing?</h2>
-                        <a class="btn btn-create-account">Click here or type !join in chat</a>
+                        <p style="text-align: center;">Our ravens are checking if Ravenfall is ready to be played.</p>
+                        <p class="show-if-id-unavailable" style="text-align: center;">Psst.. If nothing happens, try
+                            refreshing the page and see if it works.</p>
                     </div>
 
-                    <div class="view sub-view" data-name="character-selection">
-                        <h2>Select character you want to play with</h2>
-                        <div class="character-list">
+                    <div class="view" data-name="error">
+                        <div class="view sub-view" data-name="bad-server-connection">
+                            <img src="./resources/imgs/sad-raven.png" class="no-connection" />
+                            <h2>Unable to connect to the game server.</h2>
+                            <p style="text-align: center;">We are retrying every couple of seconds. The server should be
+                                back online soon!</p>
+                        </div>
+
+                        <div class="view sub-view" data-name="game-not-running">
+                            <img src="./resources/imgs/sad-raven.png" class="no-connection" />
+                            <h2>Ravenfall is unavailable</h2>
+                            <p style="text-align: center;">It looks like we don't have a connection to Ravenfall just
+                                yet,
+                                maybe the streamer is not running the game or we are still connecting.</p>
+                        </div>
+
+                        <div class="view sub-view" data-name="anonymous-user">
+                            <img src="./resources/imgs/sad-raven.png" class="no-connection" />
+                            <h2>Twitch User Id is Required</h2>
+                            <p style="text-align: center;">Unfortunately this extension is not able to verify who you
+                                are. Please make sure you grant the required permissions to share your user Id with this
+                                extension. Otherwise it's not possible to for Ravenfall to know which characters are
+                                yours.</p>
+                            <p style="text-align: center;">If you're seeing this page but have granted permissions to
+                                this extension, please try revoking and granting them again.</p>
                         </div>
                     </div>
 
-                    <div class="view sub-view" data-name="character-overview">
-                        <div class="character-details">
+                    <div class="view" data-name="default">
 
-                            <!-- character names are split into 3 parts: 
+                        <div class="view-tabs">
+                            <div class="btn btn-view-tab" data-navigation='character-overview'>Overview</div>
+                            <div class="btn btn-view-tab" data-navigation='training'>Training</div>
+                            <div class="btn btn-view-tab" data-navigation='inventory'>Inventory</div>
+                            <div class="btn btn-view-tab" data-navigation='islands'>Sailing</div>
+                        </div>
+
+                        <div class="view sub-view" data-name="initialize">
+                            <img src="./resources/imgs/ravenfall_logo_tiny.png" class="no-connection" />
+                            <h2>Loading...</h2>
+                            <p style="text-align: center;">Hold on to your Ravens..<br />You will be able to play soon!
+                            </p>
+                        </div>
+                        <div class="view sub-view" data-name="create-account">
+                            <img src="./resources/imgs/ravenfall_logo_tiny.png" class="no-connection" />
+                            <h2>You don't seem to have any characters.<br />First time playing?</h2>
+                            <a class="btn btn-create-account">Click here or type !join in chat</a>
+                        </div>
+
+                        <div class="view sub-view" data-name="character-selection">
+                            <img src="./resources/imgs/ravenfall_logo_tiny.png" class="no-connection" />
+                            <h2>Select character you want to play with</h2>
+                            <div class="character-list"></div>
+                        </div>
+
+                        <div class="view sub-view" data-name="character-overview">
+                            <div class="character-details">
+
+                                <!-- character names are split into 3 parts: 
                                 username, alias and index. In game, it will look like this username#index, 
                                 but player can use the alias when selecting which character to play with.
                             -->
-                            <div class="character-name">
-                                <span class="username">zerratar</span>
-                                <span class="index">#1</span>
-                                <span class="alias">brute</span>
-                            </div>
-
-                            <!-- a character's combat level is the average of their attack/defense/strength/health stats -->
-                            <div class="character-combat-level">
-                                300
-                            </div>
-
-                            <div class="character-resources">
-                                <div class="resource coins">
-                                    <div class="resource-icon"><i class="fa-solid fa-coins"></i></div>
-                                    <div class="resource-value">10000</div>
+                                <div class="character-name">
+                                    <span class="username">zerratar</span>
+                                    <span class="index">#1</span>
+                                    <span class="alias">brute</span>
                                 </div>
-                                <div class="resource wood">
+
+                                <!-- a character's combat level is the average of their attack/defense/strength/health stats -->
+                                <div class="character-combat-level">
+                                    300
+                                </div>
+
+                                <div class="character-resources">
+                                    <div class="resource coins">
+                                        <div class="resource-icon"><i class="fa-solid fa-coins"></i></div>
+                                        <div class="resource-value">10000</div>
+                                    </div>
+                                    <!-- <div class="resource wood">
                                     <div class="resource-icon"><i class="fa-solid fa-tree"></i></div>
                                     <div class="resource-value">10000</div>
                                 </div>
@@ -122,88 +126,89 @@
                                 <div class="resource wheat">
                                     <div class="resource-icon"><i class="fa-solid fa-wheat-awn"></i></div>
                                     <div class="resource-value">10000</div>
+                                </div> -->
                                 </div>
-                            </div>
 
-                            <!-- if the player is training a skill, this block should be visible -->
-                            <div class="character-training">
-                                <div class="training-skill-name">All</div>
-                                <!-- <div class="training-skill-eta"></div> -->
-                                <div class="training-skill-progress">
-                                    <div class="training-skill-progress-fill"></div>
-                                    <div class="training-skill-progress-value">
-                                        <div class="training-skill-level">999</div>
-                                        <div class="training-skill-progress-percent">95%</div>
+                                <!-- if the player is training a skill, this block should be visible -->
+                                <div class="character-training">
+                                    <div class="training-skill-name">All</div>
+                                    <!-- <div class="training-skill-eta"></div> -->
+                                    <div class="training-skill-progress">
+                                        <div class="training-skill-progress-fill"></div>
+                                        <div class="training-skill-progress-value">
+                                            <div class="training-skill-level">999</div>
+                                            <div class="training-skill-progress-percent">95%</div>
+                                        </div>
+                                    </div>
+                                    <div class="training-rate">
+                                        <div class="training-skill-time-for-level">Million Days Left</div>
+                                        <div class="training-skill-rate">5 Trillion EXP/Hour</div>
                                     </div>
                                 </div>
-                                <div class="training-rate">
-                                    <div class="training-skill-time-for-level">Million Days Left</div>
-                                    <div class="training-skill-rate">5 Trillion EXP/Hour</div>
-                                </div>
-                            </div>
 
-                            <div class="rest-status">
-                                <div class="rest-help">
-                                    <div class="rest-help-text"><i class="fa-solid fa-info"></i>&nbsp;You can rest on this island, while rested you gain 2x more experience.</div>
-                                </div>
-                                <div class="rested-time">
-                                    <span class="label">You are currently rested for</span>&nbsp;<span
-                                        class="time">??</span>
-                                    <i class="icon fa-solid fa-chevron-up"></i>
-                                    <i class="icon fa-solid fa-chevron-down"></i>
-                                </div>
-                                <div class="btn btn-begin-rest">Rest</div>
-                                <div class="btn btn-end-rest">Stop resting</div>
-                            </div>
-                            
-                            <div class="ferry-animation sailing">
-                                <img src="imgs/steamboat.gif" />
-                            </div>
-
-                            <div class="ferry-animation captain">
-                                <img src="imgs/disney-mickey.gif" />
-                            </div>
-
-                            <div class="dungeon-status">
-                                <div class="dungeon-top">
-                                    <div class="dungeon-info">
-                                        <div class="dungeon-name">Dungeon Name</div>
-                                        <div class="dungeon-level">1322</div>
+                                <div class="rest-status">
+                                    <div class="rest-help">
+                                        <div class="rest-help-text"><i class="fa-solid fa-info"></i>&nbsp;You can rest
+                                            on this island, while rested you gain 2x more experience.</div>
                                     </div>
-                                    <div class="dungeon-seconds-starts">1322s</div>
-                                </div>
-                                <div class="health-progress">
-                                    <div class="health-progress-fill"></div>
-                                    <div class="health-progress-value">95%</div>
-                                </div>
-                                <div class="dungeon-stats">
-                                    <div class="dungeon-enemies-left"></div>
-                                    <div class="dungeon-players-left"></div>
-                                </div>
-                                <!-- <div class="dungeon-eta">ETA: 1 Minute</div> -->
-                                <div class="btn btn-join-dungeon">Join Dungeon</div>
-                            </div>
-
-                            <div class="raid-status">
-                                <div class="raid-top">
-                                    <div class="raid-info">
-                                        <div class="raid-name">Raid Lv</div>
-                                        <div class="raid-level">1322</div>
+                                    <div class="rested-time">
+                                        <span class="label">You are currently rested for</span>&nbsp;<span
+                                            class="time">??</span>
+                                        <i class="icon fa-solid fa-chevron-up"></i>
+                                        <i class="icon fa-solid fa-chevron-down"></i>
                                     </div>
-                                    <div class="raid-seconds-left">1322s</div>
+                                    <div class="btn btn-begin-rest">Rest</div>
+                                    <div class="btn btn-end-rest">Stop resting</div>
                                 </div>
 
-                                <div class="health-progress">
-                                    <div class="health-progress-fill"></div>
-                                    <div class="health-progress-value">95%</div>
+                                <div class="ferry-animation sailing">
+                                    <img src="./resources/imgs/steamboat.gif" />
                                 </div>
 
-                                <!-- <div class="raid-eta">ETA: 1 Minute</div> -->
-                                <div class="btn btn-join-raid">Join Raid</div>
-                            </div>
+                                <div class="ferry-animation captain">
+                                    <img src="./resources/imgs/disney-mickey.gif" />
+                                </div>
 
-                            <!-- island should not be shown if the player is in a dungeon, raidwar or arena or on the ferry. -->
-                            <!-- <div class="character-location">
+                                <div class="dungeon-status">
+                                    <div class="dungeon-top">
+                                        <div class="dungeon-info">
+                                            <div class="dungeon-name">Dungeon Name</div>
+                                            <div class="dungeon-level">1322</div>
+                                        </div>
+                                        <div class="dungeon-seconds-starts">1322s</div>
+                                    </div>
+                                    <div class="health-progress">
+                                        <div class="health-progress-fill"></div>
+                                        <div class="health-progress-value">95%</div>
+                                    </div>
+                                    <div class="dungeon-stats">
+                                        <div class="dungeon-enemies-left"></div>
+                                        <div class="dungeon-players-left"></div>
+                                    </div>
+                                    <!-- <div class="dungeon-eta">ETA: 1 Minute</div> -->
+                                    <div class="btn btn-join-dungeon">Join Dungeon</div>
+                                </div>
+
+                                <div class="raid-status">
+                                    <div class="raid-top">
+                                        <div class="raid-info">
+                                            <div class="raid-name">Raid Lv</div>
+                                            <div class="raid-level">1322</div>
+                                        </div>
+                                        <div class="raid-seconds-left">1322s</div>
+                                    </div>
+
+                                    <div class="health-progress">
+                                        <div class="health-progress-fill"></div>
+                                        <div class="health-progress-value">95%</div>
+                                    </div>
+
+                                    <!-- <div class="raid-eta">ETA: 1 Minute</div> -->
+                                    <div class="btn btn-join-raid">Join Raid</div>
+                                </div>
+
+                                <!-- island should not be shown if the player is in a dungeon, raidwar or arena or on the ferry. -->
+                                <!-- <div class="character-location">
                                 <div class="character-island-name">Home</div>
                                 <div class="character-on-ferry">Currently sailing</div>
                                 <div class="character-in-onsen">Currently resting</div>
@@ -213,190 +218,207 @@
                                 <div class="character-in-arena">Currently in the arena</div>
                                 <div class="character-in-duel">Currently in a duel</div>                                
                             </div> -->
-                        </div>
-                    </div>
-
-                    <div class="view sub-view" data-name="inventory">
-                        <div class="inventory-items">
-                            <div class="inventory-item {classList}">
-                                <div class="inventory-item-amount">{amount}</div>
-                                <img class="inventory-item-img" data-src="{url}" alt="{name}" />
-                                <div class="inventory-item-name">{name}</div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="view sub-view" data-name="islands">
-                        <div class="island-list">
-
-                            <div class="island home" data-name="home">
-                                <div class="island-header">
-                                    <div class="island-name">Home</div>
+                        <div class="view sub-view" data-name="inventory">
+                            <div class="inventory-items">
+                                <div class="inventory-item {classList}">
+                                    <div class="inventory-item-amount">{amount}</div>
+                                    <img class="inventory-item-img" data-src="{url}" alt="{name}" />
+                                    <div class="inventory-item-name">{name}</div>
                                 </div>
-                                <div class="island-lv-req">
-                                    <div class="island-lv-req-entry">
-                                        <div class="island-stat">
-                                            <span class="name">The starting island, you should always start here.</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="btn btn-travel home">Travel</div>
                             </div>
+                        </div>
 
-                            <div class="island away" data-name="away">
-                                <div class="island-header">
-                                    <div class="island-name">Away</div>
-                                </div>
-                                <div class="island-lv-req">
-                                    <div class="island-lv-req-label">Requirements</div>
-                                    <div class="island-lv-req-entry">
-                                        <div class="island-stat">
-                                            <span class="name">Combat level</span>
-                                            <span class="level">50</span>
-                                        </div>
-                                        <div class="island-stat">
-                                            <span class="name">Min level of skill</span>
-                                            <span class="level">50</span>
-                                        </div>
+                        <div class="view sub-view" data-name="islands">
+                            <div class="island-list">
+
+                                <div class="island home" data-name="home">
+                                    <div class="island-header">
+                                        <div class="island-name">Home</div>
                                     </div>
-                                </div>
-                                <div class="btn btn-travel away">Travel</div>
-                            </div>
-
-                            <div class="island ironhill" data-name="ironhill">
-                                <div class="island-header">
-                                    <div class="island-name">Ironhill</div>
-                                </div>
-                                <div class="island-lv-req">
-                                    <div class="island-lv-req-label">Requirements</div>
-                                    <div class="island-lv-req-entry">
+                                    <div class="island-lv-req">
                                         <div class="island-lv-req-entry">
                                             <div class="island-stat">
-                                                <span class="name">Combat level</span>
-                                                <span class="level">100</span>
+                                                <span class="name">The starting island, you should always start
+                                                    here.</span>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn btn-travel home">Travel</div>
+                                </div>
+
+                                <div class="island away" data-name="away">
+                                    <div class="island-header">
+                                        <div class="island-name">Away</div>
+                                    </div>
+                                    <div class="island-lv-req">
+                                        <div class="island-lv-req-label">Level Required</div>
+                                        <div class="island-lv-req-entry">
                                             <div class="island-stat">
-                                                <span class="name">Min level of skill</span>
-                                                <span class="level">100</span>
+                                                <span class="name">Combat/Skill</span>
+                                                <span class="level">50</span>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="btn btn-travel away">Travel</div>
                                 </div>
-                                <div class="btn btn-travel ironhill">Travel</div>
-                            </div>
 
-                            <div class="island kyo" data-name="kyo">
-                                <div class="island-header">
-                                    <div class="island-name">Kyo</div>
-                                    <div class="island-onsen">
-                                        &#128164;
+                                <div class="island ironhill" data-name="ironhill">
+                                    <div class="island-header">
+                                        <div class="island-name">Ironhill</div>
                                     </div>
-                                </div>
-                                <div class="island-lv-req">
-                                    <div class="island-lv-req-label">Requirements</div>
-                                    <div class="island-lv-req-entry">
-                                        <div class="island-stat">
-                                            <span class="name">Combat level</span>
-                                            <span class="level">200</span>
-                                        </div>
-                                        <div class="island-stat">
-                                            <span class="name">Min level of skill</span>
-                                            <span class="level">200</span>
+                                    <div class="island-lv-req">
+                                        <div class="island-lv-req-label">Level Required</div>
+                                        <div class="island-lv-req-entry">
+                                            <div class="island-lv-req-entry">
+                                                <div class="island-stat">
+                                                    <span class="name">Combat/Skill</span>
+                                                    <span class="level">100</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="btn btn-travel ironhill">Travel</div>
                                 </div>
-                                <div class="btn btn-travel kyo">Travel</div>
-                            </div>
 
-                            <div class="island heim" data-name="heim">
-                                <div class="island-header">
-                                    <div class="island-name">Heim</div>
-                                    <div class="island-onsen">
-                                        &#128164;
-                                    </div>
-                                </div>
-                                <div class="island-lv-req">
-                                    <div class="island-lv-req-label">Requirements</div>
-                                    <div class="island-lv-req-entry">
-                                        <div class="island-stat">
-                                            <span class="name">Min level of skill</span>
-                                            <span class="level">300</span>
+                                <div class="island kyo" data-name="kyo">
+                                    <div class="island-header">
+                                        <div class="island-name">Kyo</div>
+                                        <div class="island-onsen">
+                                            &#128164;
                                         </div>
                                     </div>
+                                    <div class="island-lv-req">
+                                        <div class="island-lv-req-label">Level Required</div>
+                                        <div class="island-lv-req-entry">
+                                            <div class="island-stat">
+                                                <span class="name">Combat/Skill</span>
+                                                <span class="level">200</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn btn-travel kyo">Travel</div>
                                 </div>
-                                <div class="btn btn-travel heim">Travel</div>
-                            </div>
 
-                            <div class="island sail" data-name="ferry">
-                                <div class="island-header">
-                                    <div class="island-name">Train Sailing</div>
-                                </div>
-                                <div class="island-lv-req">
-                                    <div class="island-lv-req-entry">
-                                        <div class="island-stat">
-                                            <span class="name">Sail until you select a new destination</span>
+                                <div class="island heim" data-name="heim">
+                                    <div class="island-header">
+                                        <div class="island-name">Heim</div>
+                                        <div class="island-onsen">
+                                            &#128164;
                                         </div>
                                     </div>
+                                    <div class="island-lv-req">
+                                        <div class="island-lv-req-label">Level Required</div>
+                                        <div class="island-lv-req-entry">
+                                            <div class="island-stat">
+                                                <span class="name">Combat/Skill</span>
+                                                <span class="level">300</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn btn-travel heim">Travel</div>
                                 </div>
-                                <div class="btn btn-travel heim">Ahoy!</div>
+
+                                <div class="island atria" data-name="atria">
+                                    <div class="island-header">
+                                        <div class="island-name">Atria</div>
+                                        <div class="island-onsen">
+                                            &#128164;
+                                        </div>
+                                    </div>
+                                    <div class="island-lv-req">
+                                        <div class="island-lv-req-label">Level Required</div>
+                                        <div class="island-lv-req-entry">
+                                            <div class="island-stat">
+                                                <span class="name">Combat/Skill</span>
+                                                <span class="level">500</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn btn-travel atria">Travel</div>
+                                </div>
+
+                                <div class="island eldara" data-name="eldara">
+                                    <div class="island-header">
+                                        <div class="island-name">Eldara</div>
+                                        <div class="island-onsen">
+                                            &#128164;
+                                        </div>
+                                    </div>
+                                    <div class="island-lv-req">
+                                        <div class="island-lv-req-label">Level Required</div>
+                                        <div class="island-lv-req-entry">
+                                            <div class="island-stat">
+                                                <span class="name">Combat/Skill</span>
+                                                <span class="level">700</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn btn-travel eldara">Travel</div>
+                                </div>
+
+                                <div class="island sail" data-name="ferry">
+                                    <div class="island-header">
+                                        <div class="island-name">Train Sailing</div>
+                                    </div>
+                                    <div class="island-lv-req">
+                                        <div class="island-lv-req-entry">
+                                            <div class="island-stat">
+                                                <span class="name">Sail until you select a new destination</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn btn-travel">Ahoy!</div>
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="view sub-view" data-name="training">
+                            <div class="character-stats">
+                                <div class="character-stat btn-{SkillName} {trainable}" title="">
+                                    <div class="stats-identifier">
+                                        <div class="stats-name">{SkillName}</div>
+                                        <div class="stats-level">{SkillLevel}</div>
+                                    </div>
+                                    <div class="stats-progress">
+                                        <div class="stats-progress-background"></div>
+                                        <div class="stats-progress-value" data-exp="{SkillExperience}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="view sub-view" data-name="marketplace">
+                            <h2 class="view-header">Marketplace</h2>
+                        </div>
+                        <div class="view sub-view" data-name="crafting">
+                            <h2 class="view-header">Crafting</h2>
+                        </div>
+                        <div class="view sub-view" data-name="clan">
+                            <h2 class="view-header">Clan</h2>
+                        </div>
+
+                        <div class="in-game-footer">
+                            <div class="btn btn-leave-game">Change Character</div>
+                            <div class="client-version"></div>
                         </div>
                     </div>
 
-                    <div class="view sub-view" data-name="training">
-                        <div class="character-stats">
-                            <div class="character-stat btn-{SkillName} {trainable}" title="">
-                                <div class="stats-identifier">
-                                    <div class="stats-name">{SkillName}</div>
-                                    <div class="stats-level">{SkillLevel}</div>
-                                </div>
-                                <div class="stats-progress">
-                                    <div class="stats-progress-background"></div>
-                                    <div class="stats-progress-value" data-exp="{SkillExperience}"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="debug-info"></div>
 
-                    <div class="view sub-view" data-name="marketplace">
-                        <h2 class="view-header">Marketplace</h2>
-                    </div>
-                    <div class="view sub-view" data-name="crafting">
-                        <h2 class="view-header">Crafting</h2>
-                    </div>
-                    <div class="view sub-view" data-name="clan">
-                        <h2 class="view-header">Clan</h2>
-                    </div>
-                    
-                    <div class="in-game-footer">
-                        <div class="btn btn-leave-game">Change Character</div>
-                        <div class="client-version"></div>
-                    </div>
+                    <div class="footer"></div>
                 </div>
-
-                <div class="debug-info">
-                </div>
-
-                <div class="footer"></div>
             </div>
         </div>
-    </div>
 
-    <svg height="0" xmlns="http://www.w3.org/2000/svg">
-        <filter id="drop-shadow">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
-            <feOffset dx="3" dy="4" result="offsetblur" />
-            <feFlood flood-color="rgba(0,0,0,0.25)" />
-            <feComposite in2="offsetblur" operator="in" />
-            <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
-    </svg>
-    <script src="modules/states.js"></script>
-    <script src="modules/interactions.js"></script>
-    <script src="extension.js" type="module"></script>
-</body>
+        <script src="./resources/jquery-3.3.1.min.js"></script>
+        <script src="./resources/js/core.js"></script>
+        <script src="./resources/js/debug.js"></script>
+        <script src="./resources/js/interactions.js"></script>
+        <script src="./resources/js/states.js"></script>
+        <script src="./extension.js" type="module"></script>
+    </body>
 
 </html>

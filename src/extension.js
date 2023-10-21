@@ -1,11 +1,10 @@
-import RavenfallService from "./modules/ravenfall-service.js";
-import TwitchService from "./modules/twitch-service.js";
+import RavenfallService from "./resources/js/ravenfall-service.js";
+import TwitchService from "./resources/js/twitch-service.js";
 import { LoadingView } from './views/LoadingView.js';
 import { ErrorView } from "./views/ErrorView.js";
 import { DefaultView } from "./views/DefaultView.js";
 
 export default class RavenfallExtension {
-
     constructor() {
         this.twitchService = new TwitchService();
         this.ravenfallService = new RavenfallService(x => this.onCharacterUpdated(x));
@@ -74,7 +73,7 @@ export default class RavenfallExtension {
     }
 
     onBadServerConnection() {
-        this.pollTimer = Ravenfall.pollInterval * 3;
+        this.pollTimer = Ravenfall.pollInterval;
         this.views.error.onBadServerConnection();
         this.setView(this.views.error);
     }
@@ -112,8 +111,8 @@ export default class RavenfallExtension {
 
 
         { // DEBUG
-            const sessionInfo = JSON.stringify(Ravenfall.service.sessionInfo);
-            console.log('Authenticated with ravennest: ' + sessionInfo);
+            // const sessionInfo = JSON.stringify(Ravenfall.service.sessionInfo);
+            // console.log('Authenticated with ravennest: ' + sessionInfo);
         } // END DEBUG
 
         if (Ravenfall.service.isRavenfallAvailable && !Ravenfall.isCharactersLoaded()) {
@@ -145,7 +144,7 @@ export default class RavenfallExtension {
         if (char == null || typeof char == 'undefined') {
             return; // nope.
         }
-        
+
         // Handle rested state
         this.updateRestedTime(deltaMs, char);
 
@@ -164,11 +163,11 @@ export default class RavenfallExtension {
         let dateNow = new Date();
         let elapsedSeconds = Math.abs(dateNow - restedLastUpdated) / 1000;
         let deltaSeconds = deltaMs / 1000;
-        if (elapsedSeconds > 0){
+        if (elapsedSeconds > 0) {
             let restedSeconds = char.state.restedTime;
             if (char.state.inOnsen === true) {
                 // tick up
-                char.state.restedTime += (deltaSeconds*2);
+                char.state.restedTime += (deltaSeconds * 2);
             } else {
                 // tick down
                 char.state.restedTime -= deltaSeconds;
