@@ -1,4 +1,4 @@
-const offsetTop = 50;
+const offsetTop = 69;
 const offsetLeft = 10;
 const width = 340;
 const height = 600;
@@ -44,22 +44,23 @@ function dragElement(elmnt) {
 
     elmnt.onmousedown = dragMouseDown;
 
-    if (elmPos && elmPos.indexOf(';') > -1) d = elmPos.split(';');
+    if (elmPos && elmPos.indexOf(';') > -1) {
+        d = elmPos.split(';');
 
-    if (d[0] > offsetTop)
-        elmnt.style.top = d[0] + 'px'
-    else
-        elmnt.style.top = offsetTop + 'px';
+        if (d[0] > offsetTop)
+            elmnt.style.top = d[0] + 'px'
+        else
+            elmnt.style.top = offsetTop + 'px';
 
-    if (d[1] > offsetLeft)
-        elmnt.style.left = d[1] + 'px';
-    else
-        elmnt.style.left = offsetLeft + 'px';
-
+        if (d[1] > offsetLeft)
+            elmnt.style.left = d[1] + 'px';
+        else
+            elmnt.style.left = offsetLeft + 'px';
+    }
 
     addEventListener("resize", (event) => {
-        if (elmY < 0) elmY = offsetTop;
-        if (elmX < 0) elmX = offsetLeft;
+        if (elmY < offsetTop) elmY = offsetTop;
+        if (elmX < offsetLeft) elmX = offsetLeft;
         if (elmY >= window.innerHeight - offsetTop) elmY = window.innerHeight - offsetTop;
         if (elmX >= window.innerWidth - offsetLeft) elmX = window.innerWidth - offsetLeft;
 
@@ -107,8 +108,8 @@ function dragElement(elmnt) {
         let newTop = (elmnt.offsetTop - pos2);
         let newLeft = (elmnt.offsetLeft - pos1);
 
-        if (newTop < 0) newTop = 0;
-        if (newLeft < 0) newLeft = 0;
+        if (newTop < offsetTop) newTop = offsetTop;
+        if (newLeft < offsetLeft) newLeft = offsetLeft;
         if (newTop >= window.innerHeight - offsetTop) newTop = window.innerHeight - offsetTop;
         if (newLeft >= window.innerWidth - offsetLeft) newLeft = window.innerWidth - offsetLeft;
 
