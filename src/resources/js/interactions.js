@@ -44,7 +44,6 @@ function dragElement(elmnt) {
 
     if (elmPos && elmPos.indexOf(';') > -1) {
         d = elmPos.split(';');
-        console.error(d)
 
         if (parseInt(d[0]) > offsetTop)
             elmnt.style.top = d[0] + 'px'
