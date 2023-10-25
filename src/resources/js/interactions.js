@@ -42,21 +42,25 @@ function dragElement(elmnt) {
     let elmX = 0;
     let elmY = 0;
 
-    elmnt.onmousedown = dragMouseDown;
-
     if (elmPos && elmPos.indexOf(';') > -1) {
         d = elmPos.split(';');
+        console.error(d)
 
-        if (d[0] > offsetTop)
+        if (parseInt(d[0]) > offsetTop)
             elmnt.style.top = d[0] + 'px'
         else
             elmnt.style.top = offsetTop + 'px';
 
-        if (d[1] > offsetLeft)
+        if (parseInt(d[1]) > offsetLeft)
             elmnt.style.left = d[1] + 'px';
         else
             elmnt.style.left = offsetLeft + 'px';
+
+        elmX = elmnt.style.left;
+        elmY = elmnt.style.top;
     }
+
+    elmnt.onmousedown = dragMouseDown;
 
     addEventListener("resize", (event) => {
         if (elmY < offsetTop) elmY = offsetTop;
