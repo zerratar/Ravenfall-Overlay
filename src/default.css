@@ -381,10 +381,8 @@
   }
 
   .extension-toggle {
-      position: fixed;
-      top: 50px;
-      left: 10px;
-      border: 2px solid #e4e4e4;
+      position: absolute;
+      /* border: 2px solid #e4e4e4; */
       cursor: pointer;
       border-radius: 34px;
       width: 49px;
@@ -411,10 +409,10 @@
       position: relative;
   }
 
-  .extension-toggle:hover {
-      border: 2px solid #555555;
-      /*background-color: rgba(22, 0, 39, 0.9);*/
-  }
+  /*.extension-toggle:hover {
+    border: 2px solid #555555;
+    background-color: rgba(22, 0, 39, 0.9);
+} */
 
   /* Overview */
 
