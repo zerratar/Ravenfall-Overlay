@@ -1,8 +1,8 @@
-let useDevServer = false; // Change this to true when running Dev Nest Locally.
+// let useDevServer = false; // Change this to true when running Dev Nest Locally.
 
 let ravenfallHost = 'www.ravenfall.stream';
 
-if (useDevServer) {
+if (typeof window.debug != 'undefined' && window.debug.useDevServer === true) {
     ravenfallHost = 'localhost:5001';
 }
 

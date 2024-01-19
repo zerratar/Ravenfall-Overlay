@@ -9,13 +9,13 @@ export class LoadingView extends MainView {
 		console.log("Loading extension...");
 		let twitch = window.Twitch.ext;
 		// update isLocalTest from modules/states.js
-		if (isLocalTest === true) { // http://localhost:5500/src/
+		if (typeof window.debug != 'undefined' && debug.isLocalTest === true) { // http://localhost:5500/src/
 			console.warn("We are running in debug mode. This will not work on Twitch!");
-			// note(zerratar): auth token must be set in production
-			Viewer.userId = debug_viewer.id;
+			// note(zerratar): auth token is not required for localhost servers
+			Viewer.userId = debug.viewer.id;
 			Ravenfall.service.setAuthInfo({
-				channelId: debug_streamer.id,
-				userId: debug_viewer.id,
+				channelId: debug.streamer.id,
+				userId: debug.viewer.id,
 				token: null,
 				helixToken: null,
 			});
