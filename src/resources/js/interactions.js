@@ -106,11 +106,11 @@ function dragElement(elmnt) {
 
         let newTop = (elmnt.offsetTop - pos2);
         let newLeft = (elmnt.offsetLeft - pos1);
-
+        let dragElmSize = 42;
         if (newTop < 0) newTop = 0;
         if (newLeft < 0) newLeft = 0;
         if (newTop >= window.innerHeight - offsetTop) newTop = window.innerHeight - offsetTop;
-        if (newLeft >= window.innerWidth - offsetLeft) newLeft = window.innerWidth - offsetLeft;
+        if (newLeft >= window.innerWidth - offsetLeft - dragElmSize) newLeft = (window.innerWidth - offsetLeft - dragElmSize);
 
         elmY = newTop;
         elmX = newLeft;
